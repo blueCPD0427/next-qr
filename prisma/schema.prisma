@@ -1,0 +1,126 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// next-authがidをStringじゃないと許容しないため、通し番号と固有IDを別に割り振っている
+
+// ショップオーナー情報テーブル
+model Owners {
+  id        String   @id @default(cuid())
+  userId    Int      @unique @default(autoincrement()) @map(name: "user_id")
+  name      String
+  email     String   @unique
+  password  String
+  // trueの場合削除扱い
+  delete    Boolean @default(false)
+  createdAt DateTime @default(now()) @map(name: "created_at")
+  updatedAt DateTime @updatedAt @map(name: "updated_at")
+  postCode  Int @map(name: "post_code")
+  address   String
+
+  relations OwnertoCustomerRelations[]
+  customSettings OwnersCustomConfigurations[]
+
+  @@map(name: "owners")
+}
+
+// 会員情報テーブル
+model Customers {
+  id        String   @id @default(cuid())
+  userId    Int      @unique @default(autoincrement()) @map(name: "user_id")
+  lastName  String @map(name: "last_name")
+  firstName String @map(name: "first_name")
+  sex       Sex?
+  email     String   @unique
+  password  String
+  // trueの場合削除扱い
+  delete    Boolean @default(false)
+  createdAt DateTime @default(now()) @map(name: "created_at")
+  updatedAt DateTime @updatedAt @map(name: "updated_at")
+  postCode  Int @map(name: "post_code")
+  address   String
+  birthday  DateTime
+
+  relations OwnertoCustomerRelations[]
+  confCustomerData ConfigurationsCustomerData[]
+
+  @@map(name: "customers")
+}
+
+enum Sex {
+  male
+  female
+}
+
+// オーナー・会員間、連携情報テーブル
+// あくまでリレーションなのでここは不要になったら物理削除
+model OwnertoCustomerRelations {
+  ownerId         String @map(name: "owner_id")
+  customerId      String @map(name: "customer_id")
+  // 住所情報をオーナー側へ表示するかのフラグ true:表示
+  addressDisp     Boolean @map(name: "address_disp")
+  // 誕生日情報をオーナー側へ表示するかのフラグ true:表示
+  birthdayDisp    Boolean @map(name: "birthday_disp")
+  createdAt       DateTime @default(now()) @map(name: "created_at")
+  updatedAt       DateTime @updatedAt @map(name: "updated_at")
+
+  owner           Owners    @relation(fields: [ownerId], references: [id])
+  customer        Customers @relation(fields: [customerId], references: [id])
+
+  @@map(name: "owner_to_customer_relations")
+  @@id([ownerId, customerId])
+}
+
+// オーナー毎の会員データ設定テーブル
+model OwnersCustomConfigurations {
+  id                        String   @id @default(cuid())
+  ownerId                   String @map(name: "owner_id")
+  // 保存するデータのタイトル
+  configurationTitle        String @map(name: "configuration_title")
+  // 保存するデータの制約情報
+  configurationConstraint   ConfConst
+  createdAt                 DateTime @default(now()) @map(name: "created_at")
+  updatedAt                 DateTime @updatedAt @map(name: "updated_at")
+
+  owner                     Owners    @relation(fields: [ownerId], references: [id])
+  confCustomerData          ConfigurationsCustomerData[]
+
+  @@map(name: "custom_configurations")
+}
+
+// 保存するデータの制約タイプ設定
+enum ConfConst {
+  // テキスト入力
+  text
+  // 数値
+  int
+  // true or false
+  boolean
+}
+
+// オーナー毎の会員データテーブル
+model ConfigurationsCustomerData {
+  oCCId               String @map(name: "occ_id")
+  customerId          String @map(name: "customer_id")
+  // データ設定テーブルの方で形式を指定（バリデーション）しているので、実際の保存領域はStringにしておく
+  configurationData   String? @map(name: "configuration_data")
+  createdAt           DateTime @default(now()) @map(name: "created_at")
+  updatedAt           DateTime @updatedAt @map(name: "updated_at")
+
+  customConfiguration OwnersCustomConfigurations @relation(fields: [oCCId], references: [id])
+  customer            Customers @relation(fields: [customerId], references: [id])
+
+  @@id([oCCId, customerId])
+  @@map(name: "conf_customer_data")
+}

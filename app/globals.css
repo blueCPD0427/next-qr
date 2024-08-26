@@ -1,0 +1,11 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+.max-h-screen-80{
+    max-height: 80vh;
+}
+
+.h-screen-80{
+    height: 80vh;
+}
