@@ -1,13 +1,19 @@
 import { QrcodeGenerator } from "@/app/lib/component-parts/qrcode";
 import { auth } from "@/auth";
-import { CopyToClipboardButton } from "@/app/lib/component-parts/buttons";
+import { redirect } from "next/navigation";
 
 
 export default async function OwnerQrDisplayPage()
 {
     // QRコードに表示するURLを生成
     const session = await auth();
-    const qrUrl = process.env.BASE_URL + 'customer/menu/connect?owner=' + session?.user?.id;
+
+    let qrUrl = '';
+    if(session?.user?.id == undefined){
+        redirect('/404');
+    }else{
+        qrUrl = session.user.id;
+    }
 
     return(
         <div className='flex justify-center items-center h-screen-80'>
