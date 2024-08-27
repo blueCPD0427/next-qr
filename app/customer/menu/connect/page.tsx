@@ -21,7 +21,7 @@ async function ConnectedAccount(ownerId:string) {
         }
     })
 
-    if(ConnectedData){
+    if(ConnectedData.length > 0){
         return true;
     }else{
         return false;

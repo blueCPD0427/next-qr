@@ -9,11 +9,11 @@ import Select from 'react-select';
 const qrcodeRegionId = 'html5qr-code-full-region';
 
 export default function QrcodeReader({
-    onScanSuccess,
-    onScanFailure,
+        onScanSuccess,
+        onScanFailure,
     }: {
-    onScanSuccess: any;
-    onScanFailure: any;
+        onScanSuccess: any;
+        onScanFailure: any;
     }) {
     // QRコードリーダーの設定
     // fpsは読み取り頻度。デフォルトは　2.１秒間に何回読み取るかの値を設定。１ならば１秒間に１回読み取る。
@@ -95,6 +95,11 @@ export default function QrcodeReader({
         scanner.clear();
         };
     }, []);
+
+    useEffect(() => {
+        console.log("ononScanSuccess");
+        console.log(onScanSuccess);
+    }, [onScanSuccess]);
 
     return (
         <div className='container mx-auto'>
