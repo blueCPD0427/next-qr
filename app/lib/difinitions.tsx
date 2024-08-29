@@ -34,3 +34,15 @@ export interface CustomerConnectForm {
     birthdayDisp: string
     ownerId: string
 }
+
+
+export interface OCCListInside {
+    id: string
+    ownerId: string
+    configurationTitle: string
+    configurationConstraint: 'text' | 'int' | 'boolean',
+    confCustomerData?: {
+        customerId: string,
+        configurationData?: string,
+    }
+}

@@ -1,7 +1,10 @@
 import { auth } from "@/auth";
 import { getOwnersCustomConfigurations,getOwnerToCustomerRelations } from "../../actions";
 import { redirect } from "next/navigation";
-import TextCustomFormPage from "./text-form";
+import TextCustomFormPage from "@/app/owner/menu/qr-read/result/[customerId]/text-form";
+import IntCustomFormPage from "@/app/owner/menu/qr-read/result/[customerId]/int-form";
+import BooleanCustomFormPage from "@/app/owner/menu/qr-read/result/[customerId]/boolean-form";
+import { useFormState } from "react-dom";
 
 
 export default async function QrReadResultPage({params}: {params: {customerId:string}})
@@ -17,19 +20,6 @@ export default async function QrReadResultPage({params}: {params: {customerId:st
         redirect('/404');
     }
 
-
-    // 「OwnersCustomConfigurations」テーブルに設定が1コ以上存在するか確認。
-    // 無ければエラー表示+エディット画面へのリンク
-    const oCClist = await getOwnersCustomConfigurations(ownerId);
-    if(!oCClist){
-        // 連携情報が無いので先に連携を促す
-        redirect('/404');
-    }
-
-
-    // 連携済み会員かどうかチェック
-    // 連携済みであれば情報取得
-    // 情報取得の際に「ConfigurationsCustomerData」の内容も取得
     const customerId = params.customerId;
 
 
@@ -39,25 +29,32 @@ export default async function QrReadResultPage({params}: {params: {customerId:st
         redirect('/404');
     }
 
-    // console.log(oCClist);
+    const oCClist = await getOwnersCustomConfigurations(ownerId, customerId);
+    if(!oCClist){
+        // 無ければエラー表示+エディット画面へのリンク
+        redirect('/404');
+    }
 
-    // 「OwnersCustomConfigurations」に基づいてフォーム作成
-    // 取得情報をUPDATEするフォームを表示
-    // UPDATE処理を実行
-
+    // ↓使ってまとめてformDataとして送って保存する
+    // const [result, dispatch] = useFormState(createAccount, initialState);
     return (
         <div>
-            読み取った結果反映
-
+            <form>
             {
-                oCClist &&
-                oCClist.map((oCC) => (
-                    // ここでIDだけじゃなくて色々渡したい。既にデータがある場合は初期値とか
-                    <TextCustomFormPage formId={oCC.id} />
-                ))
+                oCClist && oCClist.map((oCC) => {
+                    switch (oCC.configurationConstraint) {
+                        case 'text':
+                            return <TextCustomFormPage key={oCC.id} oCCData={oCC} />;
+                        case 'int':
+                            return <IntCustomFormPage key={oCC.id} oCCData={oCC} />;
+                        case 'boolean':
+                            return <BooleanCustomFormPage key={oCC.id} oCCData={oCC} />;
+                        default:
+                            return null;
+                    }
+                })
             }
-
-
+            </form>
         </div>
     )
 }
