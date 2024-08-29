@@ -40,3 +40,7 @@ Check out our [Next.js deployment documentation](https://nextjs.org/docs/deploym
 ### TODO
 
 - 未ログインの時にトップに飛んじゃうので、オーナー・会員でリダイレクト先のログイン画面を切り分ける
+
+- ここを参考にエラーハンドリングする
+
+ > https://qiita.com/aburasoba/items/a1fd399dd490e7402518

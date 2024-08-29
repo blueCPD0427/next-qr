@@ -146,6 +146,12 @@ export async function createOwnerAccountApi(formData: OwnerAccountCreateForm){
             }
         }
 
+        /**
+         * オーナーアカウントの作成に成功したら、
+         * 「OwnersCustomConfigurations」テーブルにデフォルトの設定を作成しておく
+         * デフォルトは設定名「ポイント」、制約タイプは「int」
+         */
+
     } catch(error){
         if (error instanceof z.ZodError) {
             return { success: false, errors: error.format() };

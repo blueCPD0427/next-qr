@@ -29,7 +29,7 @@ model Owners {
   postCode  Int @map(name: "post_code")
   address   String
 
-  relations OwnertoCustomerRelations[]
+  relations OwnerToCustomerRelations[]
   customSettings OwnersCustomConfigurations[]
 
   @@map(name: "owners")
@@ -52,7 +52,7 @@ model Customers {
   address   String
   birthday  DateTime
 
-  relations OwnertoCustomerRelations[]
+  relations OwnerToCustomerRelations[]
   confCustomerData ConfigurationsCustomerData[]
 
   @@map(name: "customers")
@@ -65,7 +65,7 @@ enum Sex {
 
 // オーナー・会員間、連携情報テーブル
 // あくまでリレーションなのでここは不要になったら物理削除
-model OwnertoCustomerRelations {
+model OwnerToCustomerRelations {
   ownerId         String @map(name: "owner_id")
   customerId      String @map(name: "customer_id")
   // 住所情報をオーナー側へ表示するかのフラグ true:表示

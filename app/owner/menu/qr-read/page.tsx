@@ -24,8 +24,9 @@ export default function QrcodeReaderComponent() {
         // 読み取り結果でリダイレクト
         router.push('/owner/menu/qr-read/result/' + result);
 
-        // ここでカメラの停止処理を行う必要があるかは要検討
-        // await html5QrcodeScanner.stop();
+        // カメラを停止
+        await html5QrcodeScanner.stop();
+        setHtml5QrcodeScanner(html5QrcodeScanner);
     };
 
     // QRコードリーダーの設定
