@@ -14,7 +14,7 @@ export default function TextCustomFormPage(
             <label htmlFor={oCCData.id}>
                 {oCCData.configurationTitle}
             </label>
-            <input id={oCCData.id} type="text" name={oCCData.id + '_text'} />
+            <input id={oCCData.id} type="text" name={oCCData.id + '_text'} defaultValue={oCCData.confCustomerData?.configurationData} />
         </div>
     )
 }

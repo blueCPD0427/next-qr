@@ -14,7 +14,7 @@ export default function BooleanCustomFormPage(
             <label htmlFor={oCCData.id}>
                 {oCCData.configurationTitle}
             </label>
-            <input id={oCCData.id} type="checkbox" name={oCCData.id + '_text'} defaultValue={oCCData.confCustomerData?.configurationData} />
+            <input id={oCCData.id} type="checkbox" name={oCCData.id + '_bool'} />
         </div>
     )
 }

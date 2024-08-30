@@ -1,10 +1,10 @@
 import { auth } from "@/auth";
 import { getOwnersCustomConfigurations,getOwnerToCustomerRelations } from "../../actions";
 import { redirect } from "next/navigation";
+import CustomFormBase from "./custom-form";
 import TextCustomFormPage from "@/app/owner/menu/qr-read/result/[customerId]/text-form";
 import IntCustomFormPage from "@/app/owner/menu/qr-read/result/[customerId]/int-form";
 import BooleanCustomFormPage from "@/app/owner/menu/qr-read/result/[customerId]/boolean-form";
-import { useFormState } from "react-dom";
 
 
 export default async function QrReadResultPage({params}: {params: {customerId:string}})
@@ -36,25 +36,10 @@ export default async function QrReadResultPage({params}: {params: {customerId:st
     }
 
     // ↓使ってまとめてformDataとして送って保存する
-    // const [result, dispatch] = useFormState(createAccount, initialState);
+
     return (
         <div>
-            <form>
-            {
-                oCClist && oCClist.map((oCC) => {
-                    switch (oCC.configurationConstraint) {
-                        case 'text':
-                            return <TextCustomFormPage key={oCC.id} oCCData={oCC} />;
-                        case 'int':
-                            return <IntCustomFormPage key={oCC.id} oCCData={oCC} />;
-                        case 'boolean':
-                            return <BooleanCustomFormPage key={oCC.id} oCCData={oCC} />;
-                        default:
-                            return null;
-                    }
-                })
-            }
-            </form>
+            <CustomFormBase oCClist={oCClist} customerId={customerId} />
         </div>
     )
 }
