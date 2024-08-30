@@ -20,7 +20,7 @@ export function LoginButton() {
 export function SubmitButton() {
     const { pending } = useFormStatus()
     return (
-        <button className={clsx('border rounded py-1 px-3 bg-green-500',{
+        <button className={clsx('border rounded py-1 px-3 bg-green-500 text-white font-bold',{
             'opacity-50 cursor-wait' : pending === true
         })} aria-disabled={pending}>
             {pending ? '送信中' : '送信'}

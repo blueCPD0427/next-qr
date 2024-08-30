@@ -49,9 +49,11 @@ export async function getOwnerToCustomerRelations(ownerId:string, customerId:str
     return relationData;
 }
 
-export async function setCustomForm(prevState:any, formData: FormData) {
+type ValidationTarget = {
+    [key: string]: FormDataEntryValue | null;
+};
 
-    // なんとかして画面からcustomerIdを取得する
+export async function setCustomForm(prevState, formData: FormData) {
 
     const session = await auth();
 
@@ -68,12 +70,15 @@ export async function setCustomForm(prevState:any, formData: FormData) {
         },
     })
 
-    type ValidationTarget = {
-        [key: string]: FormDataEntryValue | null;
+    let validationTarget:ValidationTarget = {
+        customerId: formData.get('customerId')
     };
 
-    let validationTarget:ValidationTarget = {};
-    const CustomFormSchema = z.object({});
+    let CustomFormSchema = z.object({
+        customerId: z.string().min(1,{message:'送信されたパラメータに異常があります'})
+    });
+
+    // ここのタイプエラーをなんとかしたい
     oCClist.map((oCC) => {
         const customName = oCC.id;
 
@@ -85,24 +90,23 @@ export async function setCustomForm(prevState:any, formData: FormData) {
 
         const formName = customName+'_'+customType;
 
-
         // 各タイプのバリデーション設定
         switch(true){
             case(oCC.configurationConstraint == 'text'):
-                CustomFormSchema.extend({
-                    [formName]: z.string().min(1,'値が空です')
+                CustomFormSchema = CustomFormSchema.extend({
+                    [formName]: z.string().min(1,{message:'値が空です'})
                 })
                 break;
-            // case(oCC.configurationConstraint == 'int'):
-            //     CustomFormSchema.extend({
-            //         [customName+'_int']: z.string().min(1,'値が空です')
-            //     })
-            //     break;
-            // case(oCC.configurationConstraint == 'boolean'):
-            //     CustomFormSchema.extend({
-            //         [customName+'_bool']: z.string().min(1,'値が空です')
-            //     })
-            //     break;
+            case(oCC.configurationConstraint == 'int'):
+                CustomFormSchema = CustomFormSchema.extend({
+                    [customName+'_int']: z.string().min(1,{message:'値が空です'})
+                })
+                break;
+            case(oCC.configurationConstraint == 'boolean'):
+                CustomFormSchema = CustomFormSchema.extend({
+                    [customName+'_bool']: z.string().min(1,{message:'値が空です'})
+                })
+                break;
             default:
                 return false;
                 break;
@@ -116,28 +120,92 @@ export async function setCustomForm(prevState:any, formData: FormData) {
 
     // 一件もフォームが無かったらエラー
     if(!validationTarget){
+        return {
+            success: false,
+            message: 'システムエラー[フォームが存在しません]',
+        };
+    }
+
+    // console.log(CustomFormSchema);
+    console.log(validationTarget);
+
+    const validatedFields = CustomFormSchema.safeParse({
+        ...validationTarget
+    });
+
+    console.log(validatedFields);
+
+    if (!validatedFields.success) {
+        return {
+            success: false,
+            errors: validatedFields.error.flatten().fieldErrors,
+            message: '入力内容を再確認してください。',
+        };
+    }
+
+    const customerId = formData.get('customerId');
+    if(typeof customerId !== 'string'){
         return false;
     }
 
-
-    const validatedFields = CustomFormSchema.safeParse({
-        validationTarget
-    });
-
-    oCClist.map((oCC) => {
+    oCClist.map(async (oCC) => {
         const formName = oCC.id + '_' + oCC.configurationConstraint;
         console.log(validationTarget?.[formName]);
+        let inputCustomData = validationTarget?.[formName];
+        if(typeof inputCustomData !== 'string'){
+            inputCustomData = '';
+        }
 
         // ここで各フォームの内容を入れる
+        const existCustomerData = await prisma.configurationsCustomerData.count({
+            where:{
+                oCCId: oCC.id,
+                customerId: customerId
+            }
+        })
 
+        // 存在する場合はUPDATE、無ければcreate
+        if(existCustomerData > 0){
+            const updateCustomerData = await prisma.configurationsCustomerData.update({
+                where:{
+                    oCCId_customerId:{
+                        oCCId: oCC.id,
+                        customerId: customerId
+                    }
+                },
+                data:{
+                    configurationData: inputCustomData
+                }
+            })
 
+            console.log(updateCustomerData);
+
+            return {
+                success: true,
+                message: '更新に成功しました。',
+            };
+        }else{
+            const createCustomerData = await prisma.configurationsCustomerData.create({
+                data:{
+                    oCCId: oCC.id,
+                    customerId: customerId,
+                    configurationData: inputCustomData
+                }
+            })
+
+            console.log(createCustomerData);
+
+            return {
+                success: true,
+                message: '登録に成功しました。',
+            };
+        }
 
     })
 
-
-    // if (!validatedFields.success) {
-    //     return { errors: validatedFields.error.format() };
-    // }
-
-    // データの処理ロジック
+    // 全部やって問題なかったら戻す
+    return {
+        success: false,
+        message: '異常が発生しました。',
+    };
 }

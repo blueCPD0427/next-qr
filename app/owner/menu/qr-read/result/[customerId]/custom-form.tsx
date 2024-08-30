@@ -1,20 +1,18 @@
 'use client';
 
-import { useState } from "react";
 import { useFormState } from "react-dom";
 import { setCustomForm } from "../../actions";
 import TextCustomFormPage from "@/app/owner/menu/qr-read/result/[customerId]/text-form";
 import IntCustomFormPage from "@/app/owner/menu/qr-read/result/[customerId]/int-form";
 import BooleanCustomFormPage from "@/app/owner/menu/qr-read/result/[customerId]/boolean-form";
+import { SubmitButton } from "@/app/lib/component-parts/buttons";
 
 export default function CustomFormBase({oCClist,customerId}:{oCClist,customerId:string})
 {
-    const initialState = { message: null, errors: {} };
+    const initialState = {};
     const [state, dispatch] = useFormState(setCustomForm, initialState);
 
-    // なんとかしてこの値をsetCustomFormに送信する
-    console.log(customerId);
-
+    console.log(state);
 
     return (
         <form action={dispatch}>
@@ -32,9 +30,8 @@ export default function CustomFormBase({oCClist,customerId}:{oCClist,customerId:
                     }
                 })
             }
-            <button type="submit">
-                送信
-            </button>
+            <input type="hidden" name="customerId" value={customerId} />
+            <SubmitButton />
         </form>
     )
 }
