@@ -9,7 +9,7 @@ import clsx from "clsx";
 import { useRouter } from "next/navigation";
 import toast from "react-hot-toast";
 
-const initForm:OwnerAccountCreateForm = {
+let initForm:OwnerAccountCreateForm = {
     name: '',
     email: '',
     password: '',
@@ -32,7 +32,8 @@ function reducer(state:OwnerAccountCreateForm, action:Action) {
     }
 }
 
-export default function AccountForm(){
+
+export default function AccountForm({ownerId}:{ownerId?:string}){
 
     const initialState:OwnerAccountValidateStateInside = {};
 
@@ -50,6 +51,18 @@ export default function AccountForm(){
 
     // フォームの値処理関連
     const [formContents, dispatch] = useReducer(reducer, initForm);
+
+    // ownerIdの有無でCREATEかUPDATEか判断
+    let formType = 'create';
+    if(ownerId != undefined){
+        formType = 'update';
+        // updateだったらデータ取得してinitFormに上書き
+        // パスワードは反映させない
+        // パスワードはUPDATEの時は入力が無いときは変更しないようにする
+        // initForm.name = 'sample';
+    }
+
+
 
     function setFormValue(formName:string, formValue:string){
         dispatch({
@@ -129,7 +142,9 @@ export default function AccountForm(){
     return(
         <div className="flex items-center justify-center min-h-screen bg-green-100">
             <div className="bg-white p-8 rounded-lg shadow-md w-full max-w-2xl overflow-y-auto max-h-screen-80">
-                <h2 className="text-2xl font-bold mb-6 text-green-700">オーナーアカウント作成</h2>
+                <h2 className="text-2xl font-bold mb-6 text-green-700">
+                    オーナーアカウント{formType == 'create' ? '作成' : '更新'}
+                </h2>
                 <form onSubmit={formSubmit}>
                     <div className="mb-4">
                         <label className="block text-green-700 mb-2">

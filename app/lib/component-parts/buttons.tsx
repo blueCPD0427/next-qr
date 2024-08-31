@@ -1,10 +1,10 @@
 'use client';
 import { useFormState, useFormStatus } from "react-dom";
-import { LogoutAction } from "@/app/owner/account/actions";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faDoorOpen,faDoorClosed } from "@fortawesome/free-solid-svg-icons";
 import clsx from "clsx";
 import toast from "react-hot-toast";
+import { signOut } from "next-auth/react";
 
 export function LoginButton() {
     const { pending } = useFormStatus()
@@ -28,6 +28,17 @@ export function SubmitButton() {
     )
 }
 
+export async function LogOutAction() {
+    try {
+        await signOut({ redirect: false });
+        // サインアウト後に強制的にリダイレクトを実行しないとセッションが切れない
+        window.location.href = "/";
+        return true;
+    } catch (error) {
+        throw error;
+    }
+}
+
 function LogoutButton(){
     const { pending } = useFormStatus();
     return (
@@ -45,10 +56,9 @@ function LogoutButton(){
 }
 
 export function LogoutForm(){
-    const [state, logOutAction] = useFormState(LogoutAction, true);
+    const [state, logOutAction] = useFormState(LogOutAction, true);
     return (
-        <form
-            action={logOutAction}>
+        <form action={logOutAction} >
             <LogoutButton />
         </form>
     )

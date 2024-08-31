@@ -26,6 +26,5 @@ export default function Error({ error }: { error: Error & { digest?: string, cau
                 ホームに戻る
             </a>
         </div>
-        
     );
 }

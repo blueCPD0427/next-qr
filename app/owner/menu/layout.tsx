@@ -1,7 +1,13 @@
 import React from "react";
 import Link from "next/link";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faQrcode, faExpand, faUsers, faGear } from "@fortawesome/free-solid-svg-icons";
+import { faQrcode, faExpand, faUsers, faGear, faShop, faUserPen } from "@fortawesome/free-solid-svg-icons";
+import {
+    Accordion,
+    AccordionContent,
+    AccordionItem,
+    AccordionTrigger,
+} from "@/components/ui/accordion"
 
 export default function OwnerMenuLayout({
     children,
@@ -32,10 +38,26 @@ export default function OwnerMenuLayout({
                                 </Link>
                             </li>
                             <li className="py-2">
-                                <Link href={'/owner/menu/setting'}>
-                                <FontAwesomeIcon icon={faGear} className="mr-2 text-xl w-5" />
-                                    各種設定
-                                </Link>
+                                <Accordion type="single" collapsible>
+                                    <AccordionItem value="item-1">
+                                        <AccordionTrigger>
+                                            <FontAwesomeIcon icon={faGear} className="mr-2 text-xl w-5" />
+                                            各種設定
+                                        </AccordionTrigger>
+                                        <AccordionContent>
+                                            <Link href={'/owner/menu/setting/account'}>
+                                                <FontAwesomeIcon icon={faShop} className="mr-2 text-xl w-5" />
+                                                アカウント設定
+                                            </Link>
+                                        </AccordionContent>
+                                        <AccordionContent>
+                                            <Link href={'/owner/menu/setting/form'}>
+                                                <FontAwesomeIcon icon={faUserPen} className="mr-2 text-xl w-5" />
+                                                会員データ項目設定
+                                            </Link>
+                                        </AccordionContent>
+                                    </AccordionItem>
+                                </Accordion>
                             </li>
                         </ul>
                     </div>

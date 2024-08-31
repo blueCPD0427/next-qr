@@ -22,7 +22,7 @@ export default async function CustomerLayout({
             <div>
                 <header className="fixed top-0 left-0 w-full shadow-md z-50">
                     <div className="bg-blue-200 px-5 py-2 flex justify-between">
-                        <Link href={"/customer/menu"} className={`${dela.className} text-lg`}>
+                        <Link href={"/"} className={`${dela.className} text-lg`}>
                             <FontAwesomeIcon icon={faQrcode} />
                             QR君!!-会員サイト-
                             <FontAwesomeIcon icon={faQrcode} />
