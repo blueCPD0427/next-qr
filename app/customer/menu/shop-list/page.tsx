@@ -8,7 +8,7 @@ export default async function CustomerShopListPage()
     if(session?.user?.id != undefined){
         customerId = session.user.id;
     }
-    const connectedShopList = await prisma.ownertoCustomerRelations.findMany({
+    const connectedShopList = await prisma.ownerToCustomerRelations.findMany({
         select: {
             addressDisp: true,
             birthdayDisp: true,

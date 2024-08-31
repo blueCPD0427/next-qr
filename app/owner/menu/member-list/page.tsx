@@ -8,7 +8,7 @@ export default async function OwnerMemberListPage()
     if(session?.user?.id != undefined){
         ownerId = session.user.id;
     }
-    const connectedMemberList = await prisma.ownertoCustomerRelations.findMany({
+    const connectedMemberList = await prisma.ownerToCustomerRelations.findMany({
         select: {
             addressDisp: true,
             birthdayDisp: true,
@@ -42,6 +42,10 @@ export default async function OwnerMemberListPage()
                 break;
         }
     }
+
+    // 各会員の現在のカスタムデータをクリックしたら表示できるようにする
+    // 増えると画面が鬱陶しいから開閉式
+    // 簡単な検索フォームくらいあってもいいかもしんない
 
     return (
         <div className="bg-white rounded p-5 w-4/5">

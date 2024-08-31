@@ -2,6 +2,14 @@ import React from "react";
 import Link from "next/link";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faQrcode, faExpand, faUsers, faGear } from "@fortawesome/free-solid-svg-icons";
+import {
+    Accordion,
+    AccordionItem,
+    AccordionItemHeading,
+    AccordionItemButton,
+    AccordionItemPanel,
+} from 'react-accessible-accordion';
+import 'react-accessible-accordion/dist/fancy-example.css';
 
 export default function OwnerMenuLayout({
     children,
@@ -36,6 +44,16 @@ export default function OwnerMenuLayout({
                                 <FontAwesomeIcon icon={faGear} className="mr-2 text-xl w-5" />
                                     各種設定
                                 </Link>
+                            </li>
+                            <li className="py-2">
+                            <Accordion>
+                                <AccordionItem title="セクション1">
+                                    <p>コンテンツ1</p>
+                                </AccordionItem>
+                                <AccordionItem title="セクション2">
+                                    <p>コンテンツ2</p>
+                                </AccordionItem>
+                            </Accordion>
                             </li>
                         </ul>
                     </div>

@@ -6,13 +6,23 @@ import TextCustomFormPage from "@/app/owner/menu/qr-read/result/[customerId]/tex
 import IntCustomFormPage from "@/app/owner/menu/qr-read/result/[customerId]/int-form";
 import BooleanCustomFormPage from "@/app/owner/menu/qr-read/result/[customerId]/boolean-form";
 import { SubmitButton } from "@/app/lib/component-parts/buttons";
+import toast from "react-hot-toast";
 
 export default function CustomFormBase({oCClist,customerId}:{oCClist,customerId:string})
 {
     const initialState = {};
     const [state, dispatch] = useFormState(setCustomForm, initialState);
 
-    console.log(state);
+    if(state.success != undefined){
+        switch(true){
+            case state.success === true:
+                toast.success(state.message);
+                break;
+            case state.success === false:
+                toast.error(state.message);
+                break;
+        }
+    }
 
     return (
         <form action={dispatch}>

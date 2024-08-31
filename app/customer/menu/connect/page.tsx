@@ -12,7 +12,7 @@ async function ConnectedAccount(ownerId:string) {
         return false;
     }
 
-    const ConnectedData = await prisma.ownertoCustomerRelations.findMany({
+    const ConnectedData = await prisma.ownerToCustomerRelations.findMany({
         where: {
             AND:[
                 {ownerId: {contains: ownerId}},

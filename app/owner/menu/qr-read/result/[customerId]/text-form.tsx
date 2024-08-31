@@ -9,12 +9,14 @@ export default function TextCustomFormPage(
     }
 ){
 
+    const defaultValue = oCCData.confCustomerData != undefined ? oCCData.confCustomerData[0] : null;
+
     return(
         <div>
             <label htmlFor={oCCData.id}>
                 {oCCData.configurationTitle}
             </label>
-            <input id={oCCData.id} type="text" name={oCCData.id + '_text'} defaultValue={oCCData.confCustomerData?.configurationData} />
+            <input id={oCCData.id} type="text" name={oCCData.id + '_text'} defaultValue={defaultValue.configurationData} />
         </div>
     )
 }

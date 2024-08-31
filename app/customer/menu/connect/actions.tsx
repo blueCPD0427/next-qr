@@ -70,7 +70,7 @@ export async function connectCustomerToOwner(formData:CustomerConnectForm){
 
         try{
 
-            await prisma.ownertoCustomerRelations.create({
+            await prisma.ownerToCustomerRelations.create({
                 data:{
                     ownerId: ownerId,
                     customerId: customerId,

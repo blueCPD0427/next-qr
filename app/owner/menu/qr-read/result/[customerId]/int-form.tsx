@@ -9,12 +9,13 @@ export default function IntCustomFormPage(
     }
 ){
 
+    const defaultValue = oCCData.confCustomerData != undefined ? oCCData.confCustomerData[0] : null;
     return(
         <div>
             <label htmlFor={oCCData.id}>
                 {oCCData.configurationTitle}
             </label>
-            <input id={oCCData.id} type="text" name={oCCData.id + '_int'} />
+            <input id={oCCData.id} type="text" name={oCCData.id + '_int'} defaultValue={defaultValue.configurationData} />
         </div>
     )
 }
