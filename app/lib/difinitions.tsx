@@ -6,7 +6,8 @@ export interface OwnerData {
     address: string
 }
 
-export interface OwnerAccountCreateForm {
+export interface OwnerAccountForm {
+    id?: string
     name: string
     email: string
     password: string

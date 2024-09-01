@@ -6,7 +6,7 @@ import prisma from "@/app/lib/prisma";
 import bcrypt from 'bcrypt';
 import { redirect } from "next/navigation";
 import { isRedirectError } from "next/dist/client/components/redirect";
-import { OwnerAccountCreateForm } from "@/app/lib/difinitions";
+import { OwnerAccountForm } from "@/app/lib/difinitions";
 
 // ログイン認証
 export async function authenticate(prevState: boolean, formData: FormData) {
@@ -111,7 +111,7 @@ export type OwnerAccountValidateStateInside = {
     address?: {_errors?: string[]};
 }
 
-export async function createOwnerAccountApi(formData: OwnerAccountCreateForm){
+export async function createOwnerAccountApi(formData: OwnerAccountForm){
 
     try{
         const validatedFields = await CreateOwnerAccountRefined.parseAsync({
@@ -164,4 +164,27 @@ export async function createOwnerAccountApi(formData: OwnerAccountCreateForm){
     // revalidatePath('/owner/account/create');
     // redirect('/owner/login');
 
+}
+
+export async function getEditOwnerData(ownerId:string)
+{
+    try{
+        const ownerData = await prisma.owners.findFirst({
+            where:{
+                id: ownerId
+            },
+            select:{
+                id:true,
+                name:true,
+                email:true,
+                postCode:true,
+                address:true,
+            }
+        })
+
+        return ownerData;
+    }catch(error){
+        console.error(error);
+        return {};
+    }
 }

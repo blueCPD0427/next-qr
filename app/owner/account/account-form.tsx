@@ -1,15 +1,16 @@
 'use client';
-import React, { useState, useReducer } from "react";
+import React, { useState, useReducer, useEffect } from "react";
 import { getAddressFromPostCode } from "@/app/lib/actions/action";
 import { convertReplaceText,convertToHalfNumber } from "@/app/lib/actions/convert";
 import { isHalfNumeric } from "@/app/lib/actions/judge";
-import { OwnerAccountCreateForm } from "@/app/lib/difinitions";
+import { OwnerAccountForm } from "@/app/lib/difinitions";
 import { OwnerAccountValidateStateInside } from "@/app/owner/account/actions";
 import clsx from "clsx";
 import { useRouter } from "next/navigation";
 import toast from "react-hot-toast";
+import { getEditOwnerData } from "@/app/owner/account/actions";
 
-let initForm:OwnerAccountCreateForm = {
+let initForm:OwnerAccountForm = {
     name: '',
     email: '',
     password: '',
@@ -18,9 +19,9 @@ let initForm:OwnerAccountCreateForm = {
     address: ''
 }
 
-type Action = { type: 'SET_FIELD'; field: keyof OwnerAccountCreateForm; value: string };
+type Action = { type: 'SET_FIELD'; field: keyof OwnerAccountForm; value: string };
 
-function reducer(state:OwnerAccountCreateForm, action:Action) {
+function reducer(state:OwnerAccountForm, action:Action) {
     switch (action.type) {
         case 'SET_FIELD':
             return {
@@ -33,7 +34,7 @@ function reducer(state:OwnerAccountCreateForm, action:Action) {
 }
 
 
-export default function AccountForm({ownerId}:{ownerId?:string}){
+export default function AccountForm({editOwnerData}:{editOwnerData?:OwnerAccountForm}){
 
     const initialState:OwnerAccountValidateStateInside = {};
 
@@ -54,12 +55,15 @@ export default function AccountForm({ownerId}:{ownerId?:string}){
 
     // ownerIdの有無でCREATEかUPDATEか判断
     let formType = 'create';
-    if(ownerId != undefined){
+    if(editOwnerData != undefined){
         formType = 'update';
-        // updateだったらデータ取得してinitFormに上書き
-        // パスワードは反映させない
-        // パスワードはUPDATEの時は入力が無いときは変更しないようにする
-        // initForm.name = 'sample';
+
+        // 初期値をセット
+        initForm.id = editOwnerData.id;
+        initForm.name = editOwnerData.name;
+        initForm.email = editOwnerData.email;
+        initForm.postCode = editOwnerData.postCode;
+        initForm.address = editOwnerData.address;
     }
 
 
@@ -67,7 +71,7 @@ export default function AccountForm({ownerId}:{ownerId?:string}){
     function setFormValue(formName:string, formValue:string){
         dispatch({
             type: 'SET_FIELD',
-            field: formName as keyof OwnerAccountCreateForm,
+            field: formName as keyof OwnerAccountForm,
             value: formValue
         });
     }
@@ -120,22 +124,46 @@ export default function AccountForm({ownerId}:{ownerId?:string}){
     const formSubmit = async (e: { preventDefault: () => void; }) => {
         e.preventDefault();
         setSendPending(true);
-        const response = await fetch('/api/owner-account-create', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(formContents),
-        });
-        const result = await response.json();
-        if(result.data.success === false){
-            toast.error('アカウントの登録に失敗しました。');
-            setErrorField(result.data.errors);
-            setSendPending(false);
+
+        if(formType === 'create'){
+            const response = await fetch('/api/owner-account-create', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(formContents),
+            });
+            const result = await response.json();
+            if(result.data.success === false){
+                toast.error('アカウントの登録に失敗しました。');
+                setErrorField(result.data.errors);
+                setSendPending(false);
+            }else{
+                toast.success('アカウントの登録に成功しました。\n登録したアカウントでログインしてください');
+                router.push('/owner/login');
+            }
+        }else if(formType === 'update') {
+            const response = await fetch('/api/owner-account-update', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(formContents),
+            });
+            const result = await response.json();
+            console.log(result);
+            // if(result.data.success === false){
+            //     toast.error('アカウントの登録に失敗しました。');
+            //     setErrorField(result.data.errors);
+            //     setSendPending(false);
+            // }else{
+            //     toast.success('アカウントの登録に成功しました。\n登録したアカウントでログインしてください');
+            //     router.push('/owner/login');
+            // }
         }else{
-            toast.success('アカウントの登録に成功しました。\n登録したアカウントでログインしてください');
-            router.push('/owner/login');
+            router.push('/404');
         }
+
     };
 
 
