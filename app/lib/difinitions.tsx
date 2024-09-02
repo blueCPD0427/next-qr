@@ -10,10 +10,10 @@ export interface OwnerAccountForm {
     id?: string
     name: string
     email: string
-    password: string
-    confirmPassword: string
     postCode: string
     address: string
+    password?: string
+    confirmPassword?: string
 }
 
 export interface CustomerAccountCreateForm {

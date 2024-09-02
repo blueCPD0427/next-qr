@@ -151,15 +151,14 @@ export default function AccountForm({editOwnerData}:{editOwnerData?:OwnerAccount
                 body: JSON.stringify(formContents),
             });
             const result = await response.json();
-            console.log(result);
-            // if(result.data.success === false){
-            //     toast.error('アカウントの登録に失敗しました。');
-            //     setErrorField(result.data.errors);
-            //     setSendPending(false);
-            // }else{
-            //     toast.success('アカウントの登録に成功しました。\n登録したアカウントでログインしてください');
-            //     router.push('/owner/login');
-            // }
+            if(result.data.success === false){
+                toast.error('アカウントの更新に失敗しました。');
+                setErrorField(result.data.errors);
+                setSendPending(false);
+            }else{
+                toast.success('アカウントの更新に成功しました。');
+                setSendPending(false);
+            }
         }else{
             router.push('/404');
         }
@@ -268,6 +267,12 @@ export default function AccountForm({editOwnerData}:{editOwnerData?:OwnerAccount
                             ))
                         }
                     </div>
+                    {
+                        formType == 'update' &&
+                        <div className="text-red-500 font-bold">
+                            パスワードの変更が必要な場合のみ以下を入力してください
+                        </div>
+                    }
                     <div className="mb-4">
                         <label className="block text-green-700 mb-2">
                             パスワード

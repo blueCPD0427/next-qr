@@ -37,7 +37,8 @@ export async function LogoutAction() {
 
 // オーナーアカウントスキーマ
 const OwnerAccountSchema = z.object({
-    userId: z.number(),
+    id: z.string()
+            .min(1,{message: "システムエラーが発生しました。"}),
     name: z.string()
             .min(1,{message: "名前の入力は必須です。"}),
     postCode: z.string()
@@ -57,8 +58,8 @@ const OwnerAccountSchema = z.object({
                     .max(100,{message: "確認パスワードは100文字以内で入力して下さい。"}),
 })
 
-// Createの際は「userId」の検証は不要なので、ここで一旦除外
-const CreateOwnerAccount = OwnerAccountSchema.omit({userId: true});
+// Createの際は「id」の検証は不要なので、ここで一旦除外
+const CreateOwnerAccount = OwnerAccountSchema.omit({id: true});
 
 // omitを使用する場合、refineを使えないため、ここで改めてrefineを使用した状態のオブジェクトを用意する
 const CreateOwnerAccountRefined =
@@ -80,7 +81,7 @@ const CreateOwnerAccountRefined =
             if(duplicateEmail){
                 ctx.addIssue({
                     code: z.ZodIssueCode.custom,
-                    message: "登録済みのメールアドレスです。",
+                    message: "メールアドレスを再確認してください。",
                     path:["email"]
                 })
             }
@@ -187,4 +188,143 @@ export async function getEditOwnerData(ownerId:string)
         console.error(error);
         return {};
     }
+}
+
+export async function updateOwnerAccountApi(formData: OwnerAccountForm){
+
+    // パスワードの入力があればバリデーションにパスワードの項目を追加する
+    let existPassword = true;
+    let UpdateOwnerAccountRefined = null;
+    if(formData.password != ''){
+        UpdateOwnerAccountRefined = OwnerAccountSchema
+        .refine(
+            (data) => data.password != '' && data.confirmPassword != '' && data.password === data.confirmPassword, {
+                message: "パスワードと確認パスワードの内容が異なっています。",
+                path:["confirmPassword"]
+            }
+        )
+        .superRefine(
+            async (data, ctx) => {
+                const duplicateEmail = await prisma.owners.findFirst({
+                    where:{
+                        email: data.email,
+                        id:{
+                            not:data.id
+                        }
+                    }
+                })
+
+                if(duplicateEmail){
+                    ctx.addIssue({
+                        code: z.ZodIssueCode.custom,
+                        message: "メールアドレスを再確認してください。",
+                        path:["email"]
+                    })
+                }
+            }
+        );
+    }else{
+        // パスワードの入力が無いのでパスワードのバリデーションをオミット
+        const OmitPasswordSchema = OwnerAccountSchema.omit({password: true,confirmPassword: true});
+
+        UpdateOwnerAccountRefined = OmitPasswordSchema
+        .superRefine(
+            async (data, ctx) => {
+                const duplicateEmail = await prisma.owners.findFirst({
+                    where:{
+                        email: data.email,
+                        id:{
+                            not:data.id
+                        }
+                    }
+                })
+
+                if(duplicateEmail){
+                    ctx.addIssue({
+                        code: z.ZodIssueCode.custom,
+                        message: "メールアドレスを再確認してください。",
+                        path:["email"]
+                    })
+                }
+            }
+        );
+
+        // パスワードの入力フラグをOFF
+        existPassword = false;
+    }
+
+    try{
+        const validatedFields = await UpdateOwnerAccountRefined.parseAsync({
+            name: formData.name,
+            email: formData.email,
+            password: formData.password,
+            confirmPassword: formData.confirmPassword,
+            postCode: formData.postCode,
+            address: formData.address,
+        });
+
+        const { name, postCode, address, email } = validatedFields;
+
+        const convertPostCode = Number(postCode);
+
+        try{
+
+            if(existPassword === true){
+                const password = formData.password != undefined ? formData.password : '';
+                if(password == ''){
+                    return {
+                        success: false,
+                        message: 'アカウントの更新に失敗しました。',
+                    }
+                }
+
+
+                const hashedPassword = await bcrypt.hash(password, 10);
+
+                await prisma.owners.update({
+                    where:{
+                        id: formData.id
+                    },
+                    data:{
+                        name: name,
+                        postCode: convertPostCode,
+                        address: address,
+                        email: email,
+                        password: hashedPassword,
+                    }
+                })
+            }else{
+                await prisma.owners.update({
+                    where:{
+                        id: formData.id
+                    },
+                    data:{
+                        name: name,
+                        postCode: convertPostCode,
+                        address: address,
+                        email: email
+                    }
+                })
+            }
+        }catch(error){
+            return {
+                success: false,
+                message: 'アカウントの更新に失敗しました。',
+            }
+        }
+
+        /**
+         * オーナーアカウントの作成に成功したら、
+         * 「OwnersCustomConfigurations」テーブルにデフォルトの設定を作成しておく
+         * デフォルトは設定名「ポイント」、制約タイプは「int」
+         */
+
+    } catch(error){
+        if (error instanceof z.ZodError) {
+            return { success: false, errors: error.format() };
+        }
+    }
+
+    console.log('api success!!!!!');
+    return { success: true };
 }

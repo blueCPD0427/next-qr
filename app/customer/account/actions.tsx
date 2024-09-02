@@ -90,7 +90,7 @@ const CreateCustomerAccountRefined =
             if(duplicateEmail){
                 ctx.addIssue({
                     code: z.ZodIssueCode.custom,
-                    message: "登録済みのメールアドレスです。",
+                    message: "メールアドレスを再確認してください。",
                     path:["email"]
                 })
             }
@@ -167,6 +167,63 @@ export async function createCustomerAccountApi(formData: CustomerAccountCreateFo
 
     console.log('api success!!!!!');
     return { success: true };
+
+    // revalidatePath('/customer/account/create');
+    // redirect('/customer/login');
+
+}
+
+export async function updateCustomerAccount(formData: CustomerAccountCreateForm){
+
+    // try{
+    //     const validatedFields = await CreateCustomerAccountRefined.parseAsync({
+    //         lastName: formData.lastName,
+    //         firstName: formData.firstName,
+    //         sex: formData.sex,
+    //         email: formData.email,
+    //         password: formData.password,
+    //         confirmPassword: formData.confirmPassword,
+    //         postCode: formData.postCode,
+    //         address: formData.address,
+    //         birthday: formData.birthdayY+'-'+(lPadNum(formData.birthdayM, 2))+'-'+(lPadNum(formData.birthdayD, 2)),
+    //     });
+
+    //     const { lastName, firstName, sex, postCode, address, email, password, birthday } = validatedFields;
+
+    //     const hashedPassword = await bcrypt.hash(password, 10);
+    //     const convertPostCode = Number(postCode);
+    //     const convertBirthday = new Date(birthday+' 00:00:00');
+
+    //     try{
+
+    //         await prisma.customers.create({
+    //             data:{
+    //                 lastName: lastName,
+    //                 firstName: firstName,
+    //                 sex: sex,
+    //                 postCode: convertPostCode,
+    //                 address: address,
+    //                 email: email,
+    //                 password: hashedPassword,
+    //                 birthday: convertBirthday,
+    //             }
+    //         })
+    //     }catch(error){
+    //         console.log(error);
+    //         return {
+    //             success: false,
+    //             message: 'アカウントの新規作成に失敗しました。',
+    //         }
+    //     }
+
+    // } catch(error){
+    //     if (error instanceof z.ZodError) {
+    //         return { success: false, errors: error.format() };
+    //     }
+    // }
+
+    // console.log('api success!!!!!');
+    // return { success: true };
 
     // revalidatePath('/customer/account/create');
     // redirect('/customer/login');
