@@ -255,11 +255,12 @@ export async function updateOwnerAccountApi(formData: OwnerAccountForm){
 
     try{
         const validatedFields = await UpdateOwnerAccountRefined.parseAsync({
+            id: formData.id,
             name: formData.name,
             email: formData.email,
             password: formData.password,
             confirmPassword: formData.confirmPassword,
-            postCode: formData.postCode,
+            postCode: String(formData.postCode),
             address: formData.address,
         });
 
@@ -307,6 +308,7 @@ export async function updateOwnerAccountApi(formData: OwnerAccountForm){
                 })
             }
         }catch(error){
+            console.error(error);
             return {
                 success: false,
                 message: 'アカウントの更新に失敗しました。',
@@ -320,6 +322,7 @@ export async function updateOwnerAccountApi(formData: OwnerAccountForm){
          */
 
     } catch(error){
+        console.error(error);
         if (error instanceof z.ZodError) {
             return { success: false, errors: error.format() };
         }

@@ -8,7 +8,6 @@ import { OwnerAccountValidateStateInside } from "@/app/owner/account/actions";
 import clsx from "clsx";
 import { useRouter } from "next/navigation";
 import toast from "react-hot-toast";
-import { getEditOwnerData } from "@/app/owner/account/actions";
 
 let initForm:OwnerAccountForm = {
     name: '',

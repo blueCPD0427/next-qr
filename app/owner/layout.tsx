@@ -28,15 +28,9 @@ export default async function OwnerLayout({
                             <FontAwesomeIcon icon={faQrcode} />
                         </Link>
                         {
-                            session != null && session.user?.type == 'owner'
+                            session != null
                             &&
                             <div className="flex align-middle">
-                                <div className="mr-5 p-1">
-                                    <span className="font-bold">
-                                        {session.user?.name}
-                                    </span>
-                                    様
-                                </div>
                                 <LogoutForm />
                             </div>
                         }

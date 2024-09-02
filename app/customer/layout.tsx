@@ -28,15 +28,9 @@ export default async function CustomerLayout({
                             <FontAwesomeIcon icon={faQrcode} />
                         </Link>
                         {
-                            session != null && session.user?.type == 'customer'
+                            session != null
                             &&
                             <div className="flex align-middle">
-                                <div className="mr-5 p-1">
-                                    <span className="font-bold">
-                                        {session.user?.lastName} {session.user?.firstName}
-                                    </span>
-                                    様
-                                </div>
                                 <LogoutForm />
                             </div>
                         }
