@@ -1,6 +1,14 @@
 import { auth } from "@/auth";
 import prisma from "@/app/lib/prisma";
 import OwnerCustomForm from "./owner-custome-form";
+import {
+    Table,
+    TableBody,
+    TableCell,
+    TableHead,
+    TableHeader,
+    TableRow,
+} from "@/components/ui/table"
 
 
 export default async function SettingFormPage()
@@ -28,30 +36,30 @@ export default async function SettingFormPage()
 
     return (
         <div>
-            <div>
+            <div className="mb-5">
                 <div>
                     登録済みの項目
                 </div>
-                <div className="flex w-1/3">
-                    <div className="w-1/2">
-                        データ名
-                    </div>
-                    <div className="w-1/2">
-                        データの形式
-                    </div>
+                <div className="bg-white rounded p-3 w-1/3">
+                    <Table>
+                        <TableHeader>
+                            <TableRow>
+                                <TableHead className="w-1/2">データ名</TableHead>
+                                <TableHead className="w-1/2">データの形式</TableHead>
+                            </TableRow>
+                        </TableHeader>
+                        <TableBody>
+                            {
+                                oCClist.map((oCC)=>(
+                                    <TableRow key={oCC.id}>
+                                        <TableCell className="w-1/2">{oCC.configurationTitle}</TableCell>
+                                        <TableCell className="w-1/2">{oCCTypes[oCC.configurationConstraint]}</TableCell>
+                                    </TableRow>
+                                ))
+                            }
+                        </TableBody>
+                    </Table>
                 </div>
-                {
-                    oCClist.map((oCC)=>(
-                        <div key={oCC.id} className="flex w-1/3">
-                            <div className="w-1/2">
-                                {oCC.configurationTitle}
-                            </div>
-                            <div className="w-1/2">
-                                {oCCTypes[oCC.configurationConstraint]}
-                            </div>
-                        </div>
-                    ))
-                }
             </div>
             <div className="mt-5">
                 <div>

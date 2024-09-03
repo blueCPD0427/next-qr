@@ -1,5 +1,13 @@
 import { auth } from "@/auth";
 import prisma from "@/app/lib/prisma";
+import {
+    Table,
+    TableBody,
+    TableCell,
+    TableHead,
+    TableHeader,
+    TableRow,
+} from "@/components/ui/table"
 
 export default async function OwnerMemberListPage()
 {
@@ -49,43 +57,41 @@ export default async function OwnerMemberListPage()
 
     return (
         <div className="bg-white rounded p-5 w-4/5">
-            <div className="flex">
-                <div className="w-1/5">
-                    名前
-                </div>
-                <div className="w-1/5">
-                    性別
-                </div>
-                <div className="w-2/5">
-                    住所
-                </div>
-                <div className="w-1/5">
-                    生年月日
-                </div>
-            </div>
-            {
-                connectedMemberList &&
-                connectedMemberList.map((value) => (
-                    <div key={value.customer.userId} className="flex">
-                        <div className="w-1/5">
-                            {value.customer.lastName}
-                            {value.customer.firstName}
-                        </div>
-                        <div className="w-1/5">
-                            {
-                                value?.customer?.sex &&
-                                customerSex(value.customer.sex)
-                            }
-                        </div>
-                        <div className="w-2/5">
-                            {value.addressDisp === true ? value.customer.postCode + ' ' + value.customer.address : '住所非公開'}
-                        </div>
-                        <div className="w-1/5">
-                            {value.birthdayDisp === true ? String(value.customer.birthday) : '生年月日非公開'}
-                        </div>
-                    </div>
-                ))
-            }
+            <Table>
+                <TableHeader>
+                    <TableRow>
+                        <TableHead className="w-1/5">名前</TableHead>
+                        <TableHead className="w-1/5">性別</TableHead>
+                        <TableHead className="w-2/5">住所</TableHead>
+                        <TableHead className="w-1/5">生年月日</TableHead>
+                    </TableRow>
+                </TableHeader>
+                <TableBody>
+                    {
+                        connectedMemberList &&
+                        connectedMemberList.map((value) => (
+                            <TableRow key={value.customer.userId}>
+                                <TableCell className="w-1/5">
+                                    {value.customer.lastName}
+                                    {value.customer.firstName}
+                                </TableCell>
+                                <TableCell className="w-1/5">
+                                    {
+                                        value?.customer?.sex &&
+                                        customerSex(value.customer.sex)
+                                    }
+                                </TableCell>
+                                <TableCell className="w-2/5">
+                                    {value.addressDisp === true ? value.customer.postCode + ' ' + value.customer.address : '住所非公開'}
+                                </TableCell>
+                                <TableCell className="w-1/5">
+                                    {value.birthdayDisp === true ? String(value.customer.birthday) : '生年月日非公開'}
+                                </TableCell>
+                            </TableRow>
+                        ))
+                    }
+                </TableBody>
+            </Table>
         </div>
     );
 }
