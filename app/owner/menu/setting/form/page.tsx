@@ -1,6 +1,7 @@
 import { auth } from "@/auth";
 import prisma from "@/app/lib/prisma";
-import { boolean } from "zod";
+import OwnerCustomForm from "./owner-custome-form";
+
 
 export default async function SettingFormPage()
 {
@@ -58,6 +59,9 @@ export default async function SettingFormPage()
                     <span className="text-sm font-bold">
                         ※最大5つまで
                     </span>
+                </div>
+                <div>
+                    <OwnerCustomForm oCCTypes={oCCTypes} />
                 </div>
             </div>
         </div>
