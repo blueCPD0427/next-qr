@@ -1,6 +1,7 @@
 'use server';
 
 import { z } from 'zod';
+import prisma from '../prisma';
 
 // ここのバリデーションメッセージを取り出す方法を探す
 const FormSchema = z.object({
@@ -29,4 +30,22 @@ export async function getAddressFromPostCode(postCode: string){
         return false;
     }
 
+}
+
+export async function existOwner(ownerId:string){
+    try{
+        const existOwner = await prisma.owners.findFirst({
+            where:{
+                id: ownerId
+            }
+        })
+
+        if(!existOwner){
+            return false;
+        }else{
+            return true;
+        }
+    }catch(error){
+        return true;
+    }
 }

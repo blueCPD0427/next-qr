@@ -47,3 +47,9 @@ export interface OCCListInside {
         configurationData?: string,
     }
 }
+
+export interface OwnerCustomForm {
+    ownerId: string,
+    configurationTitle: string,
+    configurationConstraint: string,
+}
