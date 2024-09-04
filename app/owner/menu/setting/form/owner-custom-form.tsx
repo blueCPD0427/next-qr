@@ -47,7 +47,7 @@ function reducer(state:OwnerCustomForm, action:Action) {
     }
 }
 
-export default function OwnerOwnerCustomForm({oCCTypes,ownerId}:{oCCTypes:{
+export default function OwnerCustomFormComponent({oCCTypes,ownerId}:{oCCTypes:{
     text: string,
     int: string,
     boolean: string,
@@ -76,7 +76,7 @@ ownerId:string})
         setFormValue('configurationConstraint', value);
     }
 
-    async function displayClick(){
+    async function ClickRegister(){
         setSendPending(true);
         // データが空だったらAPIに渡す前にエラー出す
         if(formContents.configurationTitle == ''){
@@ -121,11 +121,11 @@ ownerId:string})
             <div className="flex w-3/4 items-end">
                 <div className="w-1/2 mr-3">
                     <Label htmlFor="title">データ名</Label>
-                    <Input type="text" id="title" name="configurationTitle" onChange={formChange} />
+                    <Input type="text" id="title" name="configurationTitle" onChange={formChange} value={formContents.configurationTitle}/>
                 </div>
                 <div className="mr-3">
                     <Label>データの形式</Label>
-                    <Select name="configurationConstraint"  onValueChange={SelectChange}>
+                    <Select name="configurationConstraint" onValueChange={SelectChange} value={formContents.configurationConstraint}>
                         <SelectTrigger className="w-[180px]">
                             <SelectValue />
                         </SelectTrigger>
@@ -165,7 +165,7 @@ ownerId:string})
                             <AlertDialogCancel>
                                 いいえ
                             </AlertDialogCancel>
-                            <AlertDialogAction onClick={displayClick} className="bg-green-500 hover:bg-green-700">
+                            <AlertDialogAction onClick={ClickRegister} className="bg-green-500 hover:bg-green-700">
                                 はい
                             </AlertDialogAction>
                         </AlertDialogFooter>

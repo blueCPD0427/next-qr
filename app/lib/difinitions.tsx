@@ -53,3 +53,8 @@ export interface OwnerCustomForm {
     configurationTitle: string,
     configurationConstraint: string,
 }
+
+export interface DeleteOwnerCustomForm {
+    formId: string,
+    ownerId: string,
+}

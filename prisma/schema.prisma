@@ -118,8 +118,8 @@ model ConfigurationsCustomerData {
   createdAt           DateTime @default(now()) @map(name: "created_at")
   updatedAt           DateTime @updatedAt @map(name: "updated_at")
 
-  customConfiguration OwnersCustomConfigurations @relation(fields: [oCCId], references: [id])
-  customer            Customers @relation(fields: [customerId], references: [id])
+  customConfiguration OwnersCustomConfigurations @relation(fields: [oCCId], references: [id], onDelete: Cascade)
+  customer            Customers @relation(fields: [customerId], references: [id], onDelete: Cascade)
 
   @@id([oCCId, customerId])
   @@map(name: "conf_customer_data")
