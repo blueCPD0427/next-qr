@@ -1,4 +1,4 @@
-import { CustomerAccountCreateForm } from "@/app/lib/difinitions";
+import { CustomerAccountForm } from "@/app/lib/difinitions";
 import { createCustomerAccountApi } from "@/app/customer/account/actions";
 
 export async function POST(request:Request) {
@@ -11,7 +11,7 @@ export async function POST(request:Request) {
     });
 }
 
-async function processData(body:CustomerAccountCreateForm) {
+async function processData(body:CustomerAccountForm) {
 
     // ここに非同期処理を記述
     const res = await createCustomerAccountApi(body);

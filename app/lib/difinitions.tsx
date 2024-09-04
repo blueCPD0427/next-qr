@@ -16,7 +16,7 @@ export interface OwnerAccountForm {
     confirmPassword?: string
 }
 
-export interface CustomerAccountCreateForm {
+export interface CustomerAccountForm {
     lastName: string
     firstName: string
     sex?: string

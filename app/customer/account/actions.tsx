@@ -3,7 +3,7 @@ import { signIn,signOut } from "@/auth";
 import { z } from "zod";
 import prisma from "@/app/lib/prisma";
 import bcrypt from 'bcrypt';
-import { CustomerAccountCreateForm } from "@/app/lib/difinitions";
+import { CustomerAccountForm } from "@/app/lib/difinitions";
 import { lPadNum } from "@/app/lib/actions/convert";
 import { isRedirectError } from "next/dist/client/components/redirect";
 import { redirect } from "next/navigation";
@@ -116,7 +116,7 @@ export type CustomerAccountValidateStateInside = {
     birthday?: {_errors?: string[]};
 }
 
-export async function createCustomerAccountApi(formData: CustomerAccountCreateForm){
+export async function createCustomerAccountApi(formData: CustomerAccountForm){
 
     try{
         const validatedFields = await CreateCustomerAccountRefined.parseAsync({
@@ -173,7 +173,52 @@ export async function createCustomerAccountApi(formData: CustomerAccountCreateFo
 
 }
 
-export async function updateCustomerAccount(formData: CustomerAccountCreateForm){
+export async function getEditCustomerData(customerId:string)
+{
+    try{
+        const customerData = await prisma.customers.findFirst({
+            where:{
+                id: customerId
+            },
+            select:{
+                id:true,
+                lastName:true,
+                firstName:true,
+                sex:true,
+                email:true,
+                postCode:true,
+                address:true,
+                birthday:true,
+            }
+        })
+
+        if(customerData == null){
+            return {};
+        }
+
+        const convertBirthday = new Date(customerData.birthday);
+
+        const returnData = {
+            id:customerData.id,
+            lastName:customerData.lastName,
+            firstName:customerData.firstName,
+            sex:customerData.sex,
+            email:customerData.email,
+            postCode:customerData.postCode,
+            address:customerData.address,
+            birthdayY:convertBirthday.getFullYear(),
+            birthdayM:convertBirthday.getMonth() + 1,
+            birthdayD:convertBirthday.getDate(),
+        }
+
+        return returnData;
+    }catch(error){
+        console.error(error);
+        return {};
+    }
+}
+
+export async function updateCustomerAccount(formData: CustomerAccountForm){
 
     // try{
     //     const validatedFields = await CreateCustomerAccountRefined.parseAsync({

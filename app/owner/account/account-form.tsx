@@ -52,7 +52,7 @@ export default function AccountForm({editOwnerData}:{editOwnerData?:OwnerAccount
     // フォームの値処理関連
     const [formContents, dispatch] = useReducer(reducer, initForm);
 
-    // ownerIdの有無でCREATEかUPDATEか判断
+    // editOwnerDataの有無でCREATEかUPDATEか判断
     let formType = 'create';
     if(editOwnerData != undefined){
         formType = 'update';
@@ -156,6 +156,10 @@ export default function AccountForm({editOwnerData}:{editOwnerData?:OwnerAccount
                 setSendPending(false);
             }else{
                 toast.success('アカウントの更新に成功しました。');
+
+                // パスワード欄を空にする
+                setFormValue('password', '');
+                setFormValue('confirmPassword', '');
                 setSendPending(false);
             }
         }else{

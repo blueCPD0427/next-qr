@@ -11,6 +11,9 @@ export default async function SettingOwnerAccountPage()
         redirect('/404');
     }
     const editOwnerData = await getEditOwnerData(ownerId);
+    if(editOwnerData == null){
+        redirect('/404');
+    }
 
     return (
         <div>

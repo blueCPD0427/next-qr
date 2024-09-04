@@ -1,15 +1,15 @@
 'use client';
-import React, { useState, useReducer } from "react";
+import React, { useState, useReducer,useEffect } from "react";
 import { getAddressFromPostCode } from "@/app/lib/actions/action";
 import { convertReplaceText,convertToHalfNumber } from "@/app/lib/actions/convert";
 import { isHalfNumeric } from "@/app/lib/actions/judge";
-import { CustomerAccountCreateForm } from "@/app/lib/difinitions";
+import { CustomerAccountForm } from "@/app/lib/difinitions";
 import { CustomerAccountValidateStateInside } from "@/app/customer/account/actions";
 import clsx from "clsx";
 import { useRouter } from "next/navigation";
 import toast from "react-hot-toast";
 
-const initForm:CustomerAccountCreateForm = {
+let initForm:CustomerAccountForm = {
     lastName: '',
     firstName: '',
     sex: '',
@@ -23,9 +23,9 @@ const initForm:CustomerAccountCreateForm = {
     birthdayD: ''
 }
 
-type Action = { type: 'SET_FIELD'; field: keyof CustomerAccountCreateForm; value: string };
+type Action = { type: 'SET_FIELD'; field: keyof CustomerAccountForm; value: string };
 
-function reducer(state:CustomerAccountCreateForm, action:Action) {
+function reducer(state:CustomerAccountForm, action:Action) {
     switch (action.type) {
         case 'SET_FIELD':
             return {
@@ -37,7 +37,7 @@ function reducer(state:CustomerAccountCreateForm, action:Action) {
     }
 }
 
-export default function AccountForm(){
+export default function AccountForm({editCustomerData}:{editCustomerData?:CustomerAccountForm}){
 
     const initialState:CustomerAccountValidateStateInside = {};
 
@@ -68,10 +68,37 @@ export default function AccountForm(){
     // フォームの値処理関連
     const [formContents, dispatch] = useReducer(reducer, initForm);
 
+
+    // editCustomerDataの有無でCREATEかUPDATEか判断
+    let formType = 'create';
+    if(editCustomerData != undefined){
+        formType = 'update';
+
+        // 初期値をセット
+        initForm.lastName = editCustomerData.lastName;
+        initForm.firstName = editCustomerData.firstName;
+        initForm.sex = editCustomerData.sex;
+        initForm.email = editCustomerData.email;
+        initForm.password = editCustomerData.password;
+        initForm.confirmPassword = editCustomerData.confirmPassword;
+        initForm.postCode = editCustomerData.postCode;
+        initForm.address = editCustomerData.address;
+        initForm.birthdayY = editCustomerData.birthdayY;
+        initForm.birthdayM = editCustomerData.birthdayM;
+        initForm.birthdayD = editCustomerData.birthdayD;
+
+        useEffect(()=> {
+            if(initForm.sex != null){
+                setSelectedSexValue(initForm.sex);
+            }
+        },[initForm])
+    }
+
+
     function setFormValue(formName:string, formValue:string){
         dispatch({
             type: 'SET_FIELD',
-            field: formName as keyof CustomerAccountCreateForm,
+            field: formName as keyof CustomerAccountForm,
             value: formValue
         });
     }
@@ -124,22 +151,51 @@ export default function AccountForm(){
     const formSubmit = async (e: { preventDefault: () => void; }) => {
         e.preventDefault();
         setSendPending(true);
-        const response = await fetch('/api/customer-account-create', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(formContents),
-        });
-        const result = await response.json();
-        if(result.data.success === false){
-            toast.error('アカウントの登録に失敗しました。');
-            setErrorField(result.data.errors);
-            setSendPending(false);
+
+        if(formType === 'create'){
+            const response = await fetch('/api/customer-account-create', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(formContents),
+            });
+            const result = await response.json();
+            if(result.data.success === false){
+                toast.error('アカウントの登録に失敗しました。');
+                setErrorField(result.data.errors);
+                setSendPending(false);
+            }else{
+                toast.success('アカウントの登録に成功しました。\n登録したアカウントでログインしてください');
+                router.push('/customer/login');
+            }
+        }else if(formType === 'update') {
+            // 更新の処理を実装する
+            // const response = await fetch('/api/owner-account-update', {
+            //     method: 'POST',
+            //     headers: {
+            //         'Content-Type': 'application/json',
+            //     },
+            //     body: JSON.stringify(formContents),
+            // });
+            // const result = await response.json();
+            // if(result.data.success === false){
+            //     toast.error('アカウントの更新に失敗しました。');
+            //     setErrorField(result.data.errors);
+            //     setSendPending(false);
+            // }else{
+            //     toast.success('アカウントの更新に成功しました。');
+
+            //     // パスワード欄を空にする
+            //     setFormValue('password', '');
+            //     setFormValue('confirmPassword', '');
+            //     setSendPending(false);
+            // }
         }else{
-            toast.success('アカウントの登録に成功しました。\n登録したアカウントでログインしてください');
-            router.push('/customer/login');
+            router.push('/404');
         }
+
+        
     };
 
 
@@ -256,6 +312,7 @@ export default function AccountForm(){
                             <select
                                 name="birthdayY"
                                 onChange={formChange}
+                                defaultValue={initForm.birthdayY}
                             >
                                 <option value="" disabled></option>
                                 {
@@ -270,6 +327,7 @@ export default function AccountForm(){
                             <select
                                 name="birthdayM"
                                 onChange={formChange}
+                                defaultValue={initForm.birthdayM}
                             >
                                 <option value="" disabled></option>
                                 {
@@ -284,6 +342,7 @@ export default function AccountForm(){
                             <select
                                 name="birthdayD"
                                 onChange={formChange}
+                                defaultValue={initForm.birthdayD}
                             >
                                 <option value="" disabled></option>
                                 {
