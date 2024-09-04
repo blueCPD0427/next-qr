@@ -3,7 +3,7 @@ import AccountForm from "@/app/owner/account/account-form"
 import { getEditOwnerData } from "@/app/owner/account/actions";
 import { redirect } from "next/navigation";
 
-export default async function SettingAccountPage()
+export default async function SettingOwnerAccountPage()
 {
     const session = await auth();
     const ownerId = session?.user?.id;

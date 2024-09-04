@@ -18,12 +18,12 @@ export default function OwnerMenuLayout({
     }: Readonly<{
         children: React.ReactNode;
     }>) {
-        const [currentPage, setCurrentPage] = useState('');
 
+        // 現在ページ管理
+        const [currentPage, setCurrentPage] = useState('');
         const ClickLink = (pageName:string) => {
             setCurrentPage(pageName);
         }
-
 
         return(
             <div className="flex-1 flex mt-10">
