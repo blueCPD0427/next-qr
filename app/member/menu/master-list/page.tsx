@@ -40,7 +40,7 @@ export default async function MemberMasterListPage()
                     <Alert>
                         <AlertDescription>
                             <FontAwesomeIcon className="text-orange-500 font-bold mr-3" icon={faTriangleExclamation} />
-                            連携済みのメンバーがまだいません。
+                            連携先が存在しません。
                         </AlertDescription>
                     </Alert>
                 )

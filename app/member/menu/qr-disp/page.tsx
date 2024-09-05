@@ -22,7 +22,7 @@ export default async function MasterQrDisplayPage()
                     <QrcodeGenerator value={qrUrl}/>
                 </div>
                 <div className="mt-5">
-                    こちらのＱＲコードを店舗様へ提示してください。
+                    こちらのＱＲコードを連携先へ提示してください。
                 </div>
             </div>
         </div>
