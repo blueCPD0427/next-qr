@@ -10,21 +10,41 @@ import {
 } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
 import { useState } from "react";
-import clsx from "clsx";
+import clsx from "clsx";;
+import { ToggleDispData } from "@/app/lib/difinitions";
+import toast from "react-hot-toast";
+import { useRouter } from "next/navigation";
 
-export function ConnectedMasterList({connectedMasterList}:{connectedMasterList:any})
+export function ConnectedMasterList({connectedMasterList,memberId}:{connectedMasterList:any,memberId:string})
 {
 
     const [sendPending, setSendPending] = useState(false);
+    const router = useRouter();
 
+    const toggleDispData = async (masterId:string, target:string) => {
+        const sendData:ToggleDispData = {
+            masterId:masterId,
+            memberId:memberId,
+            target:target
+        }
 
+        const response = await fetch('/api/member-toggle-disp', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(sendData),
+        });
+        const result = await response.json();
+        if(result.data.success === false){
+            toast.error('公開情報の変更に失敗しました。');
+            setSendPending(false);
+        }else{
+            toast.success('公開情報の変更に成功しました。');
+            setSendPending(false);
+            router.refresh();
+        }
 
-    const toggleDispData = (masterId:string, target:string) => {
-        console.log(masterId);
-        console.log(target);
-
-
-        
     }
 
     return (

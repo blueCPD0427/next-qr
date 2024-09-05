@@ -35,7 +35,7 @@ export default async function MemberMasterListPage()
             {
                 connectedMasterList.length > 0 ?
                 (
-                    <ConnectedMasterList connectedMasterList={connectedMasterList} />
+                    <ConnectedMasterList connectedMasterList={connectedMasterList} memberId={memberId} />
                 ) : (
                     <Alert>
                         <AlertDescription>

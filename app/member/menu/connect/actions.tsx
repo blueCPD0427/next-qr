@@ -128,4 +128,52 @@ export default async function toggleDisp(formData:ToggleDispData){
         memberId: formData.memberId,
         target: formData.target,
     });
+
+    const { masterId, memberId, target } = validatedFields;
+
+    const existRelationRes = await prisma.masterToMemberRelations.findFirst({
+        where:{
+            masterId:masterId,
+            memberId:memberId,
+        },
+        select:{
+            [target]:true
+        }
+    })
+
+    if(!existRelationRes){
+        return {
+            success: false,
+            message: '連携情報が存在しません。',
+        }
+    }
+
+    const toggleParam = existRelationRes[target] === true ? false : true;
+
+    try{
+
+        await prisma.masterToMemberRelations.update({
+            where:{
+                masterId_memberId:{
+                    masterId: masterId,
+                    memberId: memberId
+                }
+            },
+            data:{
+                [target]: toggleParam
+            }
+        })
+    }catch(error){
+        console.log(error);
+        return {
+            success: false,
+            message: '連携情報の登録に失敗しました。',
+        }
+    }
+
+    console.log('api success!!!!!');
+    return { success: true };
+
+
+
 }
