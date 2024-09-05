@@ -59,3 +59,10 @@ export interface DeleteMasterCustomForm {
     formId: string,
     masterId: string,
 }
+
+export interface ToggleDispData {
+    masterId: string,
+    memberId: string,
+    target: string,
+}
+

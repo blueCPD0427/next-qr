@@ -1,8 +1,9 @@
 'use server';
-import { MemberConnectForm } from "@/app/lib/difinitions";
+import { MemberConnectForm,ToggleDispData } from "@/app/lib/difinitions";
 import { z } from "zod";
 import prisma from "@/app/lib/prisma";
 import { auth } from "@/auth";
+import { existMaster,existMember } from "@/app/lib/actions/action";
 
 // 連携スキーマ
 const ConnectMemberToMasterSchema = z.object({
@@ -11,13 +12,9 @@ const ConnectMemberToMasterSchema = z.object({
     masterId: z.string().min(1,{message: "送信されたパラメータが不正です。"}),
 }).superRefine(
     async (data, ctx) => {
-        const existMaster = await prisma.masters.findFirst({
-            where:{
-                id: data.masterId
-            }
-        })
+        const existMasterRes = await existMaster(data.masterId)
 
-        if(!existMaster){
+        if(!existMasterRes){
             ctx.addIssue({
                 code: z.ZodIssueCode.custom,
                 message: "送信されたパラメータが不正です。",
@@ -41,8 +38,6 @@ export type MemberConnectValidateStateInside = {
 }
 
 export async function connectMemberToMaster(formData:MemberConnectForm){
-
-    console.log(formData.masterId);
 
     try{
         const validatedFields = await ConnectMemberToMasterSchema.parseAsync({
@@ -93,4 +88,44 @@ export async function connectMemberToMaster(formData:MemberConnectForm){
 
     console.log('api success!!!!!');
     return { success: true };
+}
+
+
+export default async function toggleDisp(formData:ToggleDispData){
+    const ToggleDispSchema = z.object({
+        masterId: z.string().min(1,{message: "システムエラーが発生しました。"}),
+        memberId: z.string().min(1,{message: "システムエラーが発生しました。"}),
+        target: z.enum(['addressDisp','birthdayDisp'],{message: "登録できない値が入力されています。"}),
+    }).superRefine(
+        async (data, ctx) => {
+            const existMasterRes = await existMaster(data.masterId)
+
+            if(!existMasterRes){
+                ctx.addIssue({
+                    code: z.ZodIssueCode.custom,
+                    message: "送信されたパラメータが不正です。",
+                    path:["masterId"]
+                })
+            }
+        }
+    ).superRefine(
+        async (data, ctx) => {
+            const existMemberRes = await existMember(data.memberId)
+
+            if(!existMemberRes){
+                ctx.addIssue({
+                    code: z.ZodIssueCode.custom,
+                    message: "送信されたパラメータが不正です。",
+                    path:["memberId"]
+                })
+            }
+        }
+    );
+
+
+    const validatedFields = await ToggleDispSchema.parseAsync({
+        masterId: formData.masterId,
+        memberId: formData.memberId,
+        target: formData.target,
+    });
 }

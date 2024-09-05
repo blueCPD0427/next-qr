@@ -49,3 +49,21 @@ export async function existMaster(masterId:string){
         return true;
     }
 }
+
+export async function existMember(memberId:string){
+    try{
+        const existMember = await prisma.members.findFirst({
+            where:{
+                id: memberId
+            }
+        })
+
+        if(!existMember){
+            return false;
+        }else{
+            return true;
+        }
+    }catch(error){
+        return true;
+    }
+}

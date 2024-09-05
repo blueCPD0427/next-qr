@@ -82,7 +82,13 @@ export default function ConnectForm({masterData}:{masterData:MasterData}){
     return(
         <div className="flex items-center justify-center min-h-screen bg-green-100">
             <div className="bg-white p-8 rounded-lg shadow-md w-full max-w-2xl overflow-y-auto max-h-screen-80">
-                <h2 className="text-2xl font-bold mb-6 text-green-700">マスターアカウント作成</h2>
+                <h2 className="text-2xl font-bold mb-6 text-green-700">
+                    【{masterData.name}】との連携確認
+                </h2>
+                <div className="mb-2">
+                    以下の情報を{masterData.name}に対して公開するか選択してください。
+                    <br/>※公開の設定は「連携先一覧」より変更可能です。
+                </div>
                 <form onSubmit={formSubmit}>
                     <div className="mb-4">
                         <label className="block text-green-700 mb-2">

@@ -32,13 +32,13 @@ export default function MemberMenuLayout({
                             </li>
                             <li className={clsx('py-2 pl-2',{'bg-indigo-100' : currentPage == 'master-list'})}>
                                 <Link href={'/member/menu/master-list'} onClick={() => ClickLink('master-list')}>
-                                <FontAwesomeIcon icon={faUsers} className="mr-2 text-xl w-5" />
-                                    登録済み店舗一覧
+                                    <FontAwesomeIcon icon={faUsers} className="mr-2 text-xl w-5" />
+                                    連携先一覧
                                 </Link>
                             </li>
                             <li className={clsx('py-1 pl-2',{'bg-indigo-100' : currentPage == 'setting-account'})}>
                                 <Link href={'/member/menu/setting/account'} onClick={() => ClickLink('setting-account')}>
-                                <FontAwesomeIcon icon={faUserPen} className="mr-2 text-xl w-5" />
+                                    <FontAwesomeIcon icon={faUserPen} className="mr-2 text-xl w-5" />
                                     アカウント設定
                                 </Link>
                             </li>
