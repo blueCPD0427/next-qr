@@ -6,16 +6,16 @@ import prisma from '@/app/lib/prisma';
 import bcrypt from 'bcrypt';
 // import { User } from './lib/definitions';
 
-async function getOwnerUser(email: string){
-    const loginUser = await prisma.owners.findFirst({
+async function getMasterUser(email: string){
+    const loginUser = await prisma.masters.findFirst({
         where: {email: email}
     })
 
     return loginUser;
 }
 
-async function getCustomerUser(email: string){
-    const loginUser = await prisma.customers.findFirst({
+async function getMemberUser(email: string){
+    const loginUser = await prisma.members.findFirst({
         where: {email: email}
     })
 
@@ -38,21 +38,21 @@ export const { handlers: { GET, POST }, auth, signIn, signOut } = NextAuth({
                     const callbackUrl = String(credentials.callbackUrl);
 
                     switch(true){
-                        case callbackUrl.includes('/owner/login'):
-                            const owner = await getOwnerUser(email);
-                            if(!owner) return null;
+                        case callbackUrl.includes('/master/login'):
+                            const master = await getMasterUser(email);
+                            if(!master) return null;
 
-                            const passwordOwnerMatch = await bcrypt.compare(password, owner.password);
+                            const passwordMasterMatch = await bcrypt.compare(password, master.password);
 
-                            if(passwordOwnerMatch) return owner;
+                            if(passwordMasterMatch) return master;
                             break;
-                        case callbackUrl.includes('/customer/login'):
-                            const customer = await getCustomerUser(email);
-                            if(!customer) return null;
+                        case callbackUrl.includes('/member/login'):
+                            const member = await getMemberUser(email);
+                            if(!member) return null;
 
-                            const passwordCustomerMatch = await bcrypt.compare(password, customer.password);
+                            const passwordMemberMatch = await bcrypt.compare(password, member.password);
 
-                            if(passwordCustomerMatch) return customer;
+                            if(passwordMemberMatch) return member;
                             break;
                     }
                 }
@@ -70,11 +70,11 @@ export const { handlers: { GET, POST }, auth, signIn, signOut } = NextAuth({
                 token.id = user.id;
                 token.userId = user.userId;
                 if(!!user?.lastName){
-                    token.type = 'customer';
+                    token.type = 'member';
                     token.lastName = user.lastName;
                     token.firstName = user.firstName;
                 }else{
-                    token.type = 'owner';
+                    token.type = 'master';
                 }
             }
 
@@ -85,7 +85,7 @@ export const { handlers: { GET, POST }, auth, signIn, signOut } = NextAuth({
                 session.user.id = token.id;
                 session.user.userId = token.userId;
                 session.user.type = token.type;
-                if(token.type == 'customer'){
+                if(token.type == 'member'){
                     session.user.lastName = token.lastName;
                     session.user.firstName = token.firstName;
                 }
@@ -97,11 +97,11 @@ export const { handlers: { GET, POST }, auth, signIn, signOut } = NextAuth({
 
             // ログイン認証後のリダイレクト先のURLをカスタマイズ
             switch(true){
-                case url == `${baseUrl}/owner/login`:
-                    return `${baseUrl}/owner/menu`;
+                case url == `${baseUrl}/master/login`:
+                    return `${baseUrl}/master/menu`;
                     break;
-                case url == `${baseUrl}/customer/login`:
-                    return `${baseUrl}/customer/menu`;
+                case url == `${baseUrl}/member/login`:
+                    return `${baseUrl}/member/menu`;
                     break;
             }
 

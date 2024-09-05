@@ -12,21 +12,21 @@ export const authConfig = {
             // 「?.」は「オプショナルチェーン」と言われ、指定したキー名が未定義でもエラーではなく「undefined」になるようにする
             const isLoggedIn = !!auth?.user;
 
-            const isOnNeedOwnerAuth = nextUrl.pathname.startsWith('/owner/menu')
-            const isOnNeedCustomerAuth = nextUrl.pathname.startsWith('/customer/menu')
+            const isOnNeedMasterAuth = nextUrl.pathname.startsWith('/master/menu')
+            const isOnNeedMemberAuth = nextUrl.pathname.startsWith('/member/menu')
 
-            if (isOnNeedOwnerAuth || isOnNeedCustomerAuth) {
+            if (isOnNeedMasterAuth || isOnNeedMemberAuth) {
                 if (isLoggedIn){
                     // アカウントのタイプによって分岐
                     const accountType = auth?.user?.type;
                     switch(true){
-                        case accountType == 'owner':
-                            if(isOnNeedOwnerAuth){
+                        case accountType == 'master':
+                            if(isOnNeedMasterAuth){
                                 return true;
                             }
                             break;
-                        case accountType == 'customer':
-                            if(isOnNeedCustomerAuth){
+                        case accountType == 'member':
+                            if(isOnNeedMemberAuth){
                                 return true;
                             }
                             break;
@@ -40,11 +40,11 @@ export const authConfig = {
                 const accountType = auth?.user?.type;
 
                 switch(true){
-                    case accountType == 'owner':
-                        return Response.redirect(new URL('/owner/menu', nextUrl))
+                    case accountType == 'master':
+                        return Response.redirect(new URL('/master/menu', nextUrl))
                         break;
-                    case accountType == 'customer':
-                        return Response.redirect(new URL('/customer/menu', nextUrl))
+                    case accountType == 'member':
+                        return Response.redirect(new URL('/member/menu', nextUrl))
                         break;
                 }
             }

@@ -39,7 +39,7 @@ Check out our [Next.js deployment documentation](https://nextjs.org/docs/deploym
 
 ### TODO
 
-- 未ログインの時にトップに飛んじゃうので、オーナー・会員でリダイレクト先のログイン画面を切り分ける
+- 未ログインの時にトップに飛んじゃうので、マスター・メンバーでリダイレクト先のログイン画面を切り分ける
 
 - ここを参考にエラーハンドリングする
 

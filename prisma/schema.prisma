@@ -15,8 +15,8 @@ datasource db {
 
 // next-authがidをStringじゃないと許容しないため、通し番号と固有IDを別に割り振っている
 
-// ショップオーナー情報テーブル
-model Owners {
+// ショップマスター情報テーブル
+model Masters {
   id        String   @id @default(cuid())
   userId    Int      @unique @default(autoincrement()) @map(name: "user_id")
   name      String
@@ -29,14 +29,14 @@ model Owners {
   postCode  Int @map(name: "post_code")
   address   String
 
-  relations OwnerToCustomerRelations[]
-  customSettings OwnersCustomConfigurations[]
+  relations MasterToMemberRelations[]
+  customSettings MastersCustomConfigurations[]
 
-  @@map(name: "owners")
+  @@map(name: "masters")
 }
 
-// 会員情報テーブル
-model Customers {
+// メンバー情報テーブル
+model Members {
   id        String   @id @default(cuid())
   userId    Int      @unique @default(autoincrement()) @map(name: "user_id")
   lastName  String @map(name: "last_name")
@@ -52,10 +52,10 @@ model Customers {
   address   String
   birthday  DateTime
 
-  relations OwnerToCustomerRelations[]
-  confCustomerData ConfigurationsCustomerData[]
+  relations MasterToMemberRelations[]
+  confMemberData ConfigurationsMemberData[]
 
-  @@map(name: "customers")
+  @@map(name: "members")
 }
 
 enum Sex {
@@ -63,29 +63,29 @@ enum Sex {
   female
 }
 
-// オーナー・会員間、連携情報テーブル
+// マスター・メンバー間、連携情報テーブル
 // あくまでリレーションなのでここは不要になったら物理削除
-model OwnerToCustomerRelations {
-  ownerId         String @map(name: "owner_id")
-  customerId      String @map(name: "customer_id")
-  // 住所情報をオーナー側へ表示するかのフラグ true:表示
+model MasterToMemberRelations {
+  masterId         String @map(name: "master_id")
+  memberId      String @map(name: "member_id")
+  // 住所情報をマスター側へ表示するかのフラグ true:表示
   addressDisp     Boolean @map(name: "address_disp")
-  // 誕生日情報をオーナー側へ表示するかのフラグ true:表示
+  // 誕生日情報をマスター側へ表示するかのフラグ true:表示
   birthdayDisp    Boolean @map(name: "birthday_disp")
   createdAt       DateTime @default(now()) @map(name: "created_at")
   updatedAt       DateTime @updatedAt @map(name: "updated_at")
 
-  owner           Owners    @relation(fields: [ownerId], references: [id])
-  customer        Customers @relation(fields: [customerId], references: [id])
+  master           Masters    @relation(fields: [masterId], references: [id])
+  member        Members @relation(fields: [memberId], references: [id])
 
-  @@map(name: "owner_to_customer_relations")
-  @@id([ownerId, customerId])
+  @@map(name: "master_to_member_relations")
+  @@id([masterId, memberId])
 }
 
-// オーナー毎の会員データ設定テーブル
-model OwnersCustomConfigurations {
+// マスター毎のメンバーデータ設定テーブル
+model MastersCustomConfigurations {
   id                        String   @id @default(cuid())
-  ownerId                   String @map(name: "owner_id")
+  masterId                   String @map(name: "master_id")
   // 保存するデータのタイトル
   configurationTitle        String @map(name: "configuration_title")
   // 保存するデータの制約情報
@@ -93,8 +93,8 @@ model OwnersCustomConfigurations {
   createdAt                 DateTime @default(now()) @map(name: "created_at")
   updatedAt                 DateTime @updatedAt @map(name: "updated_at")
 
-  owner                     Owners    @relation(fields: [ownerId], references: [id])
-  confCustomerData          ConfigurationsCustomerData[]
+  master                     Masters    @relation(fields: [masterId], references: [id])
+  confMemberData          ConfigurationsMemberData[]
 
   @@map(name: "custom_configurations")
 }
@@ -109,18 +109,18 @@ enum ConfConst {
   boolean
 }
 
-// オーナー毎の会員データテーブル
-model ConfigurationsCustomerData {
+// マスター毎のメンバーデータテーブル
+model ConfigurationsMemberData {
   oCCId               String @map(name: "occ_id")
-  customerId          String @map(name: "customer_id")
+  memberId          String @map(name: "member_id")
   // データ設定テーブルの方で形式を指定（バリデーション）しているので、実際の保存領域はStringにしておく
   configurationData   String? @map(name: "configuration_data")
   createdAt           DateTime @default(now()) @map(name: "created_at")
   updatedAt           DateTime @updatedAt @map(name: "updated_at")
 
-  customConfiguration OwnersCustomConfigurations @relation(fields: [oCCId], references: [id], onDelete: Cascade)
-  customer            Customers @relation(fields: [customerId], references: [id], onDelete: Cascade)
+  customConfiguration MastersCustomConfigurations @relation(fields: [oCCId], references: [id], onDelete: Cascade)
+  member            Members @relation(fields: [memberId], references: [id], onDelete: Cascade)
 
-  @@id([oCCId, customerId])
-  @@map(name: "conf_customer_data")
+  @@id([oCCId, memberId])
+  @@map(name: "conf_member_data")
 }

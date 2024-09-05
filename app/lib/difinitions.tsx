@@ -1,4 +1,4 @@
-export interface OwnerData {
+export interface MasterData {
     id: string
     name: string
     email: string
@@ -6,7 +6,7 @@ export interface OwnerData {
     address: string
 }
 
-export interface OwnerAccountForm {
+export interface MasterAccountForm {
     id?: string
     name: string
     email: string
@@ -16,7 +16,7 @@ export interface OwnerAccountForm {
     confirmPassword?: string
 }
 
-export interface CustomerAccountForm {
+export interface MemberAccountForm {
     id?: string
     lastName: string
     firstName: string
@@ -31,31 +31,31 @@ export interface CustomerAccountForm {
     birthdayD: string
 }
 
-export interface CustomerConnectForm {
+export interface MemberConnectForm {
     addressDisp: string
     birthdayDisp: string
-    ownerId: string
+    masterId: string
 }
 
 
 export interface OCCListInside {
     id: string
-    ownerId: string
+    masterId: string
     configurationTitle: string
     configurationConstraint: 'text' | 'int' | 'boolean',
-    confCustomerData?: {
-        customerId: string,
+    confMemberData?: {
+        memberId: string,
         configurationData?: string,
     }
 }
 
-export interface OwnerCustomForm {
-    ownerId: string,
+export interface MasterCustomForm {
+    masterId: string,
     configurationTitle: string,
     configurationConstraint: string,
 }
 
-export interface DeleteOwnerCustomForm {
+export interface DeleteMasterCustomForm {
     formId: string,
-    ownerId: string,
+    masterId: string,
 }

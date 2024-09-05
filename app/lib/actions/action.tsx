@@ -32,15 +32,15 @@ export async function getAddressFromPostCode(postCode: string){
 
 }
 
-export async function existOwner(ownerId:string){
+export async function existMaster(masterId:string){
     try{
-        const existOwner = await prisma.owners.findFirst({
+        const existMaster = await prisma.masters.findFirst({
             where:{
-                id: ownerId
+                id: masterId
             }
         })
 
-        if(!existOwner){
+        if(!existMaster){
             return false;
         }else{
             return true;

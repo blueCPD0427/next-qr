@@ -4,14 +4,14 @@ export default function Home() {
     return (
         <div>
             <div>
-                オーナーズサイトは
-                <Link href="/owner/login">
+                マスターズサイトは
+                <Link href="/master/login">
                 こちら
                 </Link>
             </div>
             <div>
                 一般の方は
-                <Link href="/customer/login">
+                <Link href="/member/login">
                 こちら
                 </Link>
             </div>
