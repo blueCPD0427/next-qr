@@ -75,12 +75,11 @@ export default function AccountForm({editCustomerData}:{editCustomerData?:Custom
         formType = 'update';
 
         // 初期値をセット
+        initForm.id = editCustomerData.id;
         initForm.lastName = editCustomerData.lastName;
         initForm.firstName = editCustomerData.firstName;
         initForm.sex = editCustomerData.sex;
         initForm.email = editCustomerData.email;
-        initForm.password = editCustomerData.password;
-        initForm.confirmPassword = editCustomerData.confirmPassword;
         initForm.postCode = editCustomerData.postCode;
         initForm.address = editCustomerData.address;
         initForm.birthdayY = editCustomerData.birthdayY;
@@ -170,27 +169,26 @@ export default function AccountForm({editCustomerData}:{editCustomerData?:Custom
                 router.push('/customer/login');
             }
         }else if(formType === 'update') {
-            // 更新の処理を実装する
-            // const response = await fetch('/api/owner-account-update', {
-            //     method: 'POST',
-            //     headers: {
-            //         'Content-Type': 'application/json',
-            //     },
-            //     body: JSON.stringify(formContents),
-            // });
-            // const result = await response.json();
-            // if(result.data.success === false){
-            //     toast.error('アカウントの更新に失敗しました。');
-            //     setErrorField(result.data.errors);
-            //     setSendPending(false);
-            // }else{
-            //     toast.success('アカウントの更新に成功しました。');
+            const response = await fetch('/api/customer-account-update', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(formContents),
+            });
+            const result = await response.json();
+            if(result.data.success === false){
+                toast.error('アカウントの更新に失敗しました。');
+                setErrorField(result.data.errors);
+                setSendPending(false);
+            }else{
+                toast.success('アカウントの更新に成功しました。');
 
-            //     // パスワード欄を空にする
-            //     setFormValue('password', '');
-            //     setFormValue('confirmPassword', '');
-            //     setSendPending(false);
-            // }
+                // パスワード欄を空にする
+                setFormValue('password', '');
+                setFormValue('confirmPassword', '');
+                setSendPending(false);
+            }
         }else{
             router.push('/404');
         }

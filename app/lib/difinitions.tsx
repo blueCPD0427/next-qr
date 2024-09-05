@@ -17,9 +17,10 @@ export interface OwnerAccountForm {
 }
 
 export interface CustomerAccountForm {
+    id?: string
     lastName: string
     firstName: string
-    sex?: string
+    sex?: 'male' | 'female'
     email: string
     password: string
     confirmPassword: string

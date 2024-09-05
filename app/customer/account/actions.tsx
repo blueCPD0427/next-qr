@@ -41,7 +41,7 @@ export async function LogoutAction() {
 
 // オーナーアカウントスキーマ
 const CustomerAccountSchema = z.object({
-    userId: z.number(),
+    id: z.string(),
     lastName: z.string()
             .min(1,{message: "名前（姓）の入力は必須です。"}),
     firstName: z.string()
@@ -67,8 +67,8 @@ const CustomerAccountSchema = z.object({
                     .regex(/^\d{4}-(0[1-9]|1[0-2])-(0[1-9]|[12]\d|3[01])$/,{message: "生年月日の形式に誤りがあります。"}),
 })
 
-// Createの際は「userId」の検証は不要なので、ここで一旦除外
-const CreateCustomerAccount = CustomerAccountSchema.omit({userId: true});
+// Createの際は「id」の検証は不要なので、ここで一旦除外
+const CreateCustomerAccount = CustomerAccountSchema.omit({id: true});
 
 // omitを使用する場合、refineを使えないため、ここで改めてrefineを使用した状態のオブジェクトを用意する
 const CreateCustomerAccountRefined =
@@ -218,59 +218,150 @@ export async function getEditCustomerData(customerId:string)
     }
 }
 
-export async function updateCustomerAccount(formData: CustomerAccountForm){
+export async function updateCustomerAccountApi(formData: CustomerAccountForm){
 
-    // try{
-    //     const validatedFields = await CreateCustomerAccountRefined.parseAsync({
-    //         lastName: formData.lastName,
-    //         firstName: formData.firstName,
-    //         sex: formData.sex,
-    //         email: formData.email,
-    //         password: formData.password,
-    //         confirmPassword: formData.confirmPassword,
-    //         postCode: formData.postCode,
-    //         address: formData.address,
-    //         birthday: formData.birthdayY+'-'+(lPadNum(formData.birthdayM, 2))+'-'+(lPadNum(formData.birthdayD, 2)),
-    //     });
+    // パスワードの入力があればバリデーションにパスワードの項目を追加する
+    let existPassword = true;
+    let UpdateCustomerAccountRefined = null;
 
-    //     const { lastName, firstName, sex, postCode, address, email, password, birthday } = validatedFields;
+    if(formData.password != ''){
+        UpdateCustomerAccountRefined = CustomerAccountSchema
+        .refine(
+            (data) => data.password != '' && data.confirmPassword != '' && data.password === data.confirmPassword, {
+                message: "パスワードと確認パスワードの内容が異なっています。",
+                path:["confirmPassword"]
+            }
+        )
+        .superRefine(
+            async (data, ctx) => {
+                const duplicateEmail = await prisma.customers.findFirst({
+                    where:{
+                        email: data.email,
+                        id:{
+                            not:data.id
+                        }
+                    }
+                })
 
-    //     const hashedPassword = await bcrypt.hash(password, 10);
-    //     const convertPostCode = Number(postCode);
-    //     const convertBirthday = new Date(birthday+' 00:00:00');
+                if(duplicateEmail){
+                    ctx.addIssue({
+                        code: z.ZodIssueCode.custom,
+                        message: "メールアドレスを再確認してください。",
+                        path:["email"]
+                    })
+                }
+            }
+        );
+    }else{
+        // パスワードの入力が無いのでパスワードのバリデーションをオミット
+        const OmitPasswordSchema = CustomerAccountSchema.omit({password: true,confirmPassword: true});
 
-    //     try{
+        UpdateCustomerAccountRefined = OmitPasswordSchema
+        .superRefine(
+            async (data, ctx) => {
+                const duplicateEmail = await prisma.customers.findFirst({
+                    where:{
+                        email: data.email,
+                        id:{
+                            not:data.id
+                        }
+                    }
+                })
 
-    //         await prisma.customers.create({
-    //             data:{
-    //                 lastName: lastName,
-    //                 firstName: firstName,
-    //                 sex: sex,
-    //                 postCode: convertPostCode,
-    //                 address: address,
-    //                 email: email,
-    //                 password: hashedPassword,
-    //                 birthday: convertBirthday,
-    //             }
-    //         })
-    //     }catch(error){
-    //         console.log(error);
-    //         return {
-    //             success: false,
-    //             message: 'アカウントの新規作成に失敗しました。',
-    //         }
-    //     }
+                if(duplicateEmail){
+                    ctx.addIssue({
+                        code: z.ZodIssueCode.custom,
+                        message: "メールアドレスを再確認してください。",
+                        path:["email"]
+                    })
+                }
+            }
+        );
 
-    // } catch(error){
-    //     if (error instanceof z.ZodError) {
-    //         return { success: false, errors: error.format() };
-    //     }
-    // }
+        // パスワードの入力フラグをOFF
+        existPassword = false;
+    }
 
-    // console.log('api success!!!!!');
-    // return { success: true };
+    try{
+        const validatedFields = await UpdateCustomerAccountRefined.parseAsync({
+            id: formData.id,
+            lastName: formData.lastName,
+            firstName: formData.firstName,
+            sex: formData.sex,
+            email: formData.email,
+            password: formData.password,
+            confirmPassword: formData.confirmPassword,
+            postCode: String(formData.postCode),
+            address: formData.address,
+            birthday: formData.birthdayY+'-'+(lPadNum(formData.birthdayM, 2))+'-'+(lPadNum(formData.birthdayD, 2)),
+        });
 
-    // revalidatePath('/customer/account/create');
-    // redirect('/customer/login');
+        const { lastName, firstName, sex, postCode, address, email, birthday } = validatedFields;
+
+        const convertPostCode = Number(postCode);
+        const convertBirthday = new Date(birthday+' 00:00:00');
+
+        try{
+
+            if(existPassword === true){
+                const password = formData.password != undefined ? formData.password : '';
+                if(password == ''){
+                    return {
+                        success: false,
+                        message: 'アカウントの更新に失敗しました。',
+                    }
+                }
+
+
+                const hashedPassword = await bcrypt.hash(password, 10);
+
+                await prisma.customers.update({
+                    where:{
+                        id: formData.id
+                    },
+                    data:{
+                        lastName: lastName,
+                        firstName: firstName,
+                        sex: sex,
+                        postCode: convertPostCode,
+                        address: address,
+                        email: email,
+                        birthday: convertBirthday,
+                        password: hashedPassword,
+                    }
+                })
+            }else{
+                await prisma.customers.update({
+                    where:{
+                        id: formData.id
+                    },
+                    data:{
+                        lastName: lastName,
+                        firstName: firstName,
+                        sex: sex,
+                        postCode: convertPostCode,
+                        address: address,
+                        email: email,
+                        birthday: convertBirthday,
+                    }
+                })
+            }
+        }catch(error){
+            console.error(error);
+            return {
+                success: false,
+                message: 'アカウントの更新に失敗しました。',
+            }
+        }
+
+    } catch(error){
+        console.error(error);
+        if (error instanceof z.ZodError) {
+            return { success: false, errors: error.format() };
+        }
+    }
+
+    console.log('api success!!!!!');
+    return { success: true };
 
 }
