@@ -22,7 +22,7 @@ export default function TextCustomFormPage(
             <Label htmlFor={oCCData.id}>
                 {oCCData.configurationTitle}
             </Label>
-            <Input id={oCCData.id} type="text" name={oCCData.id + '_text'} defaultValue={defaultValue.configurationData} />
+            <Input id={oCCData.id} type="text" name={oCCData.id + '_text'} defaultValue={defaultValue} />
         </div>
     )
 }

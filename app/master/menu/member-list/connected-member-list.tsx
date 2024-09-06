@@ -7,6 +7,7 @@ import {
     TableHeader,
     TableRow,
 } from "@/components/ui/table";
+import { convertDate } from "@/app/lib/actions/convert";
 
 export default function ConnectedMemberList({connectedMemberList}:{connectedMemberList:any})
 {
@@ -55,7 +56,7 @@ export default function ConnectedMemberList({connectedMemberList}:{connectedMemb
                                     {value.addressDisp === true ? value.member.postCode + ' ' + value.member.address : '住所非公開'}
                                 </TableCell>
                                 <TableCell className="w-1/5">
-                                    {value.birthdayDisp === true ? String(value.member.birthday) : '生年月日非公開'}
+                                    {value.birthdayDisp === true ? convertDate(value.member.birthday) : '生年月日非公開'}
                                 </TableCell>
                             </TableRow>
                         ))

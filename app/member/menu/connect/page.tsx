@@ -8,7 +8,7 @@ async function ConnectedAccount(masterId:string) {
     const session = await auth();
 
     if(session?.user?.id == undefined){
-        redirect('/member/menu/error?type=dis-account');
+        redirect('/404');
         return false;
     }
 
@@ -42,13 +42,13 @@ export default async function MemberConnectPage({ searchParams }: { searchParams
     })
 
     if(!masterData){
-        redirect('/member/menu/error?type=master-connect');
+        redirect('/404');
     }
 
     // 既に連携済みだったら弾く
     const connected = await ConnectedAccount(masterId);
     if(connected === true){
-        redirect('/member/menu/error?type=already-connect');
+        redirect('/404');
     }
 
     return (

@@ -27,6 +27,7 @@ export default function CustomFormBase({oCClist,memberId,memberName}:{oCClist:an
                 toast.success(state.message);
                 break;
             case state.success === false:
+                console.error(state);
                 toast.error(state.message);
                 break;
         }
@@ -44,11 +45,11 @@ export default function CustomFormBase({oCClist,memberId,memberName}:{oCClist:an
                             oCClist && oCClist.map((oCC) => {
                                 switch (oCC.configurationConstraint) {
                                     case 'text':
-                                        return <CardContent><TextCustomFormPage key={oCC.id} oCCData={oCC} /></CardContent>;
+                                        return <CardContent key={oCC.id}><TextCustomFormPage oCCData={oCC} /></CardContent>;
                                     case 'int':
-                                        return <CardContent><IntCustomFormPage key={oCC.id} oCCData={oCC} /></CardContent>;
+                                        return <CardContent key={oCC.id}><IntCustomFormPage oCCData={oCC} /></CardContent>;
                                     case 'boolean':
-                                        return <CardContent><BooleanCustomFormPage key={oCC.id} oCCData={oCC} /></CardContent>;
+                                        return <CardContent key={oCC.id}><BooleanCustomFormPage oCCData={oCC} /></CardContent>;
                                     default:
                                         return null;
                                 }

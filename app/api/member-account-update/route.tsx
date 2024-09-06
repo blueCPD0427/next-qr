@@ -1,5 +1,5 @@
 import { MemberAccountForm } from "@/app/lib/difinitions";
-import { updateMemberAccountApi } from "@/app/Member/account/actions";
+import { updateMemberAccountApi } from "@/app/member/account/actions";
 
 export async function POST(request:Request) {
 

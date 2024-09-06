@@ -22,7 +22,7 @@ export default function IntCustomFormPage(
             <Label htmlFor={oCCData.id}>
                 {oCCData.configurationTitle}
             </Label>
-            <Input id={oCCData.id} type="text" name={oCCData.id + '_int'} defaultValue={defaultValue.configurationData != undefined ? defaultValue.configurationData : ''} />
+            <Input id={oCCData.id} type="text" name={oCCData.id + '_int'} defaultValue={defaultValue != undefined ? defaultValue : ''} />
         </div>
     )
 }

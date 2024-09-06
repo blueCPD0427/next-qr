@@ -26,8 +26,6 @@ export async function getMastersCustomConfigurations(masterId:string, memberId:s
         },
     })
 
-    console.log(oCClist);
-
     return oCClist;
 }
 
@@ -94,6 +92,9 @@ export async function setCustomForm(prevState, formData: FormData) {
 
             const formName = customName+'_'+customType;
 
+            // booleanがチェックをつけていないとformDataに値が設定されないため、その対応措置
+            let formInputData = null;
+
             // 各タイプのバリデーション設定
             switch(true){
                 case(oCC.configurationConstraint == 'text'):
@@ -102,6 +103,8 @@ export async function setCustomForm(prevState, formData: FormData) {
                                         .min(1,{message:'値が空です'})
                                         .max(100,{message:'値は100文字までです'})
                     })
+
+                    formInputData = formData.get(formName);
                     break;
                 case(oCC.configurationConstraint == 'int'):
                     CustomFormSchema = CustomFormSchema.extend({
@@ -110,11 +113,21 @@ export async function setCustomForm(prevState, formData: FormData) {
                                                 .max(100,{message:'値は100文字までです'})
                                                 .regex(/^[0-9]+$/,{message: "半角数字のみで入力してください。"}),
                     })
+
+                    formInputData = formData.get(formName);
                     break;
                 case(oCC.configurationConstraint == 'boolean'):
                     CustomFormSchema = CustomFormSchema.extend({
-                        [customName+'_bool']: z.enum(['true',''],{message:'値が不正です'})
+                        [customName+'_boolean']: z.enum(['true',''],{message:'値が不正です'})
                     })
+
+                    if(formData.get(formName) == null){
+                        formInputData = '';
+                    }else{
+                        formInputData = formData.get(formName);
+                    }
+
+
                     break;
                 default:
                     return false;
@@ -123,8 +136,9 @@ export async function setCustomForm(prevState, formData: FormData) {
 
             validationTarget = {
                 ...validationTarget,
-                [formName]: formData.get(formName),
+                [formName]: formInputData,
             }
+
         })
 
         // 一件もフォームが無かったらエラー
@@ -135,14 +149,9 @@ export async function setCustomForm(prevState, formData: FormData) {
             };
         }
 
-        // console.log(CustomFormSchema);
-        console.log(validationTarget);
-
         const validatedFields = CustomFormSchema.safeParse({
             ...validationTarget
         });
-
-        console.log(validatedFields);
 
         if (!validatedFields.success) {
             return {
@@ -160,7 +169,6 @@ export async function setCustomForm(prevState, formData: FormData) {
         try{
             oCClist.map(async (oCC) => {
                 const formName = oCC.id + '_' + oCC.configurationConstraint;
-                console.log(validationTarget?.[formName]);
                 let inputCustomData = validationTarget?.[formName];
                 if(typeof inputCustomData !== 'string'){
                     inputCustomData = '';

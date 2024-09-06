@@ -287,7 +287,7 @@ export async function updateMemberAccountApi(formData: MemberAccountForm){
             id: formData.id,
             lastName: formData.lastName,
             firstName: formData.firstName,
-            sex: formData.sex,
+            sex: (formData.sex != undefined ? formData.sex : null),
             email: formData.email,
             password: formData.password,
             confirmPassword: formData.confirmPassword,
@@ -322,7 +322,7 @@ export async function updateMemberAccountApi(formData: MemberAccountForm){
                     data:{
                         lastName: lastName,
                         firstName: firstName,
-                        sex: sex,
+                        sex: (sex === '' ? null : sex),
                         postCode: convertPostCode,
                         address: address,
                         email: email,
@@ -338,7 +338,7 @@ export async function updateMemberAccountApi(formData: MemberAccountForm){
                     data:{
                         lastName: lastName,
                         firstName: firstName,
-                        sex: sex,
+                        sex: (sex === '' ? null : sex),
                         postCode: convertPostCode,
                         address: address,
                         email: email,
