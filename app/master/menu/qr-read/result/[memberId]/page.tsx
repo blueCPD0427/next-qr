@@ -2,9 +2,7 @@ import { auth } from "@/auth";
 import { getMastersCustomConfigurations,getMasterToMemberRelations } from "../../actions";
 import { redirect } from "next/navigation";
 import CustomFormBase from "./custom-form";
-import TextCustomFormPage from "@/app/master/menu/qr-read/result/[memberId]/text-form";
-import IntCustomFormPage from "@/app/master/menu/qr-read/result/[memberId]/int-form";
-import BooleanCustomFormPage from "@/app/master/menu/qr-read/result/[memberId]/boolean-form";
+import prisma from "@/app/lib/prisma";
 
 
 export default async function QrReadResultPage({params}: {params: {memberId:string}})
@@ -35,11 +33,27 @@ export default async function QrReadResultPage({params}: {params: {memberId:stri
         redirect('/404');
     }
 
+    const memberData = await prisma.members.findFirst({
+        where:{
+            id: memberId
+        },
+        select:{
+            id:true,
+            lastName:true,
+            firstName:true,
+        }
+    })
+    if(!memberData){
+        redirect('/404');
+    }
+
+    const memberName = memberData.lastName + ' ' + memberData.firstName;
+
     // ↓使ってまとめてformDataとして送って保存する
 
     return (
         <div>
-            <CustomFormBase oCClist={oCClist} memberId={memberId} />
+            <CustomFormBase oCClist={oCClist} memberId={memberId} memberName={memberName} />
         </div>
     )
 }

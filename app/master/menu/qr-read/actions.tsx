@@ -26,6 +26,8 @@ export async function getMastersCustomConfigurations(masterId:string, memberId:s
         },
     })
 
+    console.log(oCClist);
+
     return oCClist;
 }
 
