@@ -122,7 +122,7 @@ export async function createMemberAccountApi(formData: MemberAccountForm){
         const validatedFields = await CreateMemberAccountRefined.parseAsync({
             lastName: formData.lastName,
             firstName: formData.firstName,
-            sex: formData.sex,
+            sex: (formData.sex != undefined ? formData.sex : null),
             email: formData.email,
             password: formData.password,
             confirmPassword: formData.confirmPassword,
@@ -143,7 +143,7 @@ export async function createMemberAccountApi(formData: MemberAccountForm){
                 data:{
                     lastName: lastName,
                     firstName: firstName,
-                    sex: sex,
+                    sex: (sex === '' ? null : sex),
                     postCode: convertPostCode,
                     address: address,
                     email: email,

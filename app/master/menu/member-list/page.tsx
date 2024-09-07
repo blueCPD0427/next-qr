@@ -19,13 +19,24 @@ export default async function MasterMemberListPage()
             birthdayDisp: true,
             member: {
                 select: {
-                    userId:true,
+                    id:true,
                     lastName:true,
                     firstName:true,
                     sex:true,
                     postCode:true,
                     address:true,
                     birthday:true,
+                    confMemberData:{
+                        select:{
+                            oCCId:true,
+                            configurationData:true,
+                            customConfiguration:{
+                                select:{
+                                    configurationTitle:true
+                                }
+                            }
+                        },
+                    },
                 }
             }
         },

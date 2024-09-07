@@ -23,6 +23,21 @@ export default async function MemberMasterListPage()
                     postCode:true,
                     address:true,
                 }
+            },
+            member:{
+                select:{
+                    confMemberData:{
+                        select:{
+                            oCCId:true,
+                            configurationData:true,
+                            customConfiguration:{
+                                select:{
+                                    configurationTitle:true
+                                }
+                            }
+                        },
+                    },
+                },
             }
         },
         where: {

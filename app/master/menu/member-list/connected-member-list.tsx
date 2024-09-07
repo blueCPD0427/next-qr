@@ -8,6 +8,7 @@ import {
     TableRow,
 } from "@/components/ui/table";
 import { convertDate } from "@/app/lib/actions/convert";
+import React from "react";
 
 export default function ConnectedMemberList({connectedMemberList}:{connectedMemberList:any})
 {
@@ -41,24 +42,53 @@ export default function ConnectedMemberList({connectedMemberList}:{connectedMemb
                     {
                         connectedMemberList &&
                         connectedMemberList.map((value) => (
-                            <TableRow key={value.member.userId}>
-                                <TableCell className="w-1/5">
-                                    {value.member.lastName}
-                                    {value.member.firstName}
-                                </TableCell>
-                                <TableCell className="w-1/5">
-                                    {
-                                        value?.member?.sex &&
-                                        memberSex(value.member.sex)
-                                    }
-                                </TableCell>
-                                <TableCell className="w-2/5">
-                                    {value.addressDisp === true ? value.member.postCode + ' ' + value.member.address : '住所非公開'}
-                                </TableCell>
-                                <TableCell className="w-1/5">
-                                    {value.birthdayDisp === true ? convertDate(value.member.birthday) : '生年月日非公開'}
-                                </TableCell>
-                            </TableRow>
+                            <React.Fragment key={value.member.id}>
+                                <TableRow>
+                                    <TableCell className="w-1/5">
+                                        {value.member.lastName}
+                                        {value.member.firstName}
+                                    </TableCell>
+                                    <TableCell className="w-1/5">
+                                        {
+                                            value?.member?.sex &&
+                                            memberSex(value.member.sex)
+                                        }
+                                    </TableCell>
+                                    <TableCell className="w-2/5">
+                                        {value.addressDisp === true ? value.member.postCode + ' ' + value.member.address : '住所非公開'}
+                                    </TableCell>
+                                    <TableCell className="w-1/5">
+                                        {value.birthdayDisp === true ? convertDate(value.member.birthday) : '生年月日非公開'}
+                                    </TableCell>
+                                </TableRow>
+                                <TableRow>
+                                    <TableCell colSpan={4}>
+                                        <div>
+                                            現在の登録データ：
+                                        </div>
+                                        <div className="flex align-middle">
+                                            {
+                                                value.member.confMemberData.length > 0 ?
+                                                (
+                                                    value.member.confMemberData.map((cMData) => (
+                                                        cMData.customConfiguration.configurationTitle &&
+                                                        (
+                                                            <div key={cMData.oCCId}>
+                                                                【{cMData.customConfiguration.configurationTitle}】
+                                                                {cMData.configurationData}
+                                                            </div>
+                                                        )
+                                                    ))
+                                                ) : (
+                                                    <div>
+                                                        現在登録されているデータはありません
+                                                    </div>
+                                                )
+                                            }
+                                        </div>
+                                    </TableCell>
+                                </TableRow>
+                            </React.Fragment>
                         ))
                     }
                 </TableBody>

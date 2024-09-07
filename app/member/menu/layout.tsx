@@ -6,6 +6,8 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faQrcode, faUsers, faUserPen } from "@fortawesome/free-solid-svg-icons";
 import { useState } from "react";
 import clsx from "clsx";
+import { usePathname } from "next/navigation";
+import { convertReplaceText } from "@/app/lib/actions/convert";
 
 export default function MemberMenuLayout({
     children,
@@ -14,10 +16,8 @@ export default function MemberMenuLayout({
     }>) {
 
         // 現在ページ管理
-        const [currentPage, setCurrentPage] = useState('');
-        const ClickLink = (pageName:string) => {
-            setCurrentPage(pageName);
-        }
+        const pathname = usePathname();
+        const currentPage = convertReplaceText(pathname,'/member/menu/','')
 
         return(
             <div className="flex-1 flex mt-10">
@@ -25,19 +25,19 @@ export default function MemberMenuLayout({
                     <div>
                         <ul className="font-bold">
                             <li className={clsx('py-2 pl-2',{'bg-indigo-100' : currentPage == 'qr-disp'})}>
-                                <Link href={'/member/menu/qr-disp'} onClick={() => ClickLink('qr-disp')}>
+                                <Link href={'/member/menu/qr-disp'}>
                                     <FontAwesomeIcon icon={faQrcode} className="mr-2 text-xl w-5" />
                                     QRコードを表示
                                 </Link>
                             </li>
                             <li className={clsx('py-2 pl-2',{'bg-indigo-100' : currentPage == 'master-list'})}>
-                                <Link href={'/member/menu/master-list'} onClick={() => ClickLink('master-list')}>
+                                <Link href={'/member/menu/master-list'}>
                                     <FontAwesomeIcon icon={faUsers} className="mr-2 text-xl w-5" />
                                     連携先一覧
                                 </Link>
                             </li>
-                            <li className={clsx('py-1 pl-2',{'bg-indigo-100' : currentPage == 'setting-account'})}>
-                                <Link href={'/member/menu/setting/account'} onClick={() => ClickLink('setting-account')}>
+                            <li className={clsx('py-1 pl-2',{'bg-indigo-100' : currentPage == 'setting/account'})}>
+                                <Link href={'/member/menu/setting/account'}>
                                     <FontAwesomeIcon icon={faUserPen} className="mr-2 text-xl w-5" />
                                     アカウント設定
                                 </Link>

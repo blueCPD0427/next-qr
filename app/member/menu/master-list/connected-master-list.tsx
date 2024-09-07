@@ -14,6 +14,7 @@ import clsx from "clsx";;
 import { ToggleDispData } from "@/app/lib/difinitions";
 import toast from "react-hot-toast";
 import { useRouter } from "next/navigation";
+import React from "react";
 
 export function ConnectedMasterList({connectedMasterList,memberId}:{connectedMasterList:any,memberId:string})
 {
@@ -62,40 +63,69 @@ export function ConnectedMasterList({connectedMasterList,memberId}:{connectedMas
                     {
                         connectedMasterList &&
                         connectedMasterList.map((value) => (
-                            <TableRow key={value.master.id}>
-                                <TableCell className="w-1/5">
-                                    {value.master.name}
-                                </TableCell>
-                                <TableCell className="w-2/5">
-                                    {value.master.address}
-                                </TableCell>
-                                <TableCell className="w-1/5">
-                                    <div className="flex justify-between items-center px-3">
-                                        <span>{value.addressDisp === true ? '公開' : '非公開'}</span>
-                                        <Button
-                                            type="button"
-                                            className={clsx('font-bold bg-orange-500 hover:bg-orange-700',{'bg-blue-500 hover:bg-blue-700' : value.addressDisp === true})}
-                                            aria-disabled={sendPending}
-                                            onClick={() => toggleDispData(value.master.id, 'addressDisp')}
-                                        >
-                                            {value.addressDisp === true ? '非公開に変更' : '公開に変更'}
-                                        </Button>
-                                    </div>
-                                </TableCell>
-                                <TableCell className="w-1/5">
-                                    <div className="flex justify-between items-center px-3">
-                                        <span>{value.birthdayDisp === true ? '公開' : '非公開'}</span>
-                                        <Button
-                                            type="button"
-                                            className={clsx('font-bold bg-orange-500 hover:bg-orange-700',{'bg-blue-500 hover:bg-blue-700' : value.birthdayDisp === true})}
-                                            aria-disabled={sendPending}
-                                            onClick={() => toggleDispData(value.master.id, 'birthdayDisp')}
-                                        >
-                                            {value.birthdayDisp === true ? '非公開に変更' : '公開に変更'}
-                                        </Button>
-                                    </div>
-                                </TableCell>
-                            </TableRow>
+                            <React.Fragment key={value.master.id}>
+                                <TableRow>
+                                    <TableCell className="w-1/5">
+                                        {value.master.name}
+                                    </TableCell>
+                                    <TableCell className="w-2/5">
+                                        {value.master.address}
+                                    </TableCell>
+                                    <TableCell className="w-1/5">
+                                        <div className="flex justify-between items-center px-3">
+                                            <span>{value.addressDisp === true ? '公開' : '非公開'}</span>
+                                            <Button
+                                                type="button"
+                                                className={clsx('font-bold bg-orange-500 hover:bg-orange-700',{'bg-blue-500 hover:bg-blue-700' : value.addressDisp === true})}
+                                                aria-disabled={sendPending}
+                                                onClick={() => toggleDispData(value.master.id, 'addressDisp')}
+                                            >
+                                                {value.addressDisp === true ? '非公開に変更' : '公開に変更'}
+                                            </Button>
+                                        </div>
+                                    </TableCell>
+                                    <TableCell className="w-1/5">
+                                        <div className="flex justify-between items-center px-3">
+                                            <span>{value.birthdayDisp === true ? '公開' : '非公開'}</span>
+                                            <Button
+                                                type="button"
+                                                className={clsx('font-bold bg-orange-500 hover:bg-orange-700',{'bg-blue-500 hover:bg-blue-700' : value.birthdayDisp === true})}
+                                                aria-disabled={sendPending}
+                                                onClick={() => toggleDispData(value.master.id, 'birthdayDisp')}
+                                            >
+                                                {value.birthdayDisp === true ? '非公開に変更' : '公開に変更'}
+                                            </Button>
+                                        </div>
+                                    </TableCell>
+                                </TableRow>
+                                <TableRow>
+                                    <TableCell colSpan={4}>
+                                        <div>
+                                            現在の登録データ：
+                                        </div>
+                                        <div className="flex align-middle">
+                                            {
+                                                value.member.confMemberData.length > 0 ?
+                                                (
+                                                    value.member.confMemberData.map((cMData) => (
+                                                        cMData.customConfiguration.configurationTitle &&
+                                                        (
+                                                            <div key={cMData.oCCId}>
+                                                                【{cMData.customConfiguration.configurationTitle}】
+                                                                {cMData.configurationData}
+                                                            </div>
+                                                        )
+                                                    ))
+                                                ) : (
+                                                    <div>
+                                                        現在登録されているデータはありません
+                                                    </div>
+                                                )
+                                            }
+                                        </div>
+                                    </TableCell>
+                                </TableRow>
+                            </React.Fragment>
                         ))
                     }
                 </TableBody>

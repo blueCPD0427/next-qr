@@ -10,8 +10,9 @@ import {
     AccordionItem,
     AccordionTrigger,
 } from "@/components/ui/accordion";
-import { useState } from "react";
 import clsx from "clsx";
+import { usePathname } from "next/navigation";
+import { convertReplaceText } from "@/app/lib/actions/convert";
 
 export default function MasterMenuLayout({
     children,
@@ -20,10 +21,8 @@ export default function MasterMenuLayout({
     }>) {
 
         // 現在ページ管理
-        const [currentPage, setCurrentPage] = useState('');
-        const ClickLink = (pageName:string) => {
-            setCurrentPage(pageName);
-        }
+        const pathname = usePathname();
+        const currentPage = convertReplaceText(pathname,'/master/menu/','')
 
         return(
             <div className="flex-1 flex mt-10">
@@ -31,19 +30,19 @@ export default function MasterMenuLayout({
                     <div>
                         <ul className="font-bold">
                             <li className={clsx('py-2 pl-2',{'bg-indigo-100' : currentPage == 'qr-disp'})}>
-                                <Link href={'/master/menu/qr-disp'} onClick={() => ClickLink('qr-disp')}>
+                                <Link href={'/master/menu/qr-disp'}>
                                     <FontAwesomeIcon icon={faQrcode} className="mr-2 text-xl w-5" />
                                     店舗QRコードを表示
                                 </Link>
                             </li>
                             <li className={clsx('py-2 pl-2',{'bg-indigo-100' : currentPage == 'qr-read'})}>
-                                <Link href={'/master/menu/qr-read'} onClick={() => ClickLink('qr-read')}>
+                                <Link href={'/master/menu/qr-read'}>
                                     <FontAwesomeIcon icon={faExpand} className="mr-2 text-xl w-5" />
                                     QR読み取り
                                 </Link>
                             </li>
                             <li className={clsx('py-2 pl-2',{'bg-indigo-100' : currentPage == 'member-list'})}>
-                                <Link href={'/master/menu/member-list'} onClick={() => ClickLink('member-list')}>
+                                <Link href={'/master/menu/member-list'}>
                                     <FontAwesomeIcon icon={faUsers} className="mr-2 text-xl w-5" />
                                     連携済みメンバー一覧
                                 </Link>
@@ -55,14 +54,14 @@ export default function MasterMenuLayout({
                                             <FontAwesomeIcon icon={faGear} className="mr-2 text-xl w-5" />
                                             各種設定
                                         </AccordionTrigger>
-                                        <AccordionContent className={clsx('py-1 pl-2',{'bg-indigo-100' : currentPage == 'setting-account'})}>
-                                            <Link href={'/master/menu/setting/account'} onClick={() => ClickLink('setting-account')}>
+                                        <AccordionContent className={clsx('py-1 pl-2',{'bg-indigo-100' : currentPage == 'setting/account'})}>
+                                            <Link href={'/master/menu/setting/account'}>
                                                 <FontAwesomeIcon icon={faShop} className="mr-2 text-xl w-5" />
                                                 アカウント設定
                                             </Link>
                                         </AccordionContent>
-                                        <AccordionContent className={clsx('py-1 pl-2',{'bg-indigo-100' : currentPage == 'setting-form'})}>
-                                            <Link href={'/master/menu/setting/form'} onClick={() => ClickLink('setting-form')}>
+                                        <AccordionContent className={clsx('py-1 pl-2',{'bg-indigo-100' : currentPage == 'setting/form'})}>
+                                            <Link href={'/master/menu/setting/form'}>
                                                 <FontAwesomeIcon icon={faUserPen} className="mr-2 text-xl w-5" />
                                                 メンバーデータ項目設定
                                             </Link>
