@@ -170,7 +170,7 @@ export default function AccountForm({editMasterData}:{editMasterData?:MasterAcco
 
 
     return(
-        <div className="flex items-center justify-center min-h-screen bg-green-100">
+        <div className="flex items-center justify-center min-h-screen">
             <div className="bg-white p-8 rounded-lg shadow-md w-full max-w-2xl overflow-y-auto max-h-screen-80">
                 <h2 className="text-2xl font-bold mb-6 text-green-700">
                     マスターアカウント{formType == 'create' ? '作成' : '更新'}

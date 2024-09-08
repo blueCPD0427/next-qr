@@ -29,7 +29,7 @@ export default function ConnectedMemberList({connectedMemberList}:{connectedMemb
 
     return (
         <div className="bg-white rounded p-5 w-4/5">
-            <Table>
+            <Table className="whitespace-nowrap">
                 <TableHeader>
                     <TableRow>
                         <TableHead className="w-1/5">名前</TableHead>

@@ -45,7 +45,7 @@ function LogoutButton(){
         <button className="border rounded py-1 px-2 flex">
             <FontAwesomeIcon icon={pending ? faDoorOpen : faDoorClosed} className="inline-block h-[20px] mr-1"/>
             <span className={
-                clsx('inline-block font-bold',{
+                clsx('hidden sm:inline-block font-bold',{
                     'opacity-50 cursor-wait' : pending === true
                 })
             }>

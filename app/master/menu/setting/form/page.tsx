@@ -39,52 +39,54 @@ export default async function SettingFormPage()
     // 簡単な検索フォームくらいあってもいいかもしんない
 
     return (
-        <div>
-            <div className="mb-5">
-                <div>
+        <div className="flex justify-center mt-20">
+            <div>
+                <div className="mb-5">
                     <div>
-                        登録済みの項目
+                        <div>
+                            登録済みの項目
+                        </div>
+                        {
+                            oCClist.length > 0 ?
+                            (
+                                <div className="bg-white rounded p-3">
+                                    <MasterCustomFormList oCClist={oCClist} oCCTypes={oCCTypes} masterId={masterId} />
+                                </div>
+                            ):(
+                                <Alert className="bg-white p-3">
+                                    <AlertDescription>
+                                        <FontAwesomeIcon className="text-orange-500 font-bold mr-3" icon={faTriangleExclamation} />
+                                        登録されているフォームはありません。
+                                    </AlertDescription>
+                                </Alert>
+                            )
+                        }
                     </div>
-                    {
-                        oCClist.length > 0 ?
-                        (
-                            <div className="bg-white rounded p-3 w-1/3">
-                                <MasterCustomFormList oCClist={oCClist} oCCTypes={oCCTypes} masterId={masterId} />
-                            </div>
-                        ):(
-                            <Alert className="bg-white p-3 w-1/3">
-                                <AlertDescription>
-                                    <FontAwesomeIcon className="text-orange-500 font-bold mr-3" icon={faTriangleExclamation} />
-                                    登録されているフォームはありません。
-                                </AlertDescription>
-                            </Alert>
-                        )
-                    }
                 </div>
+                {
+                    oCClist.length >= 5 ?
+                    (
+                        <Alert>
+                            <AlertDescription>
+                                <FontAwesomeIcon className="text-orange-500 font-bold mr-3" icon={faTriangleExclamation} />
+                                フォーム追加の上限に達したため、新規追加はできません
+                            </AlertDescription>
+                        </Alert>
+                    ) : (
+                        <div className="mt-5">
+                            <div>
+                                新規登録
+                                <span className="text-sm font-bold">
+                                    ※最大5つまで
+                                </span>
+                            </div>
+                            <div>
+                                <MasterCustomFormComponent oCCTypes={oCCTypes} masterId={masterId} />
+                            </div>
+                        </div>
+                    )
+                }
             </div>
-            {
-                oCClist.length >= 5 ?
-                (
-                    <Alert>
-                        <AlertDescription>
-                            <FontAwesomeIcon className="text-orange-500 font-bold mr-3" icon={faTriangleExclamation} />
-                            フォーム追加の上限に達したため、新規追加はできません
-                        </AlertDescription>
-                    </Alert>
-                ) : (
-                    <div className="mt-5">
-                        <div>
-                            新規登録
-                            <span className="text-sm font-bold">
-                                ※最大5つまで
-                            </span>
-                        </div>
-                        <div>
-                            <MasterCustomFormComponent oCCTypes={oCCTypes} masterId={masterId} />
-                        </div>
-                    </div>
-                )
-            }
         </div>
     )
 }

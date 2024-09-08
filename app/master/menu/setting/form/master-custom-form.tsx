@@ -117,8 +117,8 @@ masterId:string})
 
 
     return(
-        <div className="flex w-2/3">
-            <div className="flex w-3/4 items-end">
+        <div className="flex">
+            <div className="flex items-end">
                 <div className="w-1/2 mr-3">
                     <Label htmlFor="title">データ名</Label>
                     <Input type="text" id="title" name="configurationTitle" onChange={formChange} value={formContents.configurationTitle}/>
