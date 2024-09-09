@@ -33,7 +33,7 @@ function reducer(state:MasterAccountForm, action:Action) {
 }
 
 
-export default function AccountForm({editMasterData}:{editMasterData?:MasterAccountForm}){
+export default function AccountForm({editMasterData}:{editMasterData?:any}){
 
     const initialState:MasterAccountValidateStateInside = {};
 

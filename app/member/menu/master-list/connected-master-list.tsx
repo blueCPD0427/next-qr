@@ -62,7 +62,7 @@ export function ConnectedMasterList({connectedMasterList,memberId}:{connectedMas
                 <TableBody>
                     {
                         connectedMasterList &&
-                        connectedMasterList.map((value) => (
+                        connectedMasterList.map((value:any) => (
                             <React.Fragment key={value.master.id}>
                                 <TableRow className="border-b-0 border-black">
                                     <TableCell className="w-1/5">
@@ -107,7 +107,7 @@ export function ConnectedMasterList({connectedMasterList,memberId}:{connectedMas
                                             {
                                                 value.member.confMemberData.length > 0 ?
                                                 (
-                                                    value.member.confMemberData.map((cMData) => (
+                                                    value.member.confMemberData.map((cMData:any) => (
                                                         cMData.customConfiguration.configurationTitle &&
                                                         (
                                                             <div key={cMData.mCCId}>

@@ -41,7 +41,7 @@ export default function ConnectedMemberList({connectedMemberList}:{connectedMemb
                 <TableBody>
                     {
                         connectedMemberList &&
-                        connectedMemberList.map((value) => (
+                        connectedMemberList.map((value:any) => (
                             <React.Fragment key={value.member.id}>
                                 <TableRow className="border-b-0 border-black">
                                     <TableCell className="w-1/5">
@@ -70,7 +70,7 @@ export default function ConnectedMemberList({connectedMemberList}:{connectedMemb
                                             {
                                                 value.member.confMemberData.length > 0 ?
                                                 (
-                                                    value.member.confMemberData.map((cMData) => (
+                                                    value.member.confMemberData.map((cMData:any) => (
                                                         cMData.customConfiguration.configurationTitle &&
                                                         (
                                                             <div key={cMData.mCCId}>

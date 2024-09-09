@@ -20,7 +20,7 @@ export interface MemberAccountForm {
     id?: string
     lastName: string
     firstName: string
-    sex?: 'male' | 'female'
+    sex?: 'male' | 'female' | ''
     email: string
     password: string
     confirmPassword: string

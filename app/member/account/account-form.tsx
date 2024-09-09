@@ -37,7 +37,7 @@ function reducer(state:MemberAccountForm, action:Action) {
     }
 }
 
-export default function AccountForm({editMemberData}:{editMemberData?:MemberAccountForm}){
+export default function AccountForm({editMemberData}:{editMemberData?:any}){
 
     const initialState:MemberAccountValidateStateInside = {};
 
@@ -51,9 +51,9 @@ export default function AccountForm({editMemberData}:{editMemberData?:MemberAcco
     const [getAddressText, setGetAddressText] = useState("");
     const [sendPending, setSendPending] = useState(false);
 
-    const [selectedSexValue, setSelectedSexValue] = useState(null);
+    const [selectedSexValue, setSelectedSexValue] = useState('');
 
-    const sexRadioChange = (e) => {
+    const sexRadioChange = (e:any) => {
         const value = e.target.value;
         setSelectedSexValue(selectedSexValue === value ? null : value);
         if(e.target.checked === true){
