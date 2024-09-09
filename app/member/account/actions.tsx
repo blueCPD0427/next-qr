@@ -10,24 +10,27 @@ import { redirect } from "next/navigation";
 
 // ログイン認証
 export async function authenticate(prevState: boolean, formData: FormData) {
+
+    // try catch内でredirectを行うとcatchされてしまうので、外でredirectする
+    let redirectPath = null;
     try {
         const formDataObj = Object.fromEntries(formData.entries());
-        await signIn('credentials', formData);
+        const signInRes = await signIn('credentials', {
+            redirect: false,
+            ...formDataObj,
+        });
 
-        return true
+        redirectPath = signInRes;
+
     } catch (error) {
-        // リダイレクトエラーの場合は補正してやる
-        if (isRedirectError(error)) {
-            redirect("/member/menu");
-        }
         if ((error as Error).message.includes('CredentialsSignin')) {
             return false
         }
 
         return false;
-        // throw error
     }
 
+    redirect(redirectPath);
 }
 
 export async function LogoutAction() {

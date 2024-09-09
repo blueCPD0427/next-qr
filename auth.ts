@@ -95,8 +95,14 @@ export const { handlers: { GET, POST }, auth, signIn, signOut } = NextAuth({
         },
         async redirect({url, baseUrl}){
 
+            const nUrl = new URL(url);
+            const callbackUrl = nUrl.searchParams.get('callbackUrl');
+
             // ログイン認証後のリダイレクト先のURLをカスタマイズ
             switch(true){
+                case callbackUrl != null && callbackUrl != '':
+                    return baseUrl + callbackUrl;
+                    break;
                 case url == `${baseUrl}/master/login`:
                     return `${baseUrl}/master/menu`;
                     break;

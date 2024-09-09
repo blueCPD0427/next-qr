@@ -10,20 +10,26 @@ import { MasterAccountForm } from "@/app/lib/difinitions";
 
 // ログイン認証
 export async function authenticate(prevState: boolean, formData: FormData) {
+    // try catch内でredirectを行うとcatchされてしまうので、外でredirectする
+    let redirectPath = null;
     try {
-        await signIn('credentials', formData);
-        return true
+        const formDataObj = Object.fromEntries(formData.entries());
+        const signInRes = await signIn('credentials', {
+            redirect: false,
+            ...formDataObj,
+        });
+
+        redirectPath = signInRes;
+
     } catch (error) {
-        // リダイレクトエラーの場合は補正してやる
-        if (isRedirectError(error)) {
-            redirect("/master/menu");
-        }
         if ((error as Error).message.includes('CredentialsSignin')) {
             return false
         }
+
         return false;
-        // throw error
     }
+
+    redirect(redirectPath);
 }
 
 export async function LogoutAction() {

@@ -34,7 +34,19 @@ export const authConfig = {
                     return false;
 
                 }else{
-                    return false;
+                    const url = nextUrl.clone();
+                    switch(true){
+                        case isOnNeedMasterAuth:
+                            url.pathname = '/master/login';
+                        break;
+                        case isOnNeedMemberAuth:
+                            url.pathname = '/member/login';
+                        break;
+                    }
+
+                    url.searchParams.set('callbackUrl', nextUrl.pathname);
+
+                    return Response.redirect(url);
                 }
             } else if (isLoggedIn) {
                 const accountType = auth?.user?.type;
