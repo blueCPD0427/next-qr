@@ -86,12 +86,13 @@ export default function AccountForm({editMemberData}:{editMemberData?:MemberAcco
         initForm.birthdayM = editMemberData.birthdayM;
         initForm.birthdayD = editMemberData.birthdayD;
 
-        useEffect(()=> {
-            if(initForm.sex != null){
-                setSelectedSexValue(initForm.sex);
-            }
-        },[initForm])
     }
+
+    useEffect(()=> {
+        if(initForm.sex != null){
+            setSelectedSexValue(initForm.sex);
+        }
+    },[initForm])
 
 
     function setFormValue(formName:string, formValue:string){

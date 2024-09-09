@@ -1,5 +1,5 @@
 'use client';
-import React, { useState, useReducer, useEffect } from "react";
+import React, { useState, useReducer } from "react";
 import { getAddressFromPostCode } from "@/app/lib/actions/action";
 import { convertReplaceText,convertToHalfNumber } from "@/app/lib/actions/convert";
 import { isHalfNumeric } from "@/app/lib/actions/judge";
