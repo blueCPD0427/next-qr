@@ -16,7 +16,7 @@ import {
     CardTitle,
 } from "@/components/ui/card"
 
-export default function CustomFormBase({oCClist,memberId,memberName}:{oCClist:any,memberId:string,memberName:string})
+export default function CustomFormBase({mCClist,memberId,memberName}:{mCClist:any,memberId:string,memberName:string})
 {
     const initialState = {};
     const [state, dispatch] = useFormState(setCustomForm, initialState);
@@ -27,7 +27,7 @@ export default function CustomFormBase({oCClist,memberId,memberName}:{oCClist:an
                 toast.success(state.message);
                 break;
             case state.success === false:
-                console.error(state);
+                console.error(state.errors);
                 toast.error(state.message);
                 break;
         }
@@ -42,14 +42,53 @@ export default function CustomFormBase({oCClist,memberId,memberName}:{oCClist:an
                             <CardTitle>【{memberName}】様</CardTitle>
                         </CardHeader>
                         {
-                            oCClist && oCClist.map((oCC) => {
-                                switch (oCC.configurationConstraint) {
+                            mCClist && mCClist.map((mCC) => {
+                                switch (mCC.configurationConstraint) {
                                     case 'text':
-                                        return <CardContent key={oCC.id}><TextCustomFormPage oCCData={oCC} /></CardContent>;
+                                        return (
+                                            <CardContent key={mCC.id}>
+                                                <TextCustomFormPage mCCData={mCC} />
+                                                {
+                                                    state?.errors != undefined &&
+                                                    state?.errors[mCC.id + '_text'] != undefined &&
+                                                    state?.errors[mCC.id + '_text'].map((error: string) => (
+                                                        <p className="mt-2 text-sm text-red-500" key={error}>
+                                                            {error}
+                                                        </p>
+                                                    ))
+                                                }
+                                            </CardContent>
+                                        );
                                     case 'int':
-                                        return <CardContent key={oCC.id}><IntCustomFormPage oCCData={oCC} /></CardContent>;
+                                        return (
+                                            <CardContent key={mCC.id}>
+                                                <IntCustomFormPage mCCData={mCC} />
+                                                {
+                                                    state?.errors != undefined &&
+                                                    state.errors[mCC.id + '_int'] != undefined &&
+                                                    state.errors[mCC.id + '_int'].map((error: string) => (
+                                                        <p className="mt-2 text-sm text-red-500" key={error}>
+                                                            {error}
+                                                        </p>
+                                                    ))
+                                                }
+                                            </CardContent>
+                                        );
                                     case 'boolean':
-                                        return <CardContent key={oCC.id}><BooleanCustomFormPage oCCData={oCC} /></CardContent>;
+                                        return (
+                                            <CardContent key={mCC.id}>
+                                                <BooleanCustomFormPage mCCData={mCC} />
+                                                {
+                                                    state?.errors != undefined &&
+                                                    state.errors[mCC.id + '_boolean'] != undefined &&
+                                                    state.errors[mCC.id + '_boolean'].map((error: string) => (
+                                                        <p className="mt-2 text-sm text-red-500" key={error}>
+                                                            {error}
+                                                        </p>
+                                                    ))
+                                                }
+                                            </CardContent>
+                                        );
                                     default:
                                         return null;
                                 }

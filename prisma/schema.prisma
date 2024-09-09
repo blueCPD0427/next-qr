@@ -111,16 +111,16 @@ enum ConfConst {
 
 // マスター毎のメンバーデータテーブル
 model ConfigurationsMemberData {
-  oCCId               String @map(name: "occ_id")
+  mCCId               String @map(name: "occ_id")
   memberId          String @map(name: "member_id")
   // データ設定テーブルの方で形式を指定（バリデーション）しているので、実際の保存領域はStringにしておく
   configurationData   String? @map(name: "configuration_data")
   createdAt           DateTime @default(now()) @map(name: "created_at")
   updatedAt           DateTime @updatedAt @map(name: "updated_at")
 
-  customConfiguration MastersCustomConfigurations @relation(fields: [oCCId], references: [id], onDelete: Cascade)
+  customConfiguration MastersCustomConfigurations @relation(fields: [mCCId], references: [id], onDelete: Cascade)
   member            Members @relation(fields: [memberId], references: [id], onDelete: Cascade)
 
-  @@id([oCCId, memberId])
+  @@id([mCCId, memberId])
   @@map(name: "conf_member_data")
 }

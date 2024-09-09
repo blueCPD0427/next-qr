@@ -5,7 +5,7 @@ import {z} from 'zod';
 import prisma from "@/app/lib/prisma";
 
 export async function getMastersCustomConfigurations(masterId:string, memberId:string){
-    const oCClist = await prisma.mastersCustomConfigurations.findMany({
+    const mCClist = await prisma.mastersCustomConfigurations.findMany({
         where : {
             masterId: masterId
         },
@@ -26,7 +26,7 @@ export async function getMastersCustomConfigurations(masterId:string, memberId:s
         },
     })
 
-    return oCClist;
+    return mCClist;
 }
 
 export async function getMasterToMemberRelations(masterId:string, memberId:string){
@@ -60,7 +60,7 @@ export async function setCustomForm(prevState, formData: FormData) {
         const session = await auth();
 
         // ここで送信される想定のform名を全部取得
-        const oCClist = await prisma.mastersCustomConfigurations.findMany({
+        const mCClist = await prisma.mastersCustomConfigurations.findMany({
             where : {
                 masterId: session?.user?.id
             },
@@ -81,14 +81,14 @@ export async function setCustomForm(prevState, formData: FormData) {
         });
 
         // ここのタイプエラーをなんとかしたい
-        oCClist.map((oCC) => {
-            const customName = oCC.id;
+        mCClist.map((mCC) => {
+            const customName = mCC.id;
 
-            if(oCC?.configurationConstraint == undefined){
+            if(mCC?.configurationConstraint == undefined){
                 return false;
             }
 
-            const customType = oCC?.configurationConstraint;
+            const customType = mCC?.configurationConstraint;
 
             const formName = customName+'_'+customType;
 
@@ -97,26 +97,24 @@ export async function setCustomForm(prevState, formData: FormData) {
 
             // 各タイプのバリデーション設定
             switch(true){
-                case(oCC.configurationConstraint == 'text'):
+                case(mCC.configurationConstraint == 'text'):
                     CustomFormSchema = CustomFormSchema.extend({
                         [formName]: z.string()
-                                        .min(1,{message:'値が空です'})
                                         .max(100,{message:'値は100文字までです'})
                     })
 
                     formInputData = formData.get(formName);
                     break;
-                case(oCC.configurationConstraint == 'int'):
+                case(mCC.configurationConstraint == 'int'):
                     CustomFormSchema = CustomFormSchema.extend({
                         [customName+'_int']: z.string()
-                                                .min(1,{message:'値が空です'})
                                                 .max(100,{message:'値は100文字までです'})
-                                                .regex(/^[0-9]+$/,{message: "半角数字のみで入力してください。"}),
+                                                .regex(/^[0-9]*$/,{message: "半角数字のみで入力してください。"}),
                     })
 
                     formInputData = formData.get(formName);
                     break;
-                case(oCC.configurationConstraint == 'boolean'):
+                case(mCC.configurationConstraint == 'boolean'):
                     CustomFormSchema = CustomFormSchema.extend({
                         [customName+'_boolean']: z.enum(['true',''],{message:'値が不正です'})
                     })
@@ -167,8 +165,8 @@ export async function setCustomForm(prevState, formData: FormData) {
         }
 
         try{
-            oCClist.map(async (oCC) => {
-                const formName = oCC.id + '_' + oCC.configurationConstraint;
+            mCClist.map(async (mCC) => {
+                const formName = mCC.id + '_' + mCC.configurationConstraint;
                 let inputCustomData = validationTarget?.[formName];
                 if(typeof inputCustomData !== 'string'){
                     inputCustomData = '';
@@ -177,7 +175,7 @@ export async function setCustomForm(prevState, formData: FormData) {
                 // ここで各フォームの内容を入れる
                 const existMemberData = await prisma.configurationsMemberData.count({
                     where:{
-                        oCCId: oCC.id,
+                        mCCId: mCC.id,
                         memberId: memberId
                     }
                 })
@@ -186,8 +184,8 @@ export async function setCustomForm(prevState, formData: FormData) {
                 if(existMemberData > 0){
                     const updateMemberData = await prisma.configurationsMemberData.update({
                         where:{
-                            oCCId_memberId:{
-                                oCCId: oCC.id,
+                            mCCId_memberId:{
+                                mCCId: mCC.id,
                                 memberId: memberId
                             }
                         },
@@ -199,7 +197,7 @@ export async function setCustomForm(prevState, formData: FormData) {
                 }else{
                     const createMemberData = await prisma.configurationsMemberData.create({
                         data:{
-                            oCCId: oCC.id,
+                            mCCId: mCC.id,
                             memberId: memberId,
                             configurationData: inputCustomData
                         }

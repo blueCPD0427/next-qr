@@ -28,7 +28,7 @@ export default async function MemberMasterListPage()
                 select:{
                     confMemberData:{
                         select:{
-                            oCCId:true,
+                            mCCId:true,
                             configurationData:true,
                             customConfiguration:{
                                 select:{
@@ -36,6 +36,9 @@ export default async function MemberMasterListPage()
                                 }
                             }
                         },
+                        orderBy:{
+                            createdAt:'asc',
+                        }
                     },
                 },
             }

@@ -27,8 +27,8 @@ export default async function QrReadResultPage({params}: {params: {memberId:stri
         redirect('/404');
     }
 
-    const oCClist = await getMastersCustomConfigurations(masterId, memberId);
-    if(!oCClist){
+    const mCClist = await getMastersCustomConfigurations(masterId, memberId);
+    if(!mCClist){
         // 無ければエラー表示+エディット画面へのリンク
         redirect('/404');
     }
@@ -53,7 +53,7 @@ export default async function QrReadResultPage({params}: {params: {memberId:stri
 
     return (
         <div>
-            <CustomFormBase oCClist={oCClist} memberId={memberId} memberName={memberName} />
+            <CustomFormBase mCClist={mCClist} memberId={memberId} memberName={memberName} />
         </div>
     )
 }

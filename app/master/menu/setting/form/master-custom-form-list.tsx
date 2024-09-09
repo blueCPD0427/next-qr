@@ -27,7 +27,7 @@ import toast from "react-hot-toast";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 
-export default function MasterCustomFormList({oCClist,oCCTypes,masterId}:{oCClist:any,oCCTypes:any,masterId:string})
+export default function MasterCustomFormList({mCClist,mCCTypes,masterId}:{mCClist:any,mCCTypes:any,masterId:string})
 {
     const router = useRouter();
     const [sendPending, setSendPending] = useState(false);
@@ -69,13 +69,13 @@ export default function MasterCustomFormList({oCClist,oCCTypes,masterId}:{oCClis
             </TableHeader>
             <TableBody>
                 {
-                    oCClist.map((oCC:any)=>(
-                        <TableRow key={oCC.id}>
+                    mCClist.map((mCC:any)=>(
+                        <TableRow key={mCC.id}>
                             <TableCell className="w-2/5">
-                                {oCC.configurationTitle}
+                                {mCC.configurationTitle}
                             </TableCell>
                             <TableCell className="w-2/5">
-                                {oCCTypes[oCC.configurationConstraint]}
+                                {mCCTypes[mCC.configurationConstraint]}
                             </TableCell>
                             <TableCell className="w-1/5">
                                 <AlertDialog>
@@ -102,7 +102,7 @@ export default function MasterCustomFormList({oCClist,oCCTypes,masterId}:{oCClis
                                             <AlertDialogCancel>
                                                 いいえ
                                             </AlertDialogCancel>
-                                            <AlertDialogAction className="bg-green-500 hover:bg-green-700" onClick={() => deleteCustomForm(oCC.id)}>
+                                            <AlertDialogAction className="bg-green-500 hover:bg-green-700" onClick={() => deleteCustomForm(mCC.id)}>
                                                 はい
                                             </AlertDialogAction>
                                         </AlertDialogFooter>

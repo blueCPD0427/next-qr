@@ -5,13 +5,13 @@ import { Label } from "@/components/ui/label";
 
 export default function IntCustomFormPage(
     {
-        oCCData
+        mCCData
     }:{
-        oCCData:OCCListInside
+        mCCData:OCCListInside
     }
 ){
 
-    const confMemberData = oCCData.confMemberData != undefined ? oCCData.confMemberData[0] : null;
+    const confMemberData = mCCData.confMemberData != undefined ? mCCData.confMemberData[0] : null;
     let defaultValue = '';
     if(confMemberData != undefined){
         defaultValue = confMemberData.configurationData;
@@ -19,10 +19,10 @@ export default function IntCustomFormPage(
 
     return(
         <div>
-            <Label htmlFor={oCCData.id}>
-                {oCCData.configurationTitle}
+            <Label htmlFor={mCCData.id}>
+                {mCCData.configurationTitle}
             </Label>
-            <Input id={oCCData.id} type="text" name={oCCData.id + '_int'} defaultValue={defaultValue != undefined ? defaultValue : ''} />
+            <Input id={mCCData.id} type="text" name={mCCData.id + '_int'} defaultValue={defaultValue != undefined ? defaultValue : ''} />
         </div>
     )
 }

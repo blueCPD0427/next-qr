@@ -47,7 +47,7 @@ function reducer(state:MasterCustomForm, action:Action) {
     }
 }
 
-export default function MasterCustomFormComponent({oCCTypes,masterId}:{oCCTypes:{
+export default function MasterCustomFormComponent({mCCTypes,masterId}:{mCCTypes:{
     text: string,
     int: string,
     boolean: string,
@@ -131,10 +131,10 @@ masterId:string})
                         </SelectTrigger>
                         <SelectContent>
                             {
-                                Object.keys(oCCTypes).map((oCC)=>(
-                                    <SelectItem key={oCC} value={oCC}>
+                                Object.keys(mCCTypes).map((mCC)=>(
+                                    <SelectItem key={mCC} value={mCC}>
                                         {
-                                            oCCTypes[oCC]
+                                            mCCTypes[mCC]
                                         }
                                     </SelectItem>
                                 ))

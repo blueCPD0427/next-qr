@@ -31,7 +31,7 @@ export default function ConnectedMemberList({connectedMemberList}:{connectedMemb
         <div className="bg-white rounded p-5 w-4/5">
             <Table className="whitespace-nowrap">
                 <TableHeader>
-                    <TableRow>
+                    <TableRow className="border-black">
                         <TableHead className="w-1/5">名前</TableHead>
                         <TableHead className="w-1/5">性別</TableHead>
                         <TableHead className="w-2/5">住所</TableHead>
@@ -43,7 +43,7 @@ export default function ConnectedMemberList({connectedMemberList}:{connectedMemb
                         connectedMemberList &&
                         connectedMemberList.map((value) => (
                             <React.Fragment key={value.member.id}>
-                                <TableRow>
+                                <TableRow className="border-b-0 border-black">
                                     <TableCell className="w-1/5">
                                         {value.member.lastName}
                                         {value.member.firstName}
@@ -61,7 +61,7 @@ export default function ConnectedMemberList({connectedMemberList}:{connectedMemb
                                         {value.birthdayDisp === true ? convertDate(value.member.birthday) : '生年月日非公開'}
                                     </TableCell>
                                 </TableRow>
-                                <TableRow>
+                                <TableRow className="border-black">
                                     <TableCell colSpan={4}>
                                         <div>
                                             現在の登録データ：
@@ -73,9 +73,9 @@ export default function ConnectedMemberList({connectedMemberList}:{connectedMemb
                                                     value.member.confMemberData.map((cMData) => (
                                                         cMData.customConfiguration.configurationTitle &&
                                                         (
-                                                            <div key={cMData.oCCId}>
+                                                            <div key={cMData.mCCId}>
                                                                 【{cMData.customConfiguration.configurationTitle}】
-                                                                {cMData.configurationData}
+                                                                [{cMData.configurationData}]
                                                             </div>
                                                         )
                                                     ))

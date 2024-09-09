@@ -52,7 +52,7 @@ export function ConnectedMasterList({connectedMasterList,memberId}:{connectedMas
         <div className="bg-white rounded p-5 w-4/5">
             <Table className="whitespace-nowrap">
                 <TableHeader>
-                    <TableRow>
+                    <TableRow className="border-black">
                         <TableHead className="w-1/5">連携先</TableHead>
                         <TableHead className="w-2/5">住所</TableHead>
                         <TableHead className="w-1/5">住所の公開</TableHead>
@@ -64,7 +64,7 @@ export function ConnectedMasterList({connectedMasterList,memberId}:{connectedMas
                         connectedMasterList &&
                         connectedMasterList.map((value) => (
                             <React.Fragment key={value.master.id}>
-                                <TableRow>
+                                <TableRow className="border-b-0 border-black">
                                     <TableCell className="w-1/5">
                                         {value.master.name}
                                     </TableCell>
@@ -98,7 +98,7 @@ export function ConnectedMasterList({connectedMasterList,memberId}:{connectedMas
                                         </div>
                                     </TableCell>
                                 </TableRow>
-                                <TableRow>
+                                <TableRow className="border-black">
                                     <TableCell colSpan={4}>
                                         <div>
                                             現在の登録データ：
@@ -110,7 +110,7 @@ export function ConnectedMasterList({connectedMasterList,memberId}:{connectedMas
                                                     value.member.confMemberData.map((cMData) => (
                                                         cMData.customConfiguration.configurationTitle &&
                                                         (
-                                                            <div key={cMData.oCCId}>
+                                                            <div key={cMData.mCCId}>
                                                                 【{cMData.customConfiguration.configurationTitle}】
                                                                 {cMData.configurationData}
                                                             </div>

@@ -16,7 +16,7 @@ export default async function SettingFormPage()
         redirect('/404');
     }
 
-    const oCClist = await prisma.mastersCustomConfigurations.findMany({
+    const mCClist = await prisma.mastersCustomConfigurations.findMany({
         where : {
             masterId: masterId
         },
@@ -28,7 +28,7 @@ export default async function SettingFormPage()
         },
     })
 
-    const oCCTypes = {
+    const mCCTypes = {
         text: "テキスト",
         int: "数値",
         boolean: "ON/OFF",
@@ -47,10 +47,10 @@ export default async function SettingFormPage()
                             登録済みの項目
                         </div>
                         {
-                            oCClist.length > 0 ?
+                            mCClist.length > 0 ?
                             (
                                 <div className="bg-white rounded p-3">
-                                    <MasterCustomFormList oCClist={oCClist} oCCTypes={oCCTypes} masterId={masterId} />
+                                    <MasterCustomFormList mCClist={mCClist} mCCTypes={mCCTypes} masterId={masterId} />
                                 </div>
                             ):(
                                 <Alert className="bg-white p-3">
@@ -64,7 +64,7 @@ export default async function SettingFormPage()
                     </div>
                 </div>
                 {
-                    oCClist.length >= 5 ?
+                    mCClist.length >= 5 ?
                     (
                         <Alert>
                             <AlertDescription>
@@ -81,7 +81,7 @@ export default async function SettingFormPage()
                                 </span>
                             </div>
                             <div>
-                                <MasterCustomFormComponent oCCTypes={oCCTypes} masterId={masterId} />
+                                <MasterCustomFormComponent mCCTypes={mCCTypes} masterId={masterId} />
                             </div>
                         </div>
                     )
