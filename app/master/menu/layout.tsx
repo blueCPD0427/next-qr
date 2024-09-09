@@ -31,7 +31,7 @@ export default function MasterMenuLayout({
 
         return(
             <div className="mt-10">
-                <div className="fixed top-12 left-0 w-full shadow-md z-50 border p-3 overflow-y-auto bg-yellow-50">
+                <div className="fixed top-12 left-0 w-full z-50 p-3 overflow-y-auto">
                     <Menubar className="inline-block border-black">
                         <MenubarMenu>
                             <MenubarTrigger className="cursor-pointer">

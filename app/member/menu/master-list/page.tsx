@@ -46,7 +46,7 @@ export default async function MemberMasterListPage()
     })
 
     return (
-        <div>
+        <div className="flex justify-center mt-20">
             {
                 connectedMasterList.length > 0 ?
                 (

@@ -49,8 +49,8 @@ export function ConnectedMasterList({connectedMasterList,memberId}:{connectedMas
     }
 
     return (
-        <div className="bg-white rounded">
-            <Table>
+        <div className="bg-white rounded p-5 w-4/5">
+            <Table className="whitespace-nowrap">
                 <TableHeader>
                     <TableRow>
                         <TableHead className="w-1/5">連携先</TableHead>
