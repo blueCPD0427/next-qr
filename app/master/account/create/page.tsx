@@ -8,7 +8,7 @@ export const metadata: Metadata = {
 export default function MasterAcountCreatePage(){
 
     return (
-        <div>
+        <div className="bg-green-100">
             <AccountForm />
         </div>
     )

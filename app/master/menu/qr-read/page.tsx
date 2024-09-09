@@ -26,7 +26,7 @@ export default async function MasterQrReadPage() {
     })
 
     return(
-        <div>
+        <div className='mt-20'>
             {
                 mCCCount > 0 ?(
                     <QrRead />

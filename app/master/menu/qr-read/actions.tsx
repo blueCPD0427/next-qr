@@ -53,7 +53,7 @@ type ValidationTarget = {
     [key: string]: FormDataEntryValue | null;
 };
 
-export async function setCustomForm(prevState, formData: FormData) {
+export async function setCustomForm(prevState:any, formData: FormData) {
 
     try{
 
@@ -81,6 +81,9 @@ export async function setCustomForm(prevState, formData: FormData) {
         });
 
         // ここのタイプエラーをなんとかしたい
+
+        let addSchema = {};
+
         mCClist.map((mCC) => {
             const customName = mCC.id;
 
@@ -98,26 +101,29 @@ export async function setCustomForm(prevState, formData: FormData) {
             // 各タイプのバリデーション設定
             switch(true){
                 case(mCC.configurationConstraint == 'text'):
-                    CustomFormSchema = CustomFormSchema.extend({
+                    addSchema = {
+                        ...addSchema,
                         [formName]: z.string()
-                                        .max(100,{message:'値は100文字までです'})
-                    })
+                                    .max(100,{message:'値は100文字までです'})
+                    }
 
                     formInputData = formData.get(formName);
                     break;
                 case(mCC.configurationConstraint == 'int'):
-                    CustomFormSchema = CustomFormSchema.extend({
-                        [customName+'_int']: z.string()
-                                                .max(100,{message:'値は100文字までです'})
-                                                .regex(/^[0-9]*$/,{message: "半角数字のみで入力してください。"}),
-                    })
+                    addSchema = {
+                        ...addSchema,
+                        [formName]: z.string()
+                                            .max(100,{message:'値は100文字までです'})
+                                            .regex(/^[0-9]*$/,{message: "半角数字のみで入力してください。"}),
+                    }
 
                     formInputData = formData.get(formName);
                     break;
                 case(mCC.configurationConstraint == 'boolean'):
-                    CustomFormSchema = CustomFormSchema.extend({
-                        [customName+'_boolean']: z.enum(['true',''],{message:'値が不正です'})
-                    })
+                    addSchema = {
+                        ...addSchema,
+                        [formName]: z.enum(['true',''],{message:'値が不正です'})
+                    }
 
                     if(formData.get(formName) == null){
                         formInputData = '';
@@ -147,7 +153,11 @@ export async function setCustomForm(prevState, formData: FormData) {
             };
         }
 
-        const validatedFields = CustomFormSchema.safeParse({
+        const CustomFormSchemaExtend = CustomFormSchema.extend({
+            ...addSchema
+        })
+
+        const validatedFields = CustomFormSchemaExtend.safeParse({
             ...validationTarget
         });
 
