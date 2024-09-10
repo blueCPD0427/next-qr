@@ -12,36 +12,37 @@ export const authConfig = {
             // 「?.」は「オプショナルチェーン」と言われ、指定したキー名が未定義でもエラーではなく「undefined」になるようにする
             const isLoggedIn = !!auth?.user;
 
-            const isOnNeedMasterAuth = nextUrl.pathname.startsWith('/master/menu')
-            const isOnNeedMemberAuth = nextUrl.pathname.startsWith('/member/menu')
+            const isOnNeedMasterAuth =
+                nextUrl.pathname.startsWith('/master/menu');
+            const isOnNeedMemberAuth =
+                nextUrl.pathname.startsWith('/member/menu');
 
             if (isOnNeedMasterAuth || isOnNeedMemberAuth) {
-                if (isLoggedIn){
+                if (isLoggedIn) {
                     // アカウントのタイプによって分岐
                     const accountType = auth?.user?.type;
-                    switch(true){
+                    switch (true) {
                         case accountType == 'master':
-                            if(isOnNeedMasterAuth){
+                            if (isOnNeedMasterAuth) {
                                 return true;
                             }
                             break;
                         case accountType == 'member':
-                            if(isOnNeedMemberAuth){
+                            if (isOnNeedMemberAuth) {
                                 return true;
                             }
                             break;
                     }
                     return false;
-
-                }else{
+                } else {
                     const url = nextUrl.clone();
-                    switch(true){
+                    switch (true) {
                         case isOnNeedMasterAuth:
                             url.pathname = '/master/login';
-                        break;
+                            break;
                         case isOnNeedMemberAuth:
                             url.pathname = '/member/login';
-                        break;
+                            break;
                     }
 
                     url.searchParams.set('callbackUrl', nextUrl.pathname);
@@ -51,12 +52,16 @@ export const authConfig = {
             } else if (isLoggedIn) {
                 const accountType = auth?.user?.type;
 
-                switch(true){
+                switch (true) {
                     case accountType == 'master':
-                        return Response.redirect(new URL('/master/menu', nextUrl))
+                        return Response.redirect(
+                            new URL('/master/menu', nextUrl),
+                        );
                         break;
                     case accountType == 'member':
-                        return Response.redirect(new URL('/member/menu', nextUrl))
+                        return Response.redirect(
+                            new URL('/member/menu', nextUrl),
+                        );
                         break;
                 }
             }
@@ -70,11 +75,12 @@ export const authConfig = {
             // console.log(user);
 
             // ここでtokenにuserの情報をセットして下のsessionに渡る
-            if (user) { // User is available during sign-in]
-                token.userId = user.userId
-                token.type = user.type
+            if (user) {
+                // User is available during sign-in]
+                token.userId = user.userId;
+                token.type = user.type;
             }
-            return token
+            return token;
         },
         session({ session, token }) {
             // console.log('auth.config.ts');
@@ -83,10 +89,12 @@ export const authConfig = {
             // console.log(token);
 
             // 上のjwtから渡ったtokenの内容をsessionにセットして一番上のauthorizedに行く
-            session.user.userId = token.userId
-            session.user.type = token.type
+            session.user.userId =
+                typeof token.userId === 'number' ? token.userId : null;
+            session.user.type =
+                typeof token.type === 'string' ? token.type : '';
 
-            return session
+            return session;
         },
     },
     providers: [],

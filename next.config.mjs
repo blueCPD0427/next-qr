@@ -16,35 +16,35 @@ const nextConfig = {
     webpack: (config, context) => {
         config.watchOptions = {
             poll: 5000,
-            aggregateTimeout: 300
-        }
-        return config
+            aggregateTimeout: 300,
+        };
+        return config;
     },
     async headers() {
         return [
             {
-                source: "/(.*)",
+                source: '/(.*)',
                 headers: [
-                {
-                    key: "Strict-Transport-Security",
-                    value: "max-age=63072000; includeSubDomains; preload",
-                },
-                {
-                    key: "X-Frame-Options",
-                    value: "SAMEORIGIN",
-                },
-                {
-                    key: "Referrer-Policy",
-                    value: "strict-origin-when-cross-origin",
-                },
-                {
-                    key: "Content-Security-Policy",
-                    value: cspHeader.replace(/\n/g, ""),
-                },
+                    {
+                        key: 'Strict-Transport-Security',
+                        value: 'max-age=63072000; includeSubDomains; preload',
+                    },
+                    {
+                        key: 'X-Frame-Options',
+                        value: 'SAMEORIGIN',
+                    },
+                    {
+                        key: 'Referrer-Policy',
+                        value: 'strict-origin-when-cross-origin',
+                    },
+                    {
+                        key: 'Content-Security-Policy',
+                        value: cspHeader.replace(/\n/g, ''),
+                    },
                 ],
             },
         ];
     },
-}
+};
 
 export default nextConfig;

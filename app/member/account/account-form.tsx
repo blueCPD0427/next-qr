@@ -1,15 +1,21 @@
 'use client';
-import React, { useState, useReducer,useEffect } from "react";
-import { getAddressFromPostCode } from "@/app/lib/actions/action";
-import { convertReplaceText,convertToHalfNumber } from "@/app/lib/actions/convert";
-import { isHalfNumeric } from "@/app/lib/actions/judge";
-import { MemberAccountForm } from "@/app/lib/difinitions";
-import { MemberAccountValidateStateInside } from "@/app/member/account/actions";
-import clsx from "clsx";
-import { useRouter } from "next/navigation";
-import toast from "react-hot-toast";
+import React, { useState, useReducer, useEffect } from 'react';
+import { getAddressFromPostCode } from '@/app/lib/actions/action';
+import {
+    convertReplaceText,
+    convertToHalfNumber,
+} from '@/app/lib/actions/convert';
+import { isHalfNumeric } from '@/app/lib/actions/judge';
+import {
+    MemberAccountForm,
+    MemberAccountFormEdit,
+} from '@/app/lib/difinitions';
+import { MemberAccountValidateStateInside } from '@/app/member/account/actions';
+import clsx from 'clsx';
+import { useRouter } from 'next/navigation';
+import toast from 'react-hot-toast';
 
-let initForm:MemberAccountForm = {
+const initForm: MemberAccountForm = {
     lastName: '',
     firstName: '',
     sex: '',
@@ -20,45 +26,52 @@ let initForm:MemberAccountForm = {
     address: '',
     birthdayY: '',
     birthdayM: '',
-    birthdayD: ''
-}
+    birthdayD: '',
+};
 
-type Action = { type: 'SET_FIELD'; field: keyof MemberAccountForm; value: string };
+type Action = {
+    type: 'SET_FIELD';
+    field: keyof MemberAccountForm;
+    value: string;
+};
 
-function reducer(state:MemberAccountForm, action:Action) {
+function reducer(state: MemberAccountForm, action: Action) {
     switch (action.type) {
         case 'SET_FIELD':
             return {
                 ...state,
-                [action.field]: action.value
+                [action.field]: action.value,
             };
         default:
             return state;
     }
 }
 
-export default function AccountForm({editMemberData}:{editMemberData?:any}){
-
-    const initialState:MemberAccountValidateStateInside = {};
+export default function AccountForm({
+    editMemberData,
+}: {
+    editMemberData?: MemberAccountFormEdit;
+}) {
+    const initialState: MemberAccountValidateStateInside = {};
 
     const router = useRouter();
 
     // 住所欄の入力可能状態ステータス
     const [addresFormState, setAddresFormState] = useState(false);
     // 郵便番号検索のエラーテキスト
-    const [postCodeError, setPostCodeError] = useState("");
-    // 郵便番号検索結果とフォームに入力されている住所が一致するかの確認用
-    const [getAddressText, setGetAddressText] = useState("");
+    const [postCodeError, setPostCodeError] = useState('');
     const [sendPending, setSendPending] = useState(false);
 
     const [selectedSexValue, setSelectedSexValue] = useState('');
 
-    const sexRadioChange = (e:any) => {
+    const sexRadioChange = (e: {
+        target: { value: string; checked: boolean; name: string };
+    }) => {
         const value = e.target.value;
-        setSelectedSexValue(selectedSexValue === value ? null : value);
-        if(e.target.checked === true){
+        setSelectedSexValue(selectedSexValue === value ? '' : value);
+        if (e.target.checked === true) {
             setFormValue(e.target.name, e.target.value);
-        }else{
+        } else {
             setFormValue(e.target.name, '');
         }
     };
@@ -68,44 +81,45 @@ export default function AccountForm({editMemberData}:{editMemberData?:any}){
     // フォームの値処理関連
     const [formContents, dispatch] = useReducer(reducer, initForm);
 
-
     // editMemberDataの有無でCREATEかUPDATEか判断
     let formType = 'create';
-    if(editMemberData != undefined){
+    if (editMemberData != undefined) {
         formType = 'update';
 
         // 初期値をセット
         initForm.id = editMemberData.id;
         initForm.lastName = editMemberData.lastName;
         initForm.firstName = editMemberData.firstName;
-        initForm.sex = editMemberData.sex;
+        if (editMemberData.sex == 'male' || editMemberData.sex == 'female') {
+            initForm.sex = editMemberData.sex;
+        } else {
+            initForm.sex = '';
+        }
         initForm.email = editMemberData.email;
         initForm.postCode = editMemberData.postCode;
         initForm.address = editMemberData.address;
-        initForm.birthdayY = editMemberData.birthdayY;
-        initForm.birthdayM = editMemberData.birthdayM;
-        initForm.birthdayD = editMemberData.birthdayD;
-
+        initForm.birthdayY = String(editMemberData.birthdayY);
+        initForm.birthdayM = String(editMemberData.birthdayM);
+        initForm.birthdayD = String(editMemberData.birthdayD);
     }
 
-    useEffect(()=> {
-        if(initForm.sex != null){
+    useEffect(() => {
+        if (initForm.sex != null) {
             setSelectedSexValue(initForm.sex);
         }
-    },[initForm])
+    }, [initForm]);
 
-
-    function setFormValue(formName:string, formValue:string){
+    function setFormValue(formName: string, formValue: string) {
         dispatch({
             type: 'SET_FIELD',
             field: formName as keyof MemberAccountForm,
-            value: formValue
+            value: formValue,
         });
     }
 
-    const formChange = (e: { target: { name: string; value: string; }; }) => {
+    const formChange = (e: { target: { name: string; value: string } }) => {
         setFormValue(e.target.name, e.target.value);
-    }
+    };
 
     // 住所に反映ボタン処理
     async function getAddressClick() {
@@ -113,25 +127,25 @@ export default function AccountForm({editMemberData}:{editMemberData?:any}){
         setPostCodeError('');
 
         // 現在のフォーム内容を取得
-        let tmpPostCode = formContents.postCode;
+        let tmpPostCode = String(formContents.postCode);
 
         // 事前にハイフンの削除と全角数字を半角数字に変換を実行
-        tmpPostCode = convertReplaceText(tmpPostCode,'-',''); // 半角ハイフン除去
-        tmpPostCode = convertReplaceText(tmpPostCode,'－',''); // 全角ハイフン除去
+        tmpPostCode = convertReplaceText(tmpPostCode, '-', ''); // 半角ハイフン除去
+        tmpPostCode = convertReplaceText(tmpPostCode, '－', ''); // 全角ハイフン除去
         tmpPostCode = convertToHalfNumber(tmpPostCode); // 全角数字を半角に変換
 
         // 実行した内容をフォームに反映
         setFormValue('postCode', tmpPostCode);
 
-        if(tmpPostCode.length != 7 || isHalfNumeric(tmpPostCode) === false){
-            setPostCodeError("郵便番号を再確認してください");
+        if (tmpPostCode.length != 7 || isHalfNumeric(tmpPostCode) === false) {
+            setPostCodeError('郵便番号を再確認してください');
             return false;
         }
 
         const getAddressRes = await getAddressFromPostCode(tmpPostCode);
 
-        if(getAddressRes === false){
-            setPostCodeError("住所の取得に失敗しました");
+        if (getAddressRes === false) {
+            setPostCodeError('住所の取得に失敗しました');
             return false;
         }
 
@@ -144,15 +158,14 @@ export default function AccountForm({editMemberData}:{editMemberData?:any}){
         addressText += addressData.address3;
         addressText += addressData.address4;
         setFormValue('address', addressText);
-        setGetAddressText(addressText);
         setAddresFormState(true);
     }
 
-    const formSubmit = async (e: { preventDefault: () => void; }) => {
+    const formSubmit = async (e: { preventDefault: () => void }) => {
         e.preventDefault();
         setSendPending(true);
 
-        if(formType === 'create'){
+        if (formType === 'create') {
             const response = await fetch('/api/member-account-create', {
                 method: 'POST',
                 headers: {
@@ -161,15 +174,17 @@ export default function AccountForm({editMemberData}:{editMemberData?:any}){
                 body: JSON.stringify(formContents),
             });
             const result = await response.json();
-            if(result.data.success === false){
+            if (result.data.success === false) {
                 toast.error('アカウントの登録に失敗しました。');
                 setErrorField(result.data.errors);
                 setSendPending(false);
-            }else{
-                toast.success('アカウントの登録に成功しました。\n登録したアカウントでログインしてください');
+            } else {
+                toast.success(
+                    'アカウントの登録に成功しました。\n登録したアカウントでログインしてください',
+                );
                 router.push('/member/login');
             }
-        }else if(formType === 'update') {
+        } else if (formType === 'update') {
             const response = await fetch('/api/member-account-update', {
                 method: 'POST',
                 headers: {
@@ -178,11 +193,11 @@ export default function AccountForm({editMemberData}:{editMemberData?:any}){
                 body: JSON.stringify(formContents),
             });
             const result = await response.json();
-            if(result.data.success === false){
+            if (result.data.success === false) {
                 toast.error('アカウントの更新に失敗しました。');
                 setErrorField(result.data.errors);
                 setSendPending(false);
-            }else{
+            } else {
                 toast.success('アカウントの更新に成功しました。');
 
                 // パスワード欄を空にする
@@ -190,13 +205,10 @@ export default function AccountForm({editMemberData}:{editMemberData?:any}){
                 setFormValue('confirmPassword', '');
                 setSendPending(false);
             }
-        }else{
+        } else {
             router.push('/404');
         }
-
-        
     };
-
 
     const currentYear = new Date().getFullYear();
     const years = [];
@@ -214,10 +226,12 @@ export default function AccountForm({editMemberData}:{editMemberData?:any}){
         days.push(i);
     }
 
-    return(
+    return (
         <div className="flex items-center justify-center min-h-screen bg-green-100">
             <div className="bg-white p-8 rounded-lg shadow-md w-full max-w-2xl overflow-y-auto max-h-screen-80">
-                <h2 className="text-2xl font-bold mb-6 text-green-700">マスターアカウント作成</h2>
+                <h2 className="text-2xl font-bold mb-6 text-green-700">
+                    マスターアカウント作成
+                </h2>
                 <form onSubmit={formSubmit}>
                     <div className="mb-4">
                         <label className="block text-green-700 mb-2">
@@ -235,14 +249,17 @@ export default function AccountForm({editMemberData}:{editMemberData?:any}){
                                     value={formContents.lastName}
                                     onChange={formChange}
                                 />
-                                {
-                                    errorField?.lastName?._errors &&
-                                    errorField?.lastName._errors.map((error: string) => (
-                                        <p className="mt-2 text-sm text-red-500" key={error}>
-                                            {error}
-                                        </p>
-                                    ))
-                                }
+                                {errorField?.lastName?._errors &&
+                                    errorField?.lastName._errors.map(
+                                        (error: string) => (
+                                            <p
+                                                className="mt-2 text-sm text-red-500"
+                                                key={error}
+                                            >
+                                                {error}
+                                            </p>
+                                        ),
+                                    )}
                             </div>
                             <label className="block text-green-700 text-sm mb-1">
                                 名
@@ -254,14 +271,17 @@ export default function AccountForm({editMemberData}:{editMemberData?:any}){
                                 value={formContents.firstName}
                                 onChange={formChange}
                             />
-                            {
-                                errorField?.firstName?._errors &&
-                                errorField?.firstName._errors.map((error: string) => (
-                                    <p className="mt-2 text-sm text-red-500" key={error}>
-                                        {error}
-                                    </p>
-                                ))
-                            }
+                            {errorField?.firstName?._errors &&
+                                errorField?.firstName._errors.map(
+                                    (error: string) => (
+                                        <p
+                                            className="mt-2 text-sm text-red-500"
+                                            key={error}
+                                        >
+                                            {error}
+                                        </p>
+                                    ),
+                                )}
                         </div>
                     </div>
                     <div className="mb-4">
@@ -274,34 +294,35 @@ export default function AccountForm({editMemberData}:{editMemberData?:any}){
                         <div>
                             <label>
                                 <input
-                                type="checkbox"
-                                name="sex"
-                                value="male"
-                                checked={selectedSexValue === 'male'}
-                                onChange={sexRadioChange}
+                                    type="checkbox"
+                                    name="sex"
+                                    value="male"
+                                    checked={selectedSexValue === 'male'}
+                                    onChange={sexRadioChange}
                                 />
                                 男性
                             </label>
                             <label>
                                 <input
-                                type="checkbox"
-                                name="sex"
-                                className="ml-3"
-                                value="female"
-                                checked={selectedSexValue === 'female'}
-                                onChange={sexRadioChange}
+                                    type="checkbox"
+                                    name="sex"
+                                    className="ml-3"
+                                    value="female"
+                                    checked={selectedSexValue === 'female'}
+                                    onChange={sexRadioChange}
                                 />
                                 女性
                             </label>
                         </div>
-                        {
-                            errorField?.sex?._errors &&
+                        {errorField?.sex?._errors &&
                             errorField?.sex._errors.map((error: string) => (
-                                <p className="mt-2 text-sm text-red-500" key={error}>
+                                <p
+                                    className="mt-2 text-sm text-red-500"
+                                    key={error}
+                                >
                                     {error}
                                 </p>
-                            ))
-                        }
+                            ))}
                     </div>
                     <div className="mb-4">
                         <label className="block text-green-700 mb-2">
@@ -314,13 +335,11 @@ export default function AccountForm({editMemberData}:{editMemberData?:any}){
                                 defaultValue={initForm.birthdayY}
                             >
                                 <option value="" disabled></option>
-                                {
-                                    years.map(year => (
-                                        <option key={year} value={year} >
-                                            {year}
-                                        </option>
-                                    ))
-                                }
+                                {years.map((year) => (
+                                    <option key={year} value={year}>
+                                        {year}
+                                    </option>
+                                ))}
                             </select>
                             年
                             <select
@@ -329,13 +348,11 @@ export default function AccountForm({editMemberData}:{editMemberData?:any}){
                                 defaultValue={initForm.birthdayM}
                             >
                                 <option value="" disabled></option>
-                                {
-                                    months.map(month => (
-                                        <option key={month} value={month}>
-                                            {month}
-                                        </option>
-                                    ))
-                                }
+                                {months.map((month) => (
+                                    <option key={month} value={month}>
+                                        {month}
+                                    </option>
+                                ))}
                             </select>
                             月
                             <select
@@ -344,24 +361,25 @@ export default function AccountForm({editMemberData}:{editMemberData?:any}){
                                 defaultValue={initForm.birthdayD}
                             >
                                 <option value="" disabled></option>
-                                {
-                                    days.map(day => (
-                                        <option key={day} value={day}>
-                                            {day}
-                                        </option>
-                                    ))
-                                }
+                                {days.map((day) => (
+                                    <option key={day} value={day}>
+                                        {day}
+                                    </option>
+                                ))}
                             </select>
                             日
                         </div>
-                        {
-                            errorField?.birthday?._errors &&
-                            errorField?.birthday._errors.map((error: string) => (
-                                <p className="mt-2 text-sm text-red-500" key={error}>
-                                    {error}
-                                </p>
-                            ))
-                        }
+                        {errorField?.birthday?._errors &&
+                            errorField?.birthday._errors.map(
+                                (error: string) => (
+                                    <p
+                                        className="mt-2 text-sm text-red-500"
+                                        key={error}
+                                    >
+                                        {error}
+                                    </p>
+                                ),
+                            )}
                     </div>
                     <div className="mb-4">
                         <label className="block text-green-700 mb-2">
@@ -380,20 +398,27 @@ export default function AccountForm({editMemberData}:{editMemberData?:any}){
                                     onChange={formChange}
                                     placeholder="ハイフン不要"
                                 />
-                                <button type="button" onClick={getAddressClick} className="ml-3 text-xs border rounded-lg border-black px-2 py-1 hover:bg-gray-300">
+                                <button
+                                    type="button"
+                                    onClick={getAddressClick}
+                                    className="ml-3 text-xs border rounded-lg border-black px-2 py-1 hover:bg-gray-300"
+                                >
                                     住所に反映
                                 </button>
                                 <p className="text-red-700 font-bold">
                                     {postCodeError}
                                 </p>
-                                {
-                                    errorField?.postCode?._errors &&
-                                    errorField?.postCode._errors.map((error: string) => (
-                                        <p className="mt-2 text-sm text-red-500" key={error}>
-                                            {error}
-                                        </p>
-                                    ))
-                                }
+                                {errorField?.postCode?._errors &&
+                                    errorField?.postCode._errors.map(
+                                        (error: string) => (
+                                            <p
+                                                className="mt-2 text-sm text-red-500"
+                                                key={error}
+                                            >
+                                                {error}
+                                            </p>
+                                        ),
+                                    )}
                             </div>
                             <label className="block text-green-700 text-sm mb-1">
                                 住所
@@ -407,14 +432,17 @@ export default function AccountForm({editMemberData}:{editMemberData?:any}){
                                 placeholder="郵便番号を入力後、「住所に反映」ボタンを押してください"
                                 disabled={addresFormState === false}
                             />
-                            {
-                                errorField?.address?._errors &&
-                                errorField?.address._errors.map((error: string) => (
-                                    <p className="mt-2 text-sm text-red-500" key={error}>
-                                        {error}
-                                    </p>
-                                ))
-                            }
+                            {errorField?.address?._errors &&
+                                errorField?.address._errors.map(
+                                    (error: string) => (
+                                        <p
+                                            className="mt-2 text-sm text-red-500"
+                                            key={error}
+                                        >
+                                            {error}
+                                        </p>
+                                    ),
+                                )}
                         </div>
                     </div>
                     <div className="mb-4">
@@ -428,64 +456,78 @@ export default function AccountForm({editMemberData}:{editMemberData?:any}){
                             value={formContents.email}
                             onChange={formChange}
                         />
-                        {
-                            errorField?.email?._errors &&
+                        {errorField?.email?._errors &&
                             errorField?.email._errors.map((error: string) => (
-                                <p className="mt-2 text-sm text-red-500" key={error}>
+                                <p
+                                    className="mt-2 text-sm text-red-500"
+                                    key={error}
+                                >
                                     {error}
                                 </p>
-                            ))
-                        }
+                            ))}
                     </div>
                     <div className="mb-4">
                         <label className="block text-green-700 mb-2">
                             パスワード
                         </label>
                         <input
-                            type="password" autoComplete="new-password"
+                            type="password"
+                            autoComplete="new-password"
                             className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500"
                             name="password"
                             value={formContents.password}
                             onChange={formChange}
                         />
-                        {
-                            errorField?.password?._errors &&
-                            errorField?.password._errors.map((error: string) => (
-                                <p className="mt-2 text-sm text-red-500" key={error}>
-                                    {error}
-                                </p>
-                            ))
-                        }
+                        {errorField?.password?._errors &&
+                            errorField?.password._errors.map(
+                                (error: string) => (
+                                    <p
+                                        className="mt-2 text-sm text-red-500"
+                                        key={error}
+                                    >
+                                        {error}
+                                    </p>
+                                ),
+                            )}
                     </div>
                     <div className="mb-4">
                         <label className="block text-green-700 mb-2">
                             パスワード再確認
                         </label>
                         <input
-                            type="password" autoComplete="new-password"
+                            type="password"
+                            autoComplete="new-password"
                             className="w-full px-3 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-green-500"
                             name="confirmPassword"
                             value={formContents.confirmPassword}
                             onChange={formChange}
                         />
-                        {
-                            errorField?.confirmPassword?._errors &&
-                            errorField?.confirmPassword._errors.map((error: string) => (
-                                <p className="mt-2 text-sm text-red-500" key={error}>
-                                    {error}
-                                </p>
-                            ))
-                        }
+                        {errorField?.confirmPassword?._errors &&
+                            errorField?.confirmPassword._errors.map(
+                                (error: string) => (
+                                    <p
+                                        className="mt-2 text-sm text-red-500"
+                                        key={error}
+                                    >
+                                        {error}
+                                    </p>
+                                ),
+                            )}
                     </div>
                     <button
                         // onClick={formSubmit}
-                        className={clsx('border rounded py-1 px-3 bg-green-500',{
-                            'opacity-50 cursor-wait' : sendPending === true
-                        })} aria-disabled={sendPending}>
+                        className={clsx(
+                            'border rounded py-1 px-3 bg-green-500',
+                            {
+                                'opacity-50 cursor-wait': sendPending === true,
+                            },
+                        )}
+                        aria-disabled={sendPending}
+                    >
                         {sendPending ? '送信中' : '送信'}
                     </button>
                 </form>
             </div>
         </div>
-    )
+    );
 }

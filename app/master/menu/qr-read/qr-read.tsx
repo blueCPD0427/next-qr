@@ -1,6 +1,6 @@
 'use client';
 import { useEffect, useState } from 'react';
-import { useRouter } from "next/navigation";
+import { useRouter } from 'next/navigation';
 import { Html5Qrcode } from 'html5-qrcode';
 import Select from 'react-select';
 import React from 'react';
@@ -8,13 +8,12 @@ import React from 'react';
 // QRコードリーダーの表示領域のhtmlのID
 const qrcodeRegionId = 'html5qr-code-full-region';
 
-export default function QrRead(){
-
+export default function QrRead() {
     const router = useRouter();
     // QRコードを読み取った時の実行する関数
-    const onNewScanResult = async (result: any) => {
+    const onNewScanResult = async (result: string) => {
         // カメラ一時停止
-        await html5QrcodeScanner.pause(true,false);
+        await html5QrcodeScanner.pause(true, false);
 
         // 読み取り結果でリダイレクト
         router.push('/master/menu/qr-read/result/' + result);
@@ -25,7 +24,7 @@ export default function QrRead(){
     };
 
     // QRコードリーダーの設定
-    // fpsは読み取り頻度。デフォルトは　2.１秒間に何回読み取るかの値を設定。１ならば１秒間に１回読み取る。
+    // fpsは読み取り頻度。デフォルトは2.１秒間に何回読み取るかの値を設定。１ならば１秒間に１回読み取る。
     // qrboxは読み取り範囲の設定。widthとheightを設定する。
     const config = { fps: 1, qrbox: { width: 250, height: 250 } };
 
@@ -44,20 +43,20 @@ export default function QrRead(){
     // カメラ情報を取得するための関数
     const getCameras = async () => {
         await Html5Qrcode.getCameras()
-        .then((cameras) => {
-            if (cameras && cameras.length) {
-            const formattedCameras = cameras.map((camera) => ({
-                value: camera.id,
-                label: camera.label || `Camera ${camera.id}`,
-            }));
-            setCameras(formattedCameras);
-            setSelectedCameraId(formattedCameras[0].value);
-            setCameraPermission(true);
-            }
-        })
-        .catch((err) => {
-            console.error(err);
-        });
+            .then((cameras) => {
+                if (cameras && cameras.length) {
+                    const formattedCameras = cameras.map((camera) => ({
+                        value: camera.id,
+                        label: camera.label || `Camera ${camera.id}`,
+                    }));
+                    setCameras(formattedCameras);
+                    setSelectedCameraId(formattedCameras[0].value);
+                    setCameraPermission(true);
+                }
+            })
+            .catch((err) => {
+                console.error(err);
+            });
     };
 
     // スキャン開始
@@ -67,7 +66,7 @@ export default function QrRead(){
                 selectedCameraId,
                 config,
                 onNewScanResult,
-                (error: any) => {
+                () => {
                     console.log('読み取り中');
                 },
             );
@@ -105,41 +104,44 @@ export default function QrRead(){
 
     return (
         <React.Fragment>
-            <div className='container mx-auto'>
-                <div className='max-w-screen-lg' id={qrcodeRegionId} />
+            <div className="container mx-auto">
+                <div className="max-w-screen-lg" id={qrcodeRegionId} />
                 <div>
                     {cameras.length > 0 ? (
-                    <Select
-                        name='camera'
-                        options={cameras}
-                        value={cameras.find(
-                        (camera: any) => camera.value === selectedCameraId,
-                        )}
-                        placeholder='カメラを選択'
-                        onChange={async (camera) => await switchCamera(camera.value)}
-                    />
+                        <Select
+                            name="camera"
+                            options={cameras}
+                            value={cameras.find(
+                                (camera: any) =>
+                                    camera.value === selectedCameraId,
+                            )}
+                            placeholder="カメラを選択"
+                            onChange={async (camera) =>
+                                await switchCamera(camera.value)
+                            }
+                        />
                     ) : (
-                    <p>カメラがありません</p>
+                        <p>カメラがありません</p>
                     )}
                 </div>
                 <div>
                     <button
-                        className='bg-blue-500 hover:bg-blue-700 text-white text-sm font-bold py-1 px-2 rounded mr-2'
+                        className="bg-blue-500 hover:bg-blue-700 text-white text-sm font-bold py-1 px-2 rounded mr-2"
                         onClick={() => getCameras()}
-                        >
+                    >
                         カメラ取得
                     </button>
                     <button
-                        className='bg-blue-500 hover:bg-blue-700 text-white text-sm font-bold py-1 px-2 rounded mr-2'
+                        className="bg-blue-500 hover:bg-blue-700 text-white text-sm font-bold py-1 px-2 rounded mr-2"
                         onClick={async () => await startScan()}
                         disabled={!cameraPermission && selectedCameraId == ''}
-                        >
+                    >
                         スキャン開始
                     </button>
                     <button
-                        className='bg-red-500 hover:bg-red-700 text-white text-sm font-bold py-1 px-2 rounded'
+                        className="bg-red-500 hover:bg-red-700 text-white text-sm font-bold py-1 px-2 rounded"
                         onClick={async () => await stopScan()}
-                        >
+                    >
                         スキャン停止
                     </button>
                 </div>

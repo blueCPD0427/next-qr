@@ -1,8 +1,7 @@
-import { ToggleDispData } from "@/app/lib/difinitions";
-import toggleDisp from "@/app/member/menu/connect/actions";
+import { ToggleDispData } from '@/app/lib/difinitions';
+import toggleDisp from '@/app/member/menu/connect/actions';
 
-export async function POST(request:Request) {
-
+export async function POST(request: Request) {
     const body = await request.json();
 
     const data = await processData(body);
@@ -12,9 +11,7 @@ export async function POST(request:Request) {
     });
 }
 
-async function processData(body:ToggleDispData) {
-
-
+async function processData(body: ToggleDispData) {
     // ここに非同期処理を記述
     const res = await toggleDisp(body);
 

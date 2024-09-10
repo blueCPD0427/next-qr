@@ -6,15 +6,18 @@ import {
     TableHead,
     TableHeader,
     TableRow,
-} from "@/components/ui/table";
-import { convertDate } from "@/app/lib/actions/convert";
-import React from "react";
+} from '@/components/ui/table';
+import { convertDate } from '@/app/lib/actions/convert';
+import React from 'react';
+import { ConnectedMemberListReturnType } from './page';
 
-export default function ConnectedMemberList({connectedMemberList}:{connectedMemberList:any})
-{
-
-    const memberSex = (sex?:string) => {
-        switch(true){
+export default function ConnectedMemberList({
+    connectedMemberList,
+}: {
+    connectedMemberList: ConnectedMemberListReturnType;
+}) {
+    const memberSex = (sex?: string) => {
+        switch (true) {
             case sex == 'male':
                 return '男性';
                 break;
@@ -25,7 +28,7 @@ export default function ConnectedMemberList({connectedMemberList}:{connectedMemb
                 return '';
                 break;
         }
-    }
+    };
 
     return (
         <div className="bg-white rounded p-5 w-4/5">
@@ -39,9 +42,8 @@ export default function ConnectedMemberList({connectedMemberList}:{connectedMemb
                     </TableRow>
                 </TableHeader>
                 <TableBody>
-                    {
-                        connectedMemberList &&
-                        connectedMemberList.map((value:any) => (
+                    {connectedMemberList &&
+                        connectedMemberList.map((value) => (
                             <React.Fragment key={value.member.id}>
                                 <TableRow className="border-b-0 border-black">
                                     <TableCell className="w-1/5">
@@ -49,50 +51,64 @@ export default function ConnectedMemberList({connectedMemberList}:{connectedMemb
                                         {value.member.firstName}
                                     </TableCell>
                                     <TableCell className="w-1/5">
-                                        {
-                                            value?.member?.sex &&
-                                            memberSex(value.member.sex)
-                                        }
+                                        {value?.member?.sex &&
+                                            memberSex(value.member.sex)}
                                     </TableCell>
                                     <TableCell className="w-2/5">
-                                        {value.addressDisp === true ? value.member.postCode + ' ' + value.member.address : '住所非公開'}
+                                        {value.addressDisp === true
+                                            ? value.member.postCode +
+                                              ' ' +
+                                              value.member.address
+                                            : '住所非公開'}
                                     </TableCell>
                                     <TableCell className="w-1/5">
-                                        {value.birthdayDisp === true ? convertDate(value.member.birthday) : '生年月日非公開'}
+                                        {value.birthdayDisp === true
+                                            ? convertDate(value.member.birthday)
+                                            : '生年月日非公開'}
                                     </TableCell>
                                 </TableRow>
                                 <TableRow className="border-black">
                                     <TableCell colSpan={4}>
-                                        <div>
-                                            現在の登録データ：
-                                        </div>
+                                        <div>現在の登録データ：</div>
                                         <div className="flex align-middle">
-                                            {
-                                                value.member.confMemberData.length > 0 ?
-                                                (
-                                                    value.member.confMemberData.map((cMData:any) => (
-                                                        cMData.customConfiguration.configurationTitle &&
-                                                        (
-                                                            <div key={cMData.mCCId}>
-                                                                【{cMData.customConfiguration.configurationTitle}】
-                                                                [{cMData.configurationData}]
+                                            {value.member.confMemberData
+                                                .length > 0 ? (
+                                                value.member.confMemberData.map(
+                                                    (cMData) =>
+                                                        cMData
+                                                            .customConfiguration
+                                                            .configurationTitle && (
+                                                            <div
+                                                                key={
+                                                                    cMData.mCCId
+                                                                }
+                                                            >
+                                                                【
+                                                                {
+                                                                    cMData
+                                                                        .customConfiguration
+                                                                        .configurationTitle
+                                                                }
+                                                                】 [
+                                                                {
+                                                                    cMData.configurationData
+                                                                }
+                                                                ]
                                                             </div>
-                                                        )
-                                                    ))
-                                                ) : (
-                                                    <div>
-                                                        現在登録されているデータはありません
-                                                    </div>
+                                                        ),
                                                 )
-                                            }
+                                            ) : (
+                                                <div>
+                                                    現在登録されているデータはありません
+                                                </div>
+                                            )}
                                         </div>
                                     </TableCell>
                                 </TableRow>
                             </React.Fragment>
-                        ))
-                    }
+                        ))}
                 </TableBody>
             </Table>
         </div>
-    )
+    );
 }
