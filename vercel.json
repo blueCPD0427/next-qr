@@ -1,0 +1,7 @@
+{
+    "env": {
+        "AUTH_SECRET": "YbqenAhzNNfic5BriixGuF2OLfkLZfbkRWEoUp3DgRQ=",
+        "DATABASE_URL": "postgres://default:DNKehSig1Z5a@ep-little-smoke-a4vritk0.us-east-1.aws.neon.tech:5432/verceldb?sslmode=require",
+        "BASE_URL": "https://next-qr-rust.vercel.app/"
+    }
+}
