@@ -27,7 +27,7 @@ import toast from 'react-hot-toast';
 import { useRouter } from 'next/navigation';
 import { MasterCustomForm } from '@/app/lib/difinitions';
 
-let initForm: MasterCustomForm = {
+const initForm: MasterCustomForm = {
     masterId: '',
     configurationTitle: '',
     configurationConstraint: '',

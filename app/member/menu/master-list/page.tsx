@@ -1,7 +1,7 @@
 import { auth } from '@/auth';
 import prisma from '@/app/lib/prisma';
 import { ConnectedMasterList } from './connected-master-list';
-import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
+import { Alert, AlertDescription } from '@/components/ui/alert';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTriangleExclamation } from '@fortawesome/free-solid-svg-icons';
 

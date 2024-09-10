@@ -6,13 +6,16 @@ import {
     convertToHalfNumber,
 } from '@/app/lib/actions/convert';
 import { isHalfNumeric } from '@/app/lib/actions/judge';
-import { MemberAccountForm } from '@/app/lib/difinitions';
+import {
+    MemberAccountForm,
+    MemberAccountFormEdit,
+} from '@/app/lib/difinitions';
 import { MemberAccountValidateStateInside } from '@/app/member/account/actions';
 import clsx from 'clsx';
 import { useRouter } from 'next/navigation';
 import toast from 'react-hot-toast';
 
-let initForm: MemberAccountForm = {
+const initForm: MemberAccountForm = {
     lastName: '',
     firstName: '',
     sex: '',
@@ -47,7 +50,7 @@ function reducer(state: MemberAccountForm, action: Action) {
 export default function AccountForm({
     editMemberData,
 }: {
-    editMemberData?: any;
+    editMemberData?: MemberAccountFormEdit;
 }) {
     const initialState: MemberAccountValidateStateInside = {};
 
@@ -57,15 +60,15 @@ export default function AccountForm({
     const [addresFormState, setAddresFormState] = useState(false);
     // 郵便番号検索のエラーテキスト
     const [postCodeError, setPostCodeError] = useState('');
-    // 郵便番号検索結果とフォームに入力されている住所が一致するかの確認用
-    const [getAddressText, setGetAddressText] = useState('');
     const [sendPending, setSendPending] = useState(false);
 
     const [selectedSexValue, setSelectedSexValue] = useState('');
 
-    const sexRadioChange = (e: any) => {
+    const sexRadioChange = (e: {
+        target: { value: string; checked: boolean; name: string };
+    }) => {
         const value = e.target.value;
-        setSelectedSexValue(selectedSexValue === value ? null : value);
+        setSelectedSexValue(selectedSexValue === value ? '' : value);
         if (e.target.checked === true) {
             setFormValue(e.target.name, e.target.value);
         } else {
@@ -87,13 +90,17 @@ export default function AccountForm({
         initForm.id = editMemberData.id;
         initForm.lastName = editMemberData.lastName;
         initForm.firstName = editMemberData.firstName;
-        initForm.sex = editMemberData.sex;
+        if (editMemberData.sex == 'male' || editMemberData.sex == 'female') {
+            initForm.sex = editMemberData.sex;
+        } else {
+            initForm.sex = '';
+        }
         initForm.email = editMemberData.email;
         initForm.postCode = editMemberData.postCode;
         initForm.address = editMemberData.address;
-        initForm.birthdayY = editMemberData.birthdayY;
-        initForm.birthdayM = editMemberData.birthdayM;
-        initForm.birthdayD = editMemberData.birthdayD;
+        initForm.birthdayY = String(editMemberData.birthdayY);
+        initForm.birthdayM = String(editMemberData.birthdayM);
+        initForm.birthdayD = String(editMemberData.birthdayD);
     }
 
     useEffect(() => {
@@ -120,7 +127,7 @@ export default function AccountForm({
         setPostCodeError('');
 
         // 現在のフォーム内容を取得
-        let tmpPostCode = formContents.postCode;
+        let tmpPostCode = String(formContents.postCode);
 
         // 事前にハイフンの削除と全角数字を半角数字に変換を実行
         tmpPostCode = convertReplaceText(tmpPostCode, '-', ''); // 半角ハイフン除去
@@ -151,7 +158,6 @@ export default function AccountForm({
         addressText += addressData.address3;
         addressText += addressData.address4;
         setFormValue('address', addressText);
-        setGetAddressText(addressText);
         setAddresFormState(true);
     }
 

@@ -41,14 +41,10 @@ export function SubmitButton() {
 }
 
 export async function LogOutAction() {
-    try {
-        await signOut({ redirect: false });
-        // サインアウト後に強制的にリダイレクトを実行しないとセッションが切れない
-        window.location.href = '/';
-        return true;
-    } catch (error) {
-        throw error;
-    }
+    await signOut({ redirect: false });
+    // サインアウト後に強制的にリダイレクトを実行しないとセッションが切れない
+    window.location.href = '/';
+    return true;
 }
 
 function LogoutButton() {
@@ -85,6 +81,7 @@ export function CopyToClipboardButton({ value }: { value: string }) {
             await navigator.clipboard.writeText(value);
             toast.success('コピーしました!');
         } catch (err) {
+            console.error(err);
             toast.error('コピーに失敗しました');
         }
     };

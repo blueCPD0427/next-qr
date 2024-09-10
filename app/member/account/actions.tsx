@@ -5,7 +5,6 @@ import prisma from '@/app/lib/prisma';
 import bcrypt from 'bcrypt';
 import { MemberAccountForm } from '@/app/lib/difinitions';
 import { lPadNum } from '@/app/lib/actions/convert';
-import { isRedirectError } from 'next/dist/client/components/redirect';
 import { redirect } from 'next/navigation';
 
 // ログイン認証
@@ -32,12 +31,8 @@ export async function authenticate(prevState: boolean, formData: FormData) {
 }
 
 export async function LogoutAction() {
-    try {
-        await signOut({ redirectTo: '/' });
-        return true;
-    } catch (error) {
-        throw error;
-    }
+    await signOut({ redirectTo: '/' });
+    return true;
 }
 
 // マスターアカウントスキーマ
@@ -210,7 +205,7 @@ export async function getEditMemberData(memberId: string) {
         });
 
         if (memberData == null) {
-            return {};
+            return null;
         }
 
         const convertBirthday = new Date(memberData.birthday);
@@ -231,7 +226,7 @@ export async function getEditMemberData(memberId: string) {
         return returnData;
     } catch (error) {
         console.error(error);
-        return {};
+        return null;
     }
 }
 

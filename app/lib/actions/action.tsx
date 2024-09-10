@@ -46,6 +46,7 @@ export async function existMaster(masterId: string) {
             return true;
         }
     } catch (error) {
+        console.error(error);
         return true;
     }
 }
@@ -64,6 +65,7 @@ export async function existMember(memberId: string) {
             return true;
         }
     } catch (error) {
+        console.error(error);
         return true;
     }
 }

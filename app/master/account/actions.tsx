@@ -5,7 +5,6 @@ import { z } from 'zod';
 import prisma from '@/app/lib/prisma';
 import bcrypt from 'bcrypt';
 import { redirect } from 'next/navigation';
-import { isRedirectError } from 'next/dist/client/components/redirect';
 import { MasterAccountForm } from '@/app/lib/difinitions';
 
 // ログイン認証
@@ -32,12 +31,8 @@ export async function authenticate(prevState: boolean, formData: FormData) {
 }
 
 export async function LogoutAction() {
-    try {
-        await signOut({ redirectTo: '/' });
-        return true;
-    } catch (error) {
-        throw error;
-    }
+    await signOut({ redirectTo: '/' });
+    return true;
 }
 
 // マスターアカウントスキーマ
@@ -146,6 +141,7 @@ export async function createMasterAccountApi(formData: MasterAccountForm) {
                 },
             });
         } catch (error) {
+            console.error(error);
             return {
                 success: false,
                 message: 'アカウントの新規作成に失敗しました。',
@@ -188,7 +184,7 @@ export async function getEditMasterData(masterId: string) {
         return masterData;
     } catch (error) {
         console.error(error);
-        return {};
+        return null;
     }
 }
 

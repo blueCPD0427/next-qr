@@ -3,7 +3,7 @@ import QrRead from '@/app/master/menu/qr-read/qr-read';
 import prisma from '@/app/lib/prisma';
 import { auth } from '@/auth';
 import { redirect } from 'next/navigation';
-import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
+import { Alert, AlertDescription } from '@/components/ui/alert';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTriangleExclamation } from '@fortawesome/free-solid-svg-icons';
 import Link from 'next/link';

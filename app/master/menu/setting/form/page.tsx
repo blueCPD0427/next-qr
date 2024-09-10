@@ -3,7 +3,7 @@ import prisma from '@/app/lib/prisma';
 import MasterCustomFormComponent from './master-custom-form';
 import MasterCustomFormList from './master-custom-form-list';
 import { redirect } from 'next/navigation';
-import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert';
+import { Alert, AlertDescription } from '@/components/ui/alert';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTriangleExclamation } from '@fortawesome/free-solid-svg-icons';
 

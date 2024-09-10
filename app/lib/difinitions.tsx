@@ -2,7 +2,7 @@ export interface MasterData {
     id: string;
     name: string;
     email: string;
-    postCode: number;
+    postCode: string | number;
     address: string;
 }
 
@@ -10,10 +10,18 @@ export interface MasterAccountForm {
     id?: string;
     name: string;
     email: string;
-    postCode: string;
+    postCode: string | number;
     address: string;
     password?: string;
     confirmPassword?: string;
+}
+
+export interface MasterAccountFormEdit {
+    id: string;
+    name: string;
+    email: string;
+    postCode: string | number;
+    address: string;
 }
 
 export interface MemberAccountForm {
@@ -24,11 +32,24 @@ export interface MemberAccountForm {
     email: string;
     password: string;
     confirmPassword: string;
-    postCode: string;
+    postCode: string | number;
     address: string;
     birthdayY: string;
     birthdayM: string;
     birthdayD: string;
+}
+
+export interface MemberAccountFormEdit {
+    id?: string;
+    lastName: string;
+    firstName: string;
+    sex?: 'male' | 'female' | '' | string | null;
+    email: string;
+    postCode: string | number;
+    address: string;
+    birthdayY: string | number;
+    birthdayM: string | number;
+    birthdayD: string | number;
 }
 
 export interface MemberConnectForm {

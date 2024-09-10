@@ -11,7 +11,7 @@ const qrcodeRegionId = 'html5qr-code-full-region';
 export default function QrRead() {
     const router = useRouter();
     // QRコードを読み取った時の実行する関数
-    const onNewScanResult = async (result: any) => {
+    const onNewScanResult = async (result: string) => {
         // カメラ一時停止
         await html5QrcodeScanner.pause(true, false);
 
@@ -24,7 +24,7 @@ export default function QrRead() {
     };
 
     // QRコードリーダーの設定
-    // fpsは読み取り頻度。デフォルトは　2.１秒間に何回読み取るかの値を設定。１ならば１秒間に１回読み取る。
+    // fpsは読み取り頻度。デフォルトは2.１秒間に何回読み取るかの値を設定。１ならば１秒間に１回読み取る。
     // qrboxは読み取り範囲の設定。widthとheightを設定する。
     const config = { fps: 1, qrbox: { width: 250, height: 250 } };
 
@@ -66,7 +66,7 @@ export default function QrRead() {
                 selectedCameraId,
                 config,
                 onNewScanResult,
-                (error: any) => {
+                () => {
                     console.log('読み取り中');
                 },
             );

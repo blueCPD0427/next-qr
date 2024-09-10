@@ -6,13 +6,16 @@ import {
     convertToHalfNumber,
 } from '@/app/lib/actions/convert';
 import { isHalfNumeric } from '@/app/lib/actions/judge';
-import { MasterAccountForm } from '@/app/lib/difinitions';
+import {
+    MasterAccountForm,
+    MasterAccountFormEdit,
+} from '@/app/lib/difinitions';
 import { MasterAccountValidateStateInside } from '@/app/master/account/actions';
 import clsx from 'clsx';
 import { useRouter } from 'next/navigation';
 import toast from 'react-hot-toast';
 
-let initForm: MasterAccountForm = {
+const initForm: MasterAccountForm = {
     name: '',
     email: '',
     password: '',
@@ -42,7 +45,7 @@ function reducer(state: MasterAccountForm, action: Action) {
 export default function AccountForm({
     editMasterData,
 }: {
-    editMasterData?: any;
+    editMasterData?: MasterAccountFormEdit;
 }) {
     const initialState: MasterAccountValidateStateInside = {};
 
@@ -52,8 +55,7 @@ export default function AccountForm({
     const [addresFormState, setAddresFormState] = useState(false);
     // 郵便番号検索のエラーテキスト
     const [postCodeError, setPostCodeError] = useState('');
-    // 郵便番号検索結果とフォームに入力されている住所が一致するかの確認用
-    const [getAddressText, setGetAddressText] = useState('');
+
     const [sendPending, setSendPending] = useState(false);
 
     const [errorField, setErrorField] = useState(initialState);
@@ -92,7 +94,7 @@ export default function AccountForm({
         setPostCodeError('');
 
         // 現在のフォーム内容を取得
-        let tmpPostCode = formContents.postCode;
+        let tmpPostCode = String(formContents.postCode);
 
         // 事前にハイフンの削除と全角数字を半角数字に変換を実行
         tmpPostCode = convertReplaceText(tmpPostCode, '-', ''); // 半角ハイフン除去
@@ -123,7 +125,6 @@ export default function AccountForm({
         addressText += addressData.address3;
         addressText += addressData.address4;
         setFormValue('address', addressText);
-        setGetAddressText(addressText);
         setAddresFormState(true);
     }
 

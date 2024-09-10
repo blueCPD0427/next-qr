@@ -80,7 +80,7 @@ export async function setCustomForm(prevState: any, formData: FormData) {
             memberId: formData.get('memberId'),
         };
 
-        let CustomFormSchema = z.object({
+        const CustomFormSchema = z.object({
             memberId: z
                 .string()
                 .min(1, { message: '送信されたパラメータに異常があります' }),
@@ -215,6 +215,7 @@ export async function setCustomForm(prevState: any, formData: FormData) {
                                 configurationData: inputCustomData,
                             },
                         });
+                    console.log(updateMemberData);
                 } else {
                     const createMemberData =
                         await prisma.configurationsMemberData.create({
@@ -224,6 +225,7 @@ export async function setCustomForm(prevState: any, formData: FormData) {
                                 configurationData: inputCustomData,
                             },
                         });
+                    console.log(createMemberData);
                 }
             });
         } catch (error) {

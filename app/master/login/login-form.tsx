@@ -1,9 +1,8 @@
 'use client';
 import { authenticate } from '@/app/master/account/actions';
-import { useFormState, useFormStatus } from 'react-dom';
+import { useFormState } from 'react-dom';
 import Link from 'next/link';
 import { LoginButton } from '@/app/lib/component-parts/buttons';
-import toast from 'react-hot-toast';
 
 export default function LoginForm() {
     const [state, formAction] = useFormState(authenticate, true);

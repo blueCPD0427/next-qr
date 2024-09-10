@@ -15,9 +15,6 @@ import {
     MenubarMenu,
     MenubarSeparator,
     MenubarTrigger,
-    MenubarSub,
-    MenubarSubTrigger,
-    MenubarSubContent,
 } from '@/components/ui/menubar';
 import clsx from 'clsx';
 import { usePathname } from 'next/navigation';

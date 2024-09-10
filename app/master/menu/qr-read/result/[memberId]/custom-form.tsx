@@ -10,7 +10,6 @@ import toast from 'react-hot-toast';
 import {
     Card,
     CardContent,
-    CardDescription,
     CardFooter,
     CardHeader,
     CardTitle,

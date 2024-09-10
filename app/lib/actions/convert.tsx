@@ -1,6 +1,6 @@
 // 全角数字を半角に変換
 export function convertToHalfNumber(number: string) {
-    let res = number;
+    const res = number;
     return res.replace(/[０-９]/g, (s) => {
         return String.fromCharCode(s.charCodeAt(0) - 0xfee0);
     });
@@ -12,7 +12,7 @@ export function convertReplaceText(
     targetText: string,
     replaceText = '',
 ) {
-    let res = originText;
+    const res = originText;
     return res.replace(new RegExp(targetText, 'g'), replaceText);
 }
 
