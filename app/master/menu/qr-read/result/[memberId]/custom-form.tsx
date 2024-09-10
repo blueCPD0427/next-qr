@@ -14,13 +14,14 @@ import {
     CardHeader,
     CardTitle,
 } from '@/components/ui/card';
+import { MastersCustomConfigurationsReturnType } from '../../actions';
 
 export default function CustomFormBase({
     mCClist,
     memberId,
     memberName,
 }: {
-    mCClist: any;
+    mCClist: MastersCustomConfigurationsReturnType;
     memberId: string;
     memberName: string;
 }) {

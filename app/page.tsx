@@ -19,6 +19,7 @@ export default function Home() {
                 <Image
                     src="/img/qr-boy.jpg"
                     alt="qr君"
+                    layout="responsive"
                     width={500}
                     height={500}
                     className="rounded-lg"

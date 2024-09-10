@@ -6,6 +6,7 @@ import {
 import { redirect } from 'next/navigation';
 import CustomFormBase from './custom-form';
 import prisma from '@/app/lib/prisma';
+import { MastersCustomConfigurationsReturnType, MasterToMemberRelationsReturnType } from '../../actions';
 
 export default async function QrReadResultPage({
     params,
@@ -25,13 +26,13 @@ export default async function QrReadResultPage({
 
     const memberId = params.memberId;
 
-    const oCRelationData = await getMasterToMemberRelations(masterId, memberId);
+    const oCRelationData:MasterToMemberRelationsReturnType = await getMasterToMemberRelations(masterId, memberId);
     if (!oCRelationData) {
         // 連携情報が無いので先に連携を促す
         redirect('/404');
     }
 
-    const mCClist = await getMastersCustomConfigurations(masterId, memberId);
+    const mCClist:MastersCustomConfigurationsReturnType = await getMastersCustomConfigurations(masterId, memberId);
     if (!mCClist) {
         // 無ければエラー表示+エディット画面へのリンク
         redirect('/404');

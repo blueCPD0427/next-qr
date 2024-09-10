@@ -3,6 +3,9 @@
 import { auth } from '@/auth';
 import { z } from 'zod';
 import prisma from '@/app/lib/prisma';
+import { Prisma } from '@prisma/client';
+
+export type MastersCustomConfigurationsReturnType = Prisma.PromiseReturnType<typeof getMastersCustomConfigurations>;
 
 export async function getMastersCustomConfigurations(
     masterId: string,
@@ -31,6 +34,8 @@ export async function getMastersCustomConfigurations(
 
     return mCClist;
 }
+
+export type MasterToMemberRelationsReturnType = Prisma.PromiseReturnType<typeof getMasterToMemberRelations>;
 
 export async function getMasterToMemberRelations(
     masterId: string,

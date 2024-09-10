@@ -4,13 +4,11 @@ import ConnectedMemberList from './connected-member-list';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTriangleExclamation } from '@fortawesome/free-solid-svg-icons';
+import { Prisma } from '@prisma/client';
 
-export default async function MasterMemberListPage() {
-    const session = await auth();
-    let masterId = '';
-    if (session?.user?.id != undefined) {
-        masterId = session.user.id;
-    }
+export type ConnectedMemberListReturnType = Prisma.PromiseReturnType<typeof getConnectedMemberList>;
+
+async function getConnectedMemberList(masterId:string){
     const connectedMemberList = await prisma.masterToMemberRelations.findMany({
         select: {
             addressDisp: true,
@@ -45,6 +43,17 @@ export default async function MasterMemberListPage() {
             masterId: masterId,
         },
     });
+
+    return connectedMemberList;
+}
+
+export default async function MasterMemberListPage() {
+    const session = await auth();
+    let masterId = '';
+    if (session?.user?.id != undefined) {
+        masterId = session.user.id;
+    }
+    const connectedMemberList = await getConnectedMemberList(masterId);
 
     return (
         <div className="flex justify-center mt-20">

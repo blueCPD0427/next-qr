@@ -9,11 +9,12 @@ import {
 } from '@/components/ui/table';
 import { convertDate } from '@/app/lib/actions/convert';
 import React from 'react';
+import { ConnectedMemberListReturnType } from './page';
 
 export default function ConnectedMemberList({
     connectedMemberList,
 }: {
-    connectedMemberList: any;
+    connectedMemberList: ConnectedMemberListReturnType;
 }) {
     const memberSex = (sex?: string) => {
         switch (true) {
@@ -42,7 +43,7 @@ export default function ConnectedMemberList({
                 </TableHeader>
                 <TableBody>
                     {connectedMemberList &&
-                        connectedMemberList.map((value: any) => (
+                        connectedMemberList.map((value) => (
                             <React.Fragment key={value.member.id}>
                                 <TableRow className="border-b-0 border-black">
                                     <TableCell className="w-1/5">
@@ -73,7 +74,7 @@ export default function ConnectedMemberList({
                                             {value.member.confMemberData
                                                 .length > 0 ? (
                                                 value.member.confMemberData.map(
-                                                    (cMData: any) =>
+                                                    (cMData) =>
                                                         cMData
                                                             .customConfiguration
                                                             .configurationTitle && (
