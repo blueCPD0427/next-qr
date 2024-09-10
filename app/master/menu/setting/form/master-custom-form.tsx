@@ -1,14 +1,14 @@
 'use client';
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
 import {
     Select,
     SelectContent,
     SelectItem,
     SelectTrigger,
     SelectValue,
-} from "@/components/ui/select";
-import { Button } from "@/components/ui/button";
+} from '@/components/ui/select';
+import { Button } from '@/components/ui/button';
 import {
     AlertDialog,
     AlertDialogAction,
@@ -19,72 +19,80 @@ import {
     AlertDialogHeader,
     AlertDialogTitle,
     AlertDialogTrigger,
-} from "@/components/ui/alert-dialog";
-import { useReducer,useState } from "react";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faTriangleExclamation } from "@fortawesome/free-solid-svg-icons";
-import toast from "react-hot-toast";
-import { useRouter } from "next/navigation";
-import { MasterCustomForm } from "@/app/lib/difinitions";
+} from '@/components/ui/alert-dialog';
+import { useReducer, useState } from 'react';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faTriangleExclamation } from '@fortawesome/free-solid-svg-icons';
+import toast from 'react-hot-toast';
+import { useRouter } from 'next/navigation';
+import { MasterCustomForm } from '@/app/lib/difinitions';
 
-let initForm:MasterCustomForm = {
+let initForm: MasterCustomForm = {
     masterId: '',
     configurationTitle: '',
     configurationConstraint: '',
-}
+};
 
-type Action = { type: 'SET_FIELD' | 'RESET'; field: keyof MasterCustomForm; value: string };
+type Action = {
+    type: 'SET_FIELD' | 'RESET';
+    field: keyof MasterCustomForm;
+    value: string;
+};
 
-function reducer(state:MasterCustomForm, action:Action) {
+function reducer(state: MasterCustomForm, action: Action) {
     switch (action.type) {
         case 'SET_FIELD':
             return {
                 ...state,
-                [action.field]: action.value
+                [action.field]: action.value,
             };
         default:
             return state;
     }
 }
 
-export default function MasterCustomFormComponent({mCCTypes,masterId}:{mCCTypes:{
-    text: string,
-    int: string,
-    boolean: string,
-},
-masterId:string})
-{
+export default function MasterCustomFormComponent({
+    mCCTypes,
+    masterId,
+}: {
+    mCCTypes: {
+        text: string;
+        int: string;
+        boolean: string;
+    };
+    masterId: string;
+}) {
     const router = useRouter();
 
     // フォームの値処理関連
     const [formContents, dispatch] = useReducer(reducer, initForm);
     const [sendPending, setSendPending] = useState(false);
 
-    function setFormValue(formName:string, formValue:string){
+    function setFormValue(formName: string, formValue: string) {
         dispatch({
             type: 'SET_FIELD',
             field: formName as keyof MasterCustomForm,
-            value: formValue
+            value: formValue,
         });
     }
 
-    const formChange = (e:React.ChangeEvent<HTMLInputElement>) => {
+    const formChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         setFormValue(e.target.name, e.target.value);
-    }
+    };
 
-    const SelectChange = (value:string) => {
+    const SelectChange = (value: string) => {
         setFormValue('configurationConstraint', value);
-    }
+    };
 
-    async function ClickRegister(){
+    async function ClickRegister() {
         setSendPending(true);
         // データが空だったらAPIに渡す前にエラー出す
-        if(formContents.configurationTitle == ''){
+        if (formContents.configurationTitle == '') {
             toast.error('データ名を入力してください');
             setSendPending(false);
             return false;
         }
-        if(formContents.configurationConstraint == ''){
+        if (formContents.configurationConstraint == '') {
             toast.error('データの形式を選択して下さい');
             setSendPending(false);
             return false;
@@ -101,10 +109,10 @@ masterId:string})
             body: JSON.stringify(formContents),
         });
         const result = await response.json();
-        if(result.data.success === false){
+        if (result.data.success === false) {
             toast.error('データ項目の登録に失敗しました。');
             setSendPending(false);
-        }else{
+        } else {
             toast.success('データ項目の登録に成功しました。');
             setFormValue('masterId', '');
             setFormValue('configurationTitle', '');
@@ -112,39 +120,47 @@ masterId:string})
             setSendPending(false);
             router.refresh();
         }
-
     }
 
-
-    return(
+    return (
         <div className="flex">
             <div className="flex items-end">
                 <div className="w-1/2 mr-3">
                     <Label htmlFor="title">データ名</Label>
-                    <Input type="text" id="title" name="configurationTitle" onChange={formChange} value={formContents.configurationTitle}/>
+                    <Input
+                        type="text"
+                        id="title"
+                        name="configurationTitle"
+                        onChange={formChange}
+                        value={formContents.configurationTitle}
+                    />
                 </div>
                 <div className="mr-3">
                     <Label>データの形式</Label>
-                    <Select name="configurationConstraint" onValueChange={SelectChange} value={formContents.configurationConstraint}>
+                    <Select
+                        name="configurationConstraint"
+                        onValueChange={SelectChange}
+                        value={formContents.configurationConstraint}
+                    >
                         <SelectTrigger className="w-[180px]">
                             <SelectValue />
                         </SelectTrigger>
                         <SelectContent>
-                            {
-                                Object.keys(mCCTypes).map((mCC)=>(
-                                    <SelectItem key={mCC} value={mCC}>
-                                        {
-                                            mCCTypes[mCC]
-                                        }
-                                    </SelectItem>
-                                ))
-                            }
+                            {Object.entries(mCCTypes).map(([key, value]) => (
+                                <SelectItem key={key} value={key}>
+                                    {value}
+                                </SelectItem>
+                            ))}
                         </SelectContent>
                     </Select>
                 </div>
                 <AlertDialog>
                     <AlertDialogTrigger asChild>
-                        <Button type="button" className="bg-green-500 hover:bg-green-700 font-bold" aria-disabled={sendPending}>
+                        <Button
+                            type="button"
+                            className="bg-green-500 hover:bg-green-700 font-bold"
+                            aria-disabled={sendPending}
+                        >
                             登録
                         </Button>
                     </AlertDialogTrigger>
@@ -152,9 +168,13 @@ masterId:string})
                         <AlertDialogHeader>
                             <AlertDialogTitle>
                                 <span className="text-red-500 font-bold">
-                                    <FontAwesomeIcon icon={faTriangleExclamation} />
+                                    <FontAwesomeIcon
+                                        icon={faTriangleExclamation}
+                                    />
                                     一度登録した内容は変更ができません
-                                    <FontAwesomeIcon icon={faTriangleExclamation} />
+                                    <FontAwesomeIcon
+                                        icon={faTriangleExclamation}
+                                    />
                                 </span>
                             </AlertDialogTitle>
                             <AlertDialogDescription>
@@ -162,10 +182,11 @@ masterId:string})
                             </AlertDialogDescription>
                         </AlertDialogHeader>
                         <AlertDialogFooter>
-                            <AlertDialogCancel>
-                                いいえ
-                            </AlertDialogCancel>
-                            <AlertDialogAction onClick={ClickRegister} className="bg-green-500 hover:bg-green-700">
+                            <AlertDialogCancel>いいえ</AlertDialogCancel>
+                            <AlertDialogAction
+                                onClick={ClickRegister}
+                                className="bg-green-500 hover:bg-green-700"
+                            >
                                 はい
                             </AlertDialogAction>
                         </AlertDialogFooter>
@@ -173,5 +194,5 @@ masterId:string})
                 </AlertDialog>
             </div>
         </div>
-    )
+    );
 }

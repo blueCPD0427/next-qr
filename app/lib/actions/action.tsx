@@ -5,65 +5,65 @@ import prisma from '../prisma';
 
 // ここのバリデーションメッセージを取り出す方法を探す
 const FormSchema = z.object({
-    postCode: z.coerce.string().length(7,{message: '郵便番号は7文字で入力!!'}),
-})
+    postCode: z.coerce
+        .string()
+        .length(7, { message: '郵便番号は7文字で入力!!' }),
+});
 
-export async function getAddressFromPostCode(postCode: string){
-
+export async function getAddressFromPostCode(postCode: string) {
     const validatedFields = FormSchema.safeParse({
         postCode: postCode,
     });
 
-    if(validatedFields.success === true){
+    if (validatedFields.success === true) {
         const res = await fetch(
-            `https://jp-postal-code-api.ttskch.com/api/v1/${postCode}.json`
+            `https://jp-postal-code-api.ttskch.com/api/v1/${postCode}.json`,
         );
 
-        if(res.status !== 200){
+        if (res.status !== 200) {
             return false;
         }
 
         const data = await res.json();
 
         return data;
-    }else{
+    } else {
         return false;
     }
-
 }
 
-export async function existMaster(masterId:string){
-    try{
+export async function existMaster(masterId: string) {
+    try {
         const existMaster = await prisma.masters.findFirst({
-            where:{
-                id: masterId
-            }
-        })
+            where: {
+                id: masterId,
+            },
+        });
 
-        if(!existMaster){
+        if (!existMaster) {
             return false;
-        }else{
+        } else {
             return true;
         }
-    }catch(error){
+    } catch (error) {
         return true;
     }
 }
 
-export async function existMember(memberId:string){
-    try{
+export async function existMember(memberId: string) {
+    try {
         const existMember = await prisma.members.findFirst({
-            where:{
-                id: memberId
-            }
-        })
+            where: {
+                id: memberId,
+            },
+        });
 
-        if(!existMember){
+        if (!existMember) {
             return false;
-        }else{
+        } else {
             return true;
         }
-    }catch(error){
+    } catch (error) {
         return true;
     }
 }

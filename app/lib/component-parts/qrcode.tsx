@@ -3,19 +3,17 @@
 import React from 'react';
 import { QRCodeCanvas } from 'qrcode.react';
 
-
-export function QrcodeGenerator({value}:{value:string}){
-
+export function QrcodeGenerator({ value }: { value: string }) {
     return (
         <QRCodeCanvas
             value={value}
             size={256}
             // bgColor={"#FF0000"}
             // fgColor={"#FFC0CB"}
-            level={"L"}
+            level={'L'}
             includeMargin={false}
             imageSettings={{
-                src: "/favicon.ico",
+                src: '/favicon.ico',
                 x: undefined,
                 y: undefined,
                 height: 24,
@@ -23,7 +21,5 @@ export function QrcodeGenerator({value}:{value:string}){
                 excavate: true,
             }}
         />
-    )
-
+    );
 }
-

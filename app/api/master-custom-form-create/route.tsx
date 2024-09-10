@@ -1,8 +1,7 @@
-import { MasterCustomForm } from "@/app/lib/difinitions";
-import { createMasterCustomFormApi } from "@/app/master/menu/setting/form/actions";
+import { MasterCustomForm } from '@/app/lib/difinitions';
+import { createMasterCustomFormApi } from '@/app/master/menu/setting/form/actions';
 
-export async function POST(request:Request) {
-
+export async function POST(request: Request) {
     const body = await request.json();
     const data = await processData(body);
 
@@ -11,8 +10,7 @@ export async function POST(request:Request) {
     });
 }
 
-async function processData(body:MasterCustomForm) {
-
+async function processData(body: MasterCustomForm) {
     // ここに非同期処理を記述
     const res = await createMasterCustomFormApi(body);
 

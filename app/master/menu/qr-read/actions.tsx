@@ -1,49 +1,55 @@
 'use server';
 
-import { auth } from "@/auth";
-import {z} from 'zod';
-import prisma from "@/app/lib/prisma";
+import { auth } from '@/auth';
+import { z } from 'zod';
+import prisma from '@/app/lib/prisma';
 
-export async function getMastersCustomConfigurations(masterId:string, memberId:string){
+export async function getMastersCustomConfigurations(
+    masterId: string,
+    memberId: string,
+) {
     const mCClist = await prisma.mastersCustomConfigurations.findMany({
-        where : {
-            masterId: masterId
+        where: {
+            masterId: masterId,
         },
-        select : {
+        select: {
             id: true,
             masterId: true,
             configurationTitle: true,
             configurationConstraint: true,
-            confMemberData : {
-                where:{
-                    memberId: memberId
+            confMemberData: {
+                where: {
+                    memberId: memberId,
                 },
-                select:{
+                select: {
                     memberId: true,
                     configurationData: true,
-                }
-            }
+                },
+            },
         },
-    })
+    });
 
     return mCClist;
 }
 
-export async function getMasterToMemberRelations(masterId:string, memberId:string){
+export async function getMasterToMemberRelations(
+    masterId: string,
+    memberId: string,
+) {
     const relationData = await prisma.masterToMemberRelations.findFirst({
-        where:{
+        where: {
             masterId: masterId,
-            memberId: memberId
+            memberId: memberId,
         },
-        select:{
-            member:{
-                select:{
+        select: {
+            member: {
+                select: {
                     lastName: true,
                     firstName: true,
-                    confMemberData:true
-                }
-            }
-        }
+                    confMemberData: true,
+                },
+            },
+        },
     });
 
     return relationData;
@@ -53,31 +59,31 @@ type ValidationTarget = {
     [key: string]: FormDataEntryValue | null;
 };
 
-export async function setCustomForm(prevState:any, formData: FormData) {
-
-    try{
-
+export async function setCustomForm(prevState: any, formData: FormData) {
+    try {
         const session = await auth();
 
         // ここで送信される想定のform名を全部取得
         const mCClist = await prisma.mastersCustomConfigurations.findMany({
-            where : {
-                masterId: session?.user?.id
+            where: {
+                masterId: session?.user?.id,
             },
-            select : {
+            select: {
                 id: true,
                 masterId: true,
                 configurationTitle: true,
                 configurationConstraint: true,
             },
-        })
+        });
 
-        let validationTarget:ValidationTarget = {
-            memberId: formData.get('memberId')
+        let validationTarget: ValidationTarget = {
+            memberId: formData.get('memberId'),
         };
 
         let CustomFormSchema = z.object({
-            memberId: z.string().min(1,{message:'送信されたパラメータに異常があります'})
+            memberId: z
+                .string()
+                .min(1, { message: '送信されたパラメータに異常があります' }),
         });
 
         // ここのタイプエラーをなんとかしたい
@@ -87,50 +93,55 @@ export async function setCustomForm(prevState:any, formData: FormData) {
         mCClist.map((mCC) => {
             const customName = mCC.id;
 
-            if(mCC?.configurationConstraint == undefined){
+            if (mCC?.configurationConstraint == undefined) {
                 return false;
             }
 
             const customType = mCC?.configurationConstraint;
 
-            const formName = customName+'_'+customType;
+            const formName = customName + '_' + customType;
 
             // booleanがチェックをつけていないとformDataに値が設定されないため、その対応措置
             let formInputData = null;
 
             // 各タイプのバリデーション設定
-            switch(true){
-                case(mCC.configurationConstraint == 'text'):
+            switch (true) {
+                case mCC.configurationConstraint == 'text':
                     addSchema = {
                         ...addSchema,
-                        [formName]: z.string()
-                                    .max(100,{message:'値は100文字までです'})
-                    }
+                        [formName]: z
+                            .string()
+                            .max(100, { message: '値は100文字までです' }),
+                    };
 
                     formInputData = formData.get(formName);
                     break;
-                case(mCC.configurationConstraint == 'int'):
+                case mCC.configurationConstraint == 'int':
                     addSchema = {
                         ...addSchema,
-                        [formName]: z.string()
-                                            .max(100,{message:'値は100文字までです'})
-                                            .regex(/^[0-9]*$/,{message: "半角数字のみで入力してください。"}),
-                    }
+                        [formName]: z
+                            .string()
+                            .max(100, { message: '値は100文字までです' })
+                            .regex(/^[0-9]*$/, {
+                                message: '半角数字のみで入力してください。',
+                            }),
+                    };
 
                     formInputData = formData.get(formName);
                     break;
-                case(mCC.configurationConstraint == 'boolean'):
+                case mCC.configurationConstraint == 'boolean':
                     addSchema = {
                         ...addSchema,
-                        [formName]: z.enum(['true',''],{message:'値が不正です'})
-                    }
+                        [formName]: z.enum(['true', ''], {
+                            message: '値が不正です',
+                        }),
+                    };
 
-                    if(formData.get(formName) == null){
+                    if (formData.get(formName) == null) {
                         formInputData = '';
-                    }else{
+                    } else {
                         formInputData = formData.get(formName);
                     }
-
 
                     break;
                 default:
@@ -141,12 +152,11 @@ export async function setCustomForm(prevState:any, formData: FormData) {
             validationTarget = {
                 ...validationTarget,
                 [formName]: formInputData,
-            }
-
-        })
+            };
+        });
 
         // 一件もフォームが無かったらエラー
-        if(!validationTarget){
+        if (!validationTarget) {
             return {
                 success: false,
                 message: 'システムエラー[フォームが存在しません]',
@@ -154,11 +164,11 @@ export async function setCustomForm(prevState:any, formData: FormData) {
         }
 
         const CustomFormSchemaExtend = CustomFormSchema.extend({
-            ...addSchema
-        })
+            ...addSchema,
+        });
 
         const validatedFields = CustomFormSchemaExtend.safeParse({
-            ...validationTarget
+            ...validationTarget,
         });
 
         if (!validatedFields.success) {
@@ -170,68 +180,67 @@ export async function setCustomForm(prevState:any, formData: FormData) {
         }
 
         const memberId = formData.get('memberId');
-        if(typeof memberId !== 'string'){
+        if (typeof memberId !== 'string') {
             return false;
         }
 
-        try{
+        try {
             mCClist.map(async (mCC) => {
                 const formName = mCC.id + '_' + mCC.configurationConstraint;
                 let inputCustomData = validationTarget?.[formName];
-                if(typeof inputCustomData !== 'string'){
+                if (typeof inputCustomData !== 'string') {
                     inputCustomData = '';
                 }
 
                 // ここで各フォームの内容を入れる
-                const existMemberData = await prisma.configurationsMemberData.count({
-                    where:{
-                        mCCId: mCC.id,
-                        memberId: memberId
-                    }
-                })
-
-                // 存在する場合はUPDATE、無ければcreate
-                if(existMemberData > 0){
-                    const updateMemberData = await prisma.configurationsMemberData.update({
-                        where:{
-                            mCCId_memberId:{
-                                mCCId: mCC.id,
-                                memberId: memberId
-                            }
-                        },
-                        data:{
-                            configurationData: inputCustomData
-                        }
-                    })
-
-                }else{
-                    const createMemberData = await prisma.configurationsMemberData.create({
-                        data:{
+                const existMemberData =
+                    await prisma.configurationsMemberData.count({
+                        where: {
                             mCCId: mCC.id,
                             memberId: memberId,
-                            configurationData: inputCustomData
-                        }
-                    })
-                }
+                        },
+                    });
 
-            })
-        }catch(error){
+                // 存在する場合はUPDATE、無ければcreate
+                if (existMemberData > 0) {
+                    const updateMemberData =
+                        await prisma.configurationsMemberData.update({
+                            where: {
+                                mCCId_memberId: {
+                                    mCCId: mCC.id,
+                                    memberId: memberId,
+                                },
+                            },
+                            data: {
+                                configurationData: inputCustomData,
+                            },
+                        });
+                } else {
+                    const createMemberData =
+                        await prisma.configurationsMemberData.create({
+                            data: {
+                                mCCId: mCC.id,
+                                memberId: memberId,
+                                configurationData: inputCustomData,
+                            },
+                        });
+                }
+            });
+        } catch (error) {
             console.error(error);
             return {
                 success: false,
                 message: '異常が発生しました。',
             };
         }
-
-
-    } catch(error){
+    } catch (error) {
         if (error instanceof z.ZodError) {
             return {
                 success: false,
                 errors: error.format(),
-                message: '異常が発生しました。'
+                message: '異常が発生しました。',
             };
-        }else{
+        } else {
             console.error(error);
             return {
                 success: false,

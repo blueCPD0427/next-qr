@@ -1,29 +1,31 @@
 // 全角数字を半角に変換
-export function convertToHalfNumber(number:string){
+export function convertToHalfNumber(number: string) {
     let res = number;
     return res.replace(/[０-９]/g, (s) => {
-        return String.fromCharCode(s.charCodeAt(0) - 0xFEE0);
+        return String.fromCharCode(s.charCodeAt(0) - 0xfee0);
     });
 }
 
 // phpのstr_replaceのような関数
-export function convertReplaceText(originText:string, targetText:string, replaceText = ''){
+export function convertReplaceText(
+    originText: string,
+    targetText: string,
+    replaceText = '',
+) {
     let res = originText;
     return res.replace(new RegExp(targetText, 'g'), replaceText);
 }
 
-
-export function lPadNum(num:string, length:number){
+export function lPadNum(num: string, length: number) {
     return String(num).padStart(length, '0');
 }
 
 // Dateを年月日表記に変換
-export function convertDate(date:Date){
+export function convertDate(date: Date) {
     const convertDate = new Date(date);
     const year = convertDate.getFullYear();
     const month = convertDate.getMonth() + 1;
     const day = convertDate.getDate();
-
 
     const formatDate = year + '年' + month + '月' + day + '日';
 
