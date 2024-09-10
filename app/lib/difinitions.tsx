@@ -46,7 +46,7 @@ export interface OCCListInside {
     confMemberData?: {
         memberId: string,
         configurationData?: string,
-    }
+    }[]
 }
 
 export interface MasterCustomForm {

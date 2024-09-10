@@ -4,7 +4,6 @@ import Credentials from 'next-auth/providers/credentials';
 import { z } from 'zod';
 import prisma from '@/app/lib/prisma';
 import bcrypt from 'bcrypt';
-// import { User } from './lib/definitions';
 
 async function getMasterUser(email: string){
     const loginUser = await prisma.masters.findFirst({
@@ -64,7 +63,6 @@ export const { handlers: { GET, POST }, auth, signIn, signOut } = NextAuth({
     ],
     callbacks: {
         async jwt({ token, user, trigger, session }) {
-            // console.log('auth.ts');
 
             if (user) {
                 token.id = user.id;
@@ -82,12 +80,12 @@ export const { handlers: { GET, POST }, auth, signIn, signOut } = NextAuth({
         },
         async session({ session, token, user }) {
             if(token){
-                session.user.id = token.id;
-                session.user.userId = token.userId;
-                session.user.type = token.type;
+                session.user.id = (typeof token.id === 'string' ? token.id : '');
+                session.user.userId = (typeof token.userId === 'number' ? token.userId : 0);
+                session.user.type = (typeof token.type === 'string' ? token.type : '');
                 if(token.type == 'member'){
-                    session.user.lastName = token.lastName;
-                    session.user.firstName = token.firstName;
+                    session.user.lastName = (typeof token.lastName === 'string' ? token.lastName : '');
+                    session.user.firstName = (typeof token.firstName === 'string' ? token.firstName : '');
                 }
             }
 

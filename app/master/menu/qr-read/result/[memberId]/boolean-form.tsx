@@ -14,7 +14,7 @@ export default function BooleanCustomFormPage(
 
     const confMemberData = mCCData.confMemberData != undefined ? mCCData.confMemberData[0] : null;
     let defaultValue = '';
-    if(confMemberData != undefined){
+    if(confMemberData != undefined && confMemberData.configurationData != undefined){
         defaultValue = confMemberData.configurationData;
     }
 
