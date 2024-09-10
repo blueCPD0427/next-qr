@@ -67,7 +67,7 @@ function LogoutButton() {
 }
 
 export function LogoutForm() {
-    const [state, logOutAction] = useFormState(LogOutAction, true);
+    const [, logOutAction] = useFormState(LogOutAction, true);
     return (
         <form action={logOutAction}>
             <LogoutButton />

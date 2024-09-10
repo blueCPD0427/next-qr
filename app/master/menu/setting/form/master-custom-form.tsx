@@ -26,6 +26,7 @@ import { faTriangleExclamation } from '@fortawesome/free-solid-svg-icons';
 import toast from 'react-hot-toast';
 import { useRouter } from 'next/navigation';
 import { MasterCustomForm } from '@/app/lib/difinitions';
+import { mCCTypes } from '@/app/lib/difinitions';
 
 const initForm: MasterCustomForm = {
     masterId: '',
@@ -55,11 +56,7 @@ export default function MasterCustomFormComponent({
     mCCTypes,
     masterId,
 }: {
-    mCCTypes: {
-        text: string;
-        int: string;
-        boolean: string;
-    };
+    mCCTypes: mCCTypes;
     masterId: string;
 }) {
     const router = useRouter();

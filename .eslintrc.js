@@ -34,5 +34,11 @@ module.exports = {
                 '@typescript-eslint/no-empty-object-type': 'off',
             },
         },
+        {
+            files: ['app/master/menu/qr-read/qr-read.tsx'],
+            rules: {
+                '@typescript-eslint/no-explicit-any': 'off',
+            },
+        },
     ],
 };

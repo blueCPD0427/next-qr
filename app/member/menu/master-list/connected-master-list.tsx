@@ -15,12 +15,13 @@ import { ToggleDispData } from '@/app/lib/difinitions';
 import toast from 'react-hot-toast';
 import { useRouter } from 'next/navigation';
 import React from 'react';
+import { MasterToMemberRelationsListReturnType } from '@/app/member/menu/master-list/page';
 
 export function ConnectedMasterList({
     connectedMasterList,
     memberId,
 }: {
-    connectedMasterList: any;
+    connectedMasterList: MasterToMemberRelationsListReturnType;
     memberId: string;
 }) {
     const [sendPending, setSendPending] = useState(false);
@@ -64,7 +65,7 @@ export function ConnectedMasterList({
                 </TableHeader>
                 <TableBody>
                     {connectedMasterList &&
-                        connectedMasterList.map((value: any) => (
+                        connectedMasterList.map((value) => (
                             <React.Fragment key={value.master.id}>
                                 <TableRow className="border-b-0 border-black">
                                     <TableCell className="w-1/5">
@@ -143,7 +144,7 @@ export function ConnectedMasterList({
                                             {value.member.confMemberData
                                                 .length > 0 ? (
                                                 value.member.confMemberData.map(
-                                                    (cMData: any) =>
+                                                    (cMData) =>
                                                         cMData
                                                             .customConfiguration
                                                             .configurationTitle && (

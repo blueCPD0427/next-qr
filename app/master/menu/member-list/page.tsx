@@ -6,9 +6,11 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTriangleExclamation } from '@fortawesome/free-solid-svg-icons';
 import { Prisma } from '@prisma/client';
 
-export type ConnectedMemberListReturnType = Prisma.PromiseReturnType<typeof getConnectedMemberList>;
+export type ConnectedMemberListReturnType = Prisma.PromiseReturnType<
+    typeof getConnectedMemberList
+>;
 
-async function getConnectedMemberList(masterId:string){
+async function getConnectedMemberList(masterId: string) {
     const connectedMemberList = await prisma.masterToMemberRelations.findMany({
         select: {
             addressDisp: true,

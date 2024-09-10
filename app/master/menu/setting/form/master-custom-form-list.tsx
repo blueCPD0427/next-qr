@@ -26,14 +26,16 @@ import { DeleteMasterCustomForm } from '@/app/lib/difinitions';
 import toast from 'react-hot-toast';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
+import { MastersCustomConfigurationsListReturnType } from '@/app/master/menu/setting/form/page';
+import { mCCTypes } from '@/app/lib/difinitions';
 
 export default function MasterCustomFormList({
     mCClist,
     mCCTypes,
     masterId,
 }: {
-    mCClist: any;
-    mCCTypes: any;
+    mCClist: MastersCustomConfigurationsListReturnType;
+    mCCTypes: mCCTypes;
     masterId: string;
 }) {
     const router = useRouter();
@@ -74,7 +76,7 @@ export default function MasterCustomFormList({
                 </TableRow>
             </TableHeader>
             <TableBody>
-                {mCClist.map((mCC: any) => (
+                {mCClist.map((mCC) => (
                     <TableRow key={mCC.id}>
                         <TableCell className="w-2/5">
                             {mCC.configurationTitle}

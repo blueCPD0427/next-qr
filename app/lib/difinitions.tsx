@@ -65,7 +65,7 @@ export interface OCCListInside {
     configurationConstraint: 'text' | 'int' | 'boolean';
     confMemberData?: {
         memberId: string;
-        configurationData?: string;
+        configurationData: string | null;
     }[];
 }
 
@@ -84,4 +84,10 @@ export interface ToggleDispData {
     masterId: string;
     memberId: string;
     target: string;
+}
+
+export interface mCCTypes {
+    text: string;
+    int: string;
+    boolean: string;
 }

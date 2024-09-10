@@ -5,26 +5,29 @@ import { MasterCustomForm } from '@/app/lib/difinitions';
 import { existMaster } from '@/app/lib/actions/action';
 import { DeleteMasterCustomForm } from '@/app/lib/difinitions';
 
-const MasterCustomFormSchema = z.object({
-    masterId: z
-        .string()
-        .min(1, { message: 'システムエラーが発生しました。' })
-        .superRefine(async (data: any, ctx) => {
-            const existMasterRes = await existMaster(data.masterId);
-
-            if (!existMasterRes) {
-                ctx.addIssue({
-                    code: z.ZodIssueCode.custom,
-                    message: '送信されたパラメータが不正です。',
-                    path: ['masterId'],
-                });
-            }
+const MasterCustomFormSchema = z
+    .object({
+        masterId: z
+            .string()
+            .min(1, { message: 'システムエラーが発生しました。' }),
+        configurationTitle: z
+            .string()
+            .min(1, { message: 'データ名は必須です。' }),
+        configurationConstraint: z.enum(['text', 'int', 'boolean'], {
+            message: 'データの形式が正しくありません。',
         }),
-    configurationTitle: z.string().min(1, { message: 'データ名は必須です。' }),
-    configurationConstraint: z.enum(['text', 'int', 'boolean'], {
-        message: 'データの形式が正しくありません。',
-    }),
-});
+    })
+    .superRefine(async (data, ctx) => {
+        const existMasterRes = await existMaster(data.masterId);
+
+        if (!existMasterRes) {
+            ctx.addIssue({
+                code: z.ZodIssueCode.custom,
+                message: '送信されたパラメータが不正です。',
+                path: ['masterId'],
+            });
+        }
+    });
 
 export async function createMasterCustomFormApi(formData: MasterCustomForm) {
     try {
@@ -66,41 +69,42 @@ export async function createMasterCustomFormApi(formData: MasterCustomForm) {
 export async function deleteMasterCustomFormApi(
     formData: DeleteMasterCustomForm,
 ) {
-    const DeleteMasterCustomFormSchema = z.object({
-        masterId: z
-            .string()
-            .min(1, { message: 'システムエラーが発生しました。' })
-            .superRefine(async (data: any, ctx) => {
-                const existMasterRes = await existMaster(data.masterId);
+    const DeleteMasterCustomFormSchema = z
+        .object({
+            masterId: z
+                .string()
+                .min(1, { message: 'システムエラーが発生しました。' }),
+            formId: z
+                .string()
+                .min(1, { message: 'システムエラーが発生しました。' }),
+        })
+        .superRefine(async (data, ctx) => {
+            const existMasterRes = await existMaster(data.masterId);
 
-                if (!existMasterRes) {
-                    ctx.addIssue({
-                        code: z.ZodIssueCode.custom,
-                        message: '送信されたパラメータが不正です。',
-                        path: ['masterId'],
-                    });
-                }
-            }),
-        formId: z
-            .string()
-            .min(1, { message: 'システムエラーが発生しました。' })
-            .superRefine(async (data: any, ctx) => {
-                const existMasterCustomForm =
-                    await prisma.mastersCustomConfigurations.findFirst({
-                        where: {
-                            id: data.formId,
-                        },
-                    });
+            if (!existMasterRes) {
+                ctx.addIssue({
+                    code: z.ZodIssueCode.custom,
+                    message: '送信されたパラメータが不正です。',
+                    path: ['masterId'],
+                });
+            }
+        })
+        .superRefine(async (data, ctx) => {
+            const existMasterCustomForm =
+                await prisma.mastersCustomConfigurations.findFirst({
+                    where: {
+                        id: data.formId,
+                    },
+                });
 
-                if (!existMasterCustomForm) {
-                    ctx.addIssue({
-                        code: z.ZodIssueCode.custom,
-                        message: '送信されたパラメータが不正です。',
-                        path: ['formId'],
-                    });
-                }
-            }),
-    });
+            if (!existMasterCustomForm) {
+                ctx.addIssue({
+                    code: z.ZodIssueCode.custom,
+                    message: '送信されたパラメータが不正です。',
+                    path: ['formId'],
+                });
+            }
+        });
 
     try {
         const validatedFields = await DeleteMasterCustomFormSchema.parseAsync({

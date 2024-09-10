@@ -5,7 +5,9 @@ import { z } from 'zod';
 import prisma from '@/app/lib/prisma';
 import { Prisma } from '@prisma/client';
 
-export type MastersCustomConfigurationsReturnType = Prisma.PromiseReturnType<typeof getMastersCustomConfigurations>;
+export type MastersCustomConfigurationsReturnType = Prisma.PromiseReturnType<
+    typeof getMastersCustomConfigurations
+>;
 
 export async function getMastersCustomConfigurations(
     masterId: string,
@@ -35,7 +37,9 @@ export async function getMastersCustomConfigurations(
     return mCClist;
 }
 
-export type MasterToMemberRelationsReturnType = Prisma.PromiseReturnType<typeof getMasterToMemberRelations>;
+export type MasterToMemberRelationsReturnType = Prisma.PromiseReturnType<
+    typeof getMasterToMemberRelations
+>;
 
 export async function getMasterToMemberRelations(
     masterId: string,
@@ -64,7 +68,16 @@ type ValidationTarget = {
     [key: string]: FormDataEntryValue | null;
 };
 
-export async function setCustomForm(prevState: any, formData: FormData) {
+export type setCustomFormPrevState = {
+    success: boolean | null;
+    errors?: Record<string, string[]>;
+    message?: string | null;
+};
+
+export async function setCustomForm(
+    prevState: setCustomFormPrevState,
+    formData: FormData,
+) {
     try {
         const session = await auth();
 
@@ -186,7 +199,10 @@ export async function setCustomForm(prevState: any, formData: FormData) {
 
         const memberId = formData.get('memberId');
         if (typeof memberId !== 'string') {
-            return false;
+            return {
+                success: false,
+                message: '異常が発生しました。',
+            };
         }
 
         try {

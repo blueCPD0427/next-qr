@@ -6,14 +6,13 @@ import { redirect } from 'next/navigation';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTriangleExclamation } from '@fortawesome/free-solid-svg-icons';
+import { Prisma } from '@prisma/client';
+import { mCCTypes } from '@/app/lib/difinitions';
 
-export default async function SettingFormPage() {
-    const session = await auth();
-    const masterId = session?.user?.id;
-    if (masterId == undefined) {
-        redirect('/404');
-    }
+export type MastersCustomConfigurationsListReturnType =
+    Prisma.PromiseReturnType<typeof getMastersCustomConfigurations>;
 
+async function getMastersCustomConfigurations(masterId: string) {
     const mCClist = await prisma.mastersCustomConfigurations.findMany({
         where: {
             masterId: masterId,
@@ -26,7 +25,19 @@ export default async function SettingFormPage() {
         },
     });
 
-    const mCCTypes = {
+    return mCClist;
+}
+
+export default async function SettingFormPage() {
+    const session = await auth();
+    const masterId = session?.user?.id;
+    if (masterId == undefined) {
+        redirect('/404');
+    }
+
+    const mCClist = await getMastersCustomConfigurations(masterId);
+
+    const mCCTypes: mCCTypes = {
         text: 'テキスト',
         int: '数値',
         boolean: 'ON/OFF',

@@ -15,6 +15,7 @@ import {
     CardTitle,
 } from '@/components/ui/card';
 import { MastersCustomConfigurationsReturnType } from '../../actions';
+import { setCustomFormPrevState } from '../../actions';
 
 export default function CustomFormBase({
     mCClist,
@@ -25,10 +26,14 @@ export default function CustomFormBase({
     memberId: string;
     memberName: string;
 }) {
-    const initialState: any = {};
+    const initialState: setCustomFormPrevState = {
+        success: null,
+        message: '',
+        errors: {},
+    };
     const [state, dispatch] = useFormState(setCustomForm, initialState);
 
-    if (state.success != undefined) {
+    if (state.success != undefined && typeof state.message === 'string') {
         switch (true) {
             case state.success === true:
                 toast.success(state.message);
@@ -49,7 +54,7 @@ export default function CustomFormBase({
                             <CardTitle>【{memberName}】様</CardTitle>
                         </CardHeader>
                         {mCClist &&
-                            mCClist.map((mCC: any) => {
+                            mCClist.map((mCC) => {
                                 switch (mCC.configurationConstraint) {
                                     case 'text':
                                         return (
