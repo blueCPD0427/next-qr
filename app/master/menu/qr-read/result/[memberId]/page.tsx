@@ -33,14 +33,14 @@ export default async function QrReadResultPage({
         await getMasterToMemberRelations(masterId, memberId);
     if (!oCRelationData) {
         // 連携情報が無いので先に連携を促す
-        redirect('/404');
+        redirect('/master/menu/qr-disp?disConnect=true');
     }
 
     const mCClist: MastersCustomConfigurationsReturnType =
         await getMastersCustomConfigurations(masterId, memberId);
     if (!mCClist) {
         // 無ければエラー表示+エディット画面へのリンク
-        redirect('/404');
+        redirect('/master/menu/setting/form/qr-disp?disSetting=true');
     }
 
     const memberData = await prisma.members.findFirst({

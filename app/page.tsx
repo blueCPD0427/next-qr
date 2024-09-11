@@ -10,21 +10,22 @@ const dela = Dela_Gothic_One({
 export default function Home() {
     return (
         <div className="flex items-center justify-center min-h-screen bg-green-100">
-            <div>
+            <div className="w-2/3">
                 <div
                     className={`${dela.className} text-7xl text-center w-full`}
                 >
                     QR君!!
                 </div>
-                <Image
-                    src="/img/qr-boy.jpg"
-                    alt="qr君"
-                    layout="responsive"
-                    width={500}
-                    height={500}
-                    className="rounded-lg"
-                    priority
-                />
+                <div className="flex items-center justify-center w-full">
+                    <Image
+                        src="/img/qr-boy.jpg"
+                        alt="qr君"
+                        width={350}
+                        height={350}
+                        className="rounded-lg"
+                        priority
+                    />
+                </div>
                 <div className="flex justify-evenly w-full rounded-lg py-3">
                     <Link
                         href="/master/login"

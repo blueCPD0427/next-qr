@@ -230,7 +230,7 @@ export default function AccountForm({
         <div className="flex items-center justify-center min-h-screen bg-green-100">
             <div className="bg-white p-8 rounded-lg shadow-md w-full max-w-2xl overflow-y-auto max-h-screen-80">
                 <h2 className="text-2xl font-bold mb-6 text-green-700">
-                    マスターアカウント作成
+                    メンバーアカウント作成
                 </h2>
                 <form onSubmit={formSubmit}>
                     <div className="mb-4">
@@ -514,18 +514,20 @@ export default function AccountForm({
                                 ),
                             )}
                     </div>
-                    <button
-                        // onClick={formSubmit}
-                        className={clsx(
-                            'border rounded py-1 px-3 bg-green-500',
-                            {
-                                'opacity-50 cursor-wait': sendPending === true,
-                            },
-                        )}
-                        aria-disabled={sendPending}
-                    >
-                        {sendPending ? '送信中' : '送信'}
-                    </button>
+                    <div className="flex justify-center w-full">
+                        <button
+                            className={clsx(
+                                'border rounded py-1 px-3 bg-green-500 text-white font-bold',
+                                {
+                                    'opacity-50 cursor-wait':
+                                        sendPending === true,
+                                },
+                            )}
+                            aria-disabled={sendPending}
+                        >
+                            {sendPending ? '送信中' : '送信'}
+                        </button>
+                    </div>
                 </form>
             </div>
         </div>

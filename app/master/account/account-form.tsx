@@ -343,17 +343,20 @@ export default function AccountForm({
                                 ),
                             )}
                     </div>
-                    <button
-                        className={clsx(
-                            'border rounded py-1 px-3 bg-green-500',
-                            {
-                                'opacity-50 cursor-wait': sendPending === true,
-                            },
-                        )}
-                        aria-disabled={sendPending}
-                    >
-                        {sendPending ? '送信中' : '送信'}
-                    </button>
+                    <div className="flex justify-center w-full">
+                        <button
+                            className={clsx(
+                                'border rounded py-1 px-3 bg-green-500 text-white font-bold',
+                                {
+                                    'opacity-50 cursor-wait':
+                                        sendPending === true,
+                                },
+                            )}
+                            aria-disabled={sendPending}
+                        >
+                            {sendPending ? '送信中' : '送信'}
+                        </button>
+                    </div>
                 </form>
             </div>
         </div>

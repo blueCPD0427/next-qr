@@ -28,7 +28,11 @@ async function getMastersCustomConfigurations(masterId: string) {
     return mCClist;
 }
 
-export default async function SettingFormPage() {
+export default async function SettingFormPage({
+    searchParams,
+}: {
+    searchParams?: { disSetting?: string };
+}) {
     const session = await auth();
     const masterId = session?.user?.id;
     if (masterId == undefined) {
@@ -49,8 +53,17 @@ export default async function SettingFormPage() {
 
     return (
         <div className="flex justify-center mt-20">
-            <div>
-                <div className="mb-5">
+            <div className="bg-white p-8 rounded-lg shadow-md w-full max-w-2xl overflow-y-auto max-h-screen-80">
+                {searchParams != undefined &&
+                    searchParams.disSetting != undefined &&
+                    searchParams.disSetting == 'true' && (
+                        <div className="w-full text-center">
+                            <p className="text-red-500 font-bold">
+                                以下の項目設定を先に登録してください。
+                            </p>
+                        </div>
+                    )}
+                <div className="mb-10">
                     <div>
                         <div>登録済みの項目</div>
                         {mCClist.length > 0 ? (
