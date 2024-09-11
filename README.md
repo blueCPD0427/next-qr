@@ -1,46 +1,82 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# マニュアル
 
-## Getting Started
+## マスターサイト
 
-First, run the development server:
+### マスターログイン画面
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+**マスターアカウント作成画面**で作成したアカウントでログイン。
+登録したメールアドレスとパスワードを使ってログインします。
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+#### マスターアカウント作成画面
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+マスターアカウントの作成画面です。
+全ての項目が必須項目です。
 
-This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-optimization) to automatically optimize and load Inter, a custom Google Font.
+### マスターメニュー
 
-## Learn More
+#### 連携用QRコードを表示
 
-To learn more about Next.js, take a look at the following resources:
+メンバーアカウントとの連携用ＱＲコードを表示します。
+連携を希望するメンバーにお持ちのスマートフォン等でQRコードを読み取ってもらうか、
+QRコード下部にあるURLにアクセスしてもらい、
+住所・生年月日の公開設定を行ってもらうことでアカウント連携が完了します。
+※事前にメンバーアカウントの作成が必要です。
 
--   [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
--   [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+#### QRコード読み取り
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
+連携が完了したメンバーのQRコードを読み取ることで、
+**メンバーデータ項目設定**で事前に設定したデータの登録・更新が行えます。
+※連携が未完了のメンバーのQRコードを読み取った場合は、**連携用QRコードを表示**ページにリダイレクトされます。
 
-## Deploy on Vercel
+#### 連携済みメンバー一覧
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+連携が完了したメンバーの一覧、及びQRコード読み取りにて登録したデータの確認ができます。
+住所と生年月日は連携時に非表示とした場合は表示されません。
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+#### 各種設定
 
-## こっから自分のメモ
+##### アカウント設定(マスター)
 
-### TODO
+ログインしているユーザーのアカウント情報の閲覧・更新ができます。
 
--   未ログインの時にトップに飛んじゃうので、マスター・メンバーでリダイレクト先のログイン画面を切り分ける
+##### メンバーデータ項目設定
 
--   ここを参考にエラーハンドリングする
+連携が完了したメンバーに対して登録したいデータの設定ができます。
+登録可能なデータの種類は以下の三種類です
 
-> https://qiita.com/aburasoba/items/a1fd399dd490e7402518
+- テキスト
+- 数値
+- ON/OFF
+
+最大5つまで登録が可能です。
+
+また、既に登録している項目の確認と削除が行えます。
+削除を行った場合、既に連携が完了したメンバーに対して登録したデータも併せて削除されます。
+
+## メンバーサイト
+
+### メンバーログイン画面
+
+**メンバーアカウント作成画面**で作成したアカウントでログイン。
+登録したメールアドレスとパスワードを使ってログインします。
+
+#### メンバーアカウント作成画面
+
+メンバーアカウントの作成画面です。
+性別のみ任意登録項目です。
+
+### メンバーメニュー
+
+#### QRコードを表示
+
+連携が完了したマスターアカウントに読み取ってもらうQRコードを表示します。
+
+#### 連携先一覧
+
+連携が完了したマスターアカウントの一覧、
+及びQRコード読み取りにてマスターが登録したデータの確認ができます。
+また、連携時に登録した住所・生年月日の公開・非公開設定が変更できます。
+
+#### アカウント設定(メンバー)
+
+ログインしているユーザーのアカウント情報の閲覧・更新ができます。
